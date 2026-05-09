@@ -10,20 +10,19 @@ function Toolbar({
 }) {
   const monthLabel = `${MONTH_NAMES[monthDate.getMonth()]} ${monthDate.getFullYear()}`;
   return (
-    <div style={{
-      display:"flex", flexWrap:"wrap", alignItems:"center",
-      gap:"8px 12px", padding:"10px 20px",
-      background:"var(--bg-surface)", borderBottom:"1px solid var(--border-weak)"
-    }}>
-      {/* Left group: nav + month title + view switcher — grows to fill row so right group wraps to left */}
-      <div style={{ display:"flex", alignItems:"center", gap:6, flexGrow:1 }}>
-        <button onClick={onPrev} style={chromeBtn} title="Previous month">
-          <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round"><path d="M15 6l-6 6 6 6"/></svg>
-        </button>
-        <button onClick={onNext} style={chromeBtn} title="Next month">
-          <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round"><path d="M9 6l6 6-6 6"/></svg>
-        </button>
-        <button onClick={onToday} style={{ ...chromeBtn, width:"auto", padding:"0 12px", fontFamily:"var(--font-button)", fontSize:13, fontWeight:500 }}>Today</button>
+    <div style={{ background:"var(--bg-surface)", borderBottom:"1px solid var(--border-weak)" }}>
+
+      {/* Row 1 — never wraps: nav + month + switcher + celebrations + sign out */}
+      <div style={{ display:"flex", alignItems:"center", gap:12, padding:"10px 20px 6px" }}>
+        <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+          <button onClick={onPrev} style={chromeBtn} title="Previous month">
+            <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round"><path d="M15 6l-6 6 6 6"/></svg>
+          </button>
+          <button onClick={onNext} style={chromeBtn} title="Next month">
+            <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round"><path d="M9 6l6 6-6 6"/></svg>
+          </button>
+          <button onClick={onToday} style={{ ...chromeBtn, width:"auto", padding:"0 12px", fontFamily:"var(--font-button)", fontSize:13, fontWeight:500 }}>Today</button>
+        </div>
         <h2 style={{
           margin:0, fontFamily:"var(--font-display)", fontWeight:700, fontSize:22, lineHeight:"26px",
           color:"var(--fg-1)", letterSpacing:".002em", minWidth:160
@@ -31,10 +30,22 @@ function Toolbar({
         {onVariantChange && (
           <ViewSwitcher current={currentVariant} onChange={onVariantChange}/>
         )}
+        <div style={{ flex:1 }}/>
+        <TodayCelebrationsBadge employees={employees} onOpen={onRoster}/>
+        {user && (
+          <div title={user.email || user.displayName || ""} style={{
+            display:"inline-flex", alignItems:"center", gap:6, height:32, padding:"0 4px 0 8px",
+            border:"1px solid var(--border-weak)", borderRadius:"var(--r-pill)",
+            background:"var(--bg-surface)",
+          }}>
+            {user.photoURL && <img src={user.photoURL} alt="" style={{ width:24, height:24, borderRadius:"50%" }}/>}
+            <button onClick={onSignOut} style={{ border:0, background:"transparent", color:"var(--fg-2)", fontFamily:"var(--font-button)", fontSize:12, cursor:"pointer", padding:"0 6px" }}>Sign out</button>
+          </div>
+        )}
       </div>
 
-      {/* Right group: filters + actions — left-aligned when wrapped to second row */}
-      <div style={{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap" }}>
+      {/* Row 2 — wraps from the left: filters + action buttons */}
+      <div style={{ display:"flex", alignItems:"center", flexWrap:"wrap", gap:8, padding:"0 20px 10px" }}>
         <FilterPill label="Team" value={employeeFilter} onChange={setEmployeeFilter}
           options={[["all","Everyone"], ...(employees || []).map(e => [e.id, e.name])]}/>
         <FilterPill label="Type" value={typeFilter} onChange={setTypeFilter}
@@ -68,17 +79,6 @@ function Toolbar({
           <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
           Take day off
         </button>
-
-        {user && (
-          <div title={user.email || user.displayName || ""} style={{
-            display:"inline-flex", alignItems:"center", gap:6, height:32, padding:"0 4px 0 8px",
-            border:"1px solid var(--border-weak)", borderRadius:"var(--r-pill)",
-            background:"var(--bg-surface)",
-          }}>
-            {user.photoURL && <img src={user.photoURL} alt="" style={{ width:24, height:24, borderRadius:"50%" }}/>}
-            <button onClick={onSignOut} style={{ border:0, background:"transparent", color:"var(--fg-2)", fontFamily:"var(--font-button)", fontSize:12, cursor:"pointer", padding:"0 6px" }}>Sign out</button>
-          </div>
-        )}
       </div>
     </div>
   );
@@ -118,7 +118,7 @@ function FilterPill({ label, value, onChange, options }) {
 }
 
 // Legend rendered under the toolbar
-function Legend({ status = "loading", error = null, employees, onRoster }) {
+function Legend({ status = "loading", error = null }) {
   const dotColor =
       status === "live"    ? "var(--state-success)"
     : status === "loading" ? "var(--tw-gray-3)"
@@ -139,8 +139,6 @@ function Legend({ status = "loading", error = null, employees, onRoster }) {
           {t.label}
         </span>
       ))}
-      <span style={{ flex:1 }}/>
-      <TodayCelebrationsBadge employees={employees} onOpen={onRoster}/>
       <span style={{ flex:1 }}/>
       <span style={{ display:"inline-flex", alignItems:"center", gap:5 }}>
         <span style={{ width:7, height:7, borderRadius:4, background: dotColor }}/>
@@ -184,7 +182,7 @@ function TodayCelebrationsBadge({ employees, onOpen }) {
   const items = celebrationsForDay(TODAY, employees || []);
   if (!items.length) return null;
 
-  const VISIBLE = 3;
+  const VISIBLE = 2;
   const visible = items.slice(0, VISIBLE);
   const overflow = items.slice(VISIBLE);
 
