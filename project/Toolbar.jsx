@@ -15,8 +15,8 @@ function Toolbar({
       gap:"8px 12px", padding:"10px 20px",
       background:"var(--bg-surface)", borderBottom:"1px solid var(--border-weak)"
     }}>
-      {/* Left group: nav + month title + view switcher — stays together, shrinks last */}
-      <div style={{ display:"flex", alignItems:"center", gap:6, flexShrink:0 }}>
+      {/* Left group: nav + month title + view switcher — grows to fill row so right group wraps to left */}
+      <div style={{ display:"flex", alignItems:"center", gap:6, flexGrow:1 }}>
         <button onClick={onPrev} style={chromeBtn} title="Previous month">
           <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round"><path d="M15 6l-6 6 6 6"/></svg>
         </button>
@@ -33,8 +33,8 @@ function Toolbar({
         )}
       </div>
 
-      {/* Right group: filters + actions — marginLeft:auto pushes to the right on any row */}
-      <div style={{ display:"flex", alignItems:"center", gap:8, marginLeft:"auto", flexWrap:"wrap", justifyContent:"flex-end" }}>
+      {/* Right group: filters + actions — left-aligned when wrapped to second row */}
+      <div style={{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap" }}>
         <FilterPill label="Team" value={employeeFilter} onChange={setEmployeeFilter}
           options={[["all","Everyone"], ...(employees || []).map(e => [e.id, e.name])]}/>
         <FilterPill label="Type" value={typeFilter} onChange={setTypeFilter}
