@@ -9,88 +9,91 @@ function Toolbar({
   currentVariant, onVariantChange,
 }) {
   const monthLabel = `${MONTH_NAMES[monthDate.getMonth()]} ${monthDate.getFullYear()}`;
-  // Reserve right padding so flex items never slide under the absolutely-placed sign-out pill.
-  const signOutW = 106;
   return (
-    <div style={{ position:"relative", background:"var(--bg-surface)", borderBottom:"1px solid var(--border-weak)" }}>
+    <div style={{ background:"var(--bg-surface)", borderBottom:"1px solid var(--border-weak)" }}>
+      {/* Outer row: main wrapping area + sign-out column (never wraps, always top-right) */}
+      <div style={{ display:"flex", alignItems:"flex-start" }}>
 
-      <div style={{
-        display:"flex", flexWrap:"wrap", alignItems:"center", gap:"8px 12px",
-        paddingTop:10, paddingBottom:10, paddingLeft:20,
-        paddingRight: user ? signOutW : 20,
-      }}>
-        {/* Left group: nav + month + view switcher + celebrations — never wraps as a unit */}
-        <div style={{ display:"flex", alignItems:"center", gap:6, flexShrink:0 }}>
-          <button onClick={onPrev} style={chromeBtn} title="Previous month">
-            <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round"><path d="M15 6l-6 6 6 6"/></svg>
-          </button>
-          <button onClick={onNext} style={chromeBtn} title="Next month">
-            <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round"><path d="M9 6l6 6-6 6"/></svg>
-          </button>
-          <button onClick={onToday} style={{ ...chromeBtn, width:"auto", padding:"0 12px", fontFamily:"var(--font-button)", fontSize:13, fontWeight:500 }}>Today</button>
-          <h2 style={{
-            margin:0, fontFamily:"var(--font-display)", fontWeight:700, fontSize:22, lineHeight:"26px",
-            color:"var(--fg-1)", letterSpacing:".002em", minWidth:160
-          }}>{monthLabel}</h2>
-          {onVariantChange && (
-            <ViewSwitcher current={currentVariant} onChange={onVariantChange}/>
-          )}
-          <TodayCelebrationsBadge employees={employees} onOpen={onRoster}/>
-        </div>
-
-        {/* Spacer — pushes action buttons to the right on wide screens */}
-        <div style={{ flex:1 }}/>
-
-        {/* Right group: filters + actions — wraps left-aligned to a second row on narrow screens */}
-        <div style={{ display:"flex", alignItems:"center", flexWrap:"wrap", gap:8 }}>
-          <FilterPill label="Team" value={employeeFilter} onChange={setEmployeeFilter}
-            options={[["all","Everyone"], ...(employees || []).map(e => [e.id, e.name])]}/>
-          <FilterPill label="Type" value={typeFilter} onChange={setTypeFilter}
-            options={[["all","All leave types"], ...Object.values(LEAVE_TYPES).map(t => [t.id, t.label])]}/>
-
-          {onWeekendSignup && (
-            <button onClick={onWeekendSignup} style={secondaryBtn} title="Sign up for weekend coverage shifts">
-              <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-              Weekend shifts
-            </button>
-          )}
-
-          {onRoster && (
-            <button onClick={onRoster} style={secondaryBtn} title="Birthdays & anniversaries">
-              <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-7a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7"/><path d="M2 21h20"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><path d="M12 7V3"/><path d="M10 3h4"/></svg>
-              Employees Events
-            </button>
-          )}
-
-          {onManage && (
-            <button onClick={onManage} style={secondaryBtn}>Manage</button>
-          )}
-
-          <button onClick={onAdd} style={{
-            height:32, padding:"0 14px", border:"1px solid transparent",
-            background:"var(--action-primary)", color:"var(--fg-invert)",
-            borderRadius:"var(--r-lg)", fontFamily:"var(--font-button)",
-            fontWeight:500, fontSize:13, cursor:"pointer",
-            display:"inline-flex", alignItems:"center", gap:6
-          }}>
-            <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
-            Take day off
-          </button>
-        </div>
-      </div>
-
-      {/* Sign out — absolutely pinned to first-row top-right, never participates in wrapping */}
-      {user && (
-        <div title={user.email || user.displayName || ""} style={{
-          position:"absolute", top:10, right:20,
-          display:"inline-flex", alignItems:"center", gap:6, height:32, padding:"0 4px 0 8px",
-          border:"1px solid var(--border-weak)", borderRadius:"var(--r-pill)",
-          background:"var(--bg-surface)",
+        {/* Main area — flex items wrap here; sign-out is excluded so it can never overlap */}
+        <div style={{
+          flex:1, display:"flex", flexWrap:"wrap", alignItems:"center",
+          gap:"8px 12px", padding:"10px 0 10px 20px",
         }}>
-          {user.photoURL && <img src={user.photoURL} alt="" style={{ width:24, height:24, borderRadius:"50%" }}/>}
-          <button onClick={onSignOut} style={{ border:0, background:"transparent", color:"var(--fg-2)", fontFamily:"var(--font-button)", fontSize:12, cursor:"pointer", padding:"0 6px" }}>Sign out</button>
+          {/* Left group: nav + month + view switcher */}
+          <div style={{ display:"flex", alignItems:"center", gap:6, flexShrink:0 }}>
+            <button onClick={onPrev} style={chromeBtn} title="Previous month">
+              <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round"><path d="M15 6l-6 6 6 6"/></svg>
+            </button>
+            <button onClick={onNext} style={chromeBtn} title="Next month">
+              <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round"><path d="M9 6l6 6-6 6"/></svg>
+            </button>
+            <button onClick={onToday} style={{ ...chromeBtn, width:"auto", padding:"0 12px", fontFamily:"var(--font-button)", fontSize:13, fontWeight:500 }}>Today</button>
+            <h2 style={{
+              margin:0, fontFamily:"var(--font-display)", fontWeight:700, fontSize:22, lineHeight:"26px",
+              color:"var(--fg-1)", letterSpacing:".002em", minWidth:160
+            }}>{monthLabel}</h2>
+            {onVariantChange && (
+              <ViewSwitcher current={currentVariant} onChange={onVariantChange}/>
+            )}
+          </div>
+
+          {/* Spacer — on a single row this fills the gap and centers celebrations between left group and buttons */}
+          <div style={{ flex:1, minWidth:0, display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden" }}>
+            <TodayCelebrationsBadge employees={employees} onOpen={onRoster}/>
+          </div>
+
+          {/* Right group: filters + actions — wraps left-aligned to second row on narrow screens */}
+          <div style={{ display:"flex", alignItems:"center", flexWrap:"wrap", gap:8 }}>
+            <FilterPill label="Team" value={employeeFilter} onChange={setEmployeeFilter}
+              options={[["all","Everyone"], ...(employees || []).map(e => [e.id, e.name])]}/>
+            <FilterPill label="Type" value={typeFilter} onChange={setTypeFilter}
+              options={[["all","All leave types"], ...Object.values(LEAVE_TYPES).map(t => [t.id, t.label])]}/>
+
+            {onWeekendSignup && (
+              <button onClick={onWeekendSignup} style={secondaryBtn} title="Sign up for weekend coverage shifts">
+                <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                Weekend shifts
+              </button>
+            )}
+
+            {onRoster && (
+              <button onClick={onRoster} style={secondaryBtn} title="Birthdays & anniversaries">
+                <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-7a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7"/><path d="M2 21h20"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><path d="M12 7V3"/><path d="M10 3h4"/></svg>
+                Employees Events
+              </button>
+            )}
+
+            {onManage && (
+              <button onClick={onManage} style={secondaryBtn}>Manage</button>
+            )}
+
+            <button onClick={onAdd} style={{
+              height:32, padding:"0 14px", border:"1px solid transparent",
+              background:"var(--action-primary)", color:"var(--fg-invert)",
+              borderRadius:"var(--r-lg)", fontFamily:"var(--font-button)",
+              fontWeight:500, fontSize:13, cursor:"pointer",
+              display:"inline-flex", alignItems:"center", gap:6
+            }}>
+              <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
+              Take day off
+            </button>
+          </div>
         </div>
-      )}
+
+        {/* Sign-out column — outside the wrapping flow, always stays at top-right */}
+        {user && (
+          <div style={{ flexShrink:0, alignSelf:"flex-start", padding:"10px 20px 10px 8px" }}>
+            <div title={user.email || user.displayName || ""} style={{
+              display:"inline-flex", alignItems:"center", gap:6, height:32, padding:"0 4px 0 8px",
+              border:"1px solid var(--border-weak)", borderRadius:"var(--r-pill)",
+              background:"var(--bg-surface)",
+            }}>
+              {user.photoURL && <img src={user.photoURL} alt="" style={{ width:24, height:24, borderRadius:"50%" }}/>}
+              <button onClick={onSignOut} style={{ border:0, background:"transparent", color:"var(--fg-2)", fontFamily:"var(--font-button)", fontSize:12, cursor:"pointer", padding:"0 6px" }}>Sign out</button>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
