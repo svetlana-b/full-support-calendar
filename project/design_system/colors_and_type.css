@@ -1,0 +1,236 @@
+/* ============================================================
+   Teamwork Commerce — Colors & Type
+   Sourced from TW Web Foundations.fig  (/Colors/Colors)
+   Every value below is labeled on a swatch in the Foundations
+   file. Nothing invented.
+   ============================================================ */
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Newsreader:wght@400;600;700&display=swap");
+
+:root {
+  /* ---------- Apple system grays ---------- */
+  --tw-white:         #FFFFFF;
+  --tw-gray-6:        #F2F2F7;   /* "Gray 6" */
+  --tw-gray-5:        #E5E5EA;   /* "Gray 5" — Lines/Light */
+  --tw-gray-4:        #D1D1D6;   /* "Gray 4" */
+  --tw-gray-3:        #C7C7CC;   /* "Gray 3" */
+  --tw-gray-lines:    #C6C6C8;   /* "Lines/Dark" */
+  --tw-gray-2:        #AEAEB2;   /* "Gray 2" */
+  --tw-gray:          #8E8E93;   /* "Gray" */
+  --tw-black:         #000000;
+
+  /* ---------- Apple label scale (opacity baked) ---------- */
+  --tw-label-primary:   #000000;             /* Label/Primary */
+  --tw-label-active:    #555555;             /* Label/Active */
+  --tw-label-secondary: rgba(60,60,67,0.60); /* Label/Secondary — 3C3C43 60% */
+  --tw-label-tertiary:  rgba(60,60,67,0.30); /* Label/Tertiary  — 3C3C43 30% */
+
+  /* ---------- Apple fill scale (translucent) ---------- */
+  --tw-fill-primary:   rgba(120,120,120,0.20); /* 787878 20% */
+  --tw-fill-secondary: rgba(120,120,120,0.16); /* 787878 16% */
+  --tw-fill-tertiary:  rgba(118,118,128,0.12); /* 767680 12% */
+
+  /* ---------- Backgrounds ---------- */
+  --tw-bg-secondary:   #F7F8FA;              /* Background/Secondary */
+
+  /* ---------- Overlays ---------- */
+  --tw-overlay:        rgba(0,0,0,0.20);     /* Overlays/Default */
+
+  /* ---------- Blues (Tailwind-style ramp, from Foundations) ---------- */
+  --tw-blue-50:        #EFF6FF;
+  --tw-blue-100:       #DBEAFE;              /* BG for secondary btn fills */
+  --tw-blue-300:       #93C5FD;
+  --tw-blue-400:       #60A5FA;
+  --tw-blue-web:       #3B82F6;              /* Primary Blue (Web) */
+  --tw-blue-600:       #0061FF;              /* Blue 600 — primary action */
+  --tw-blue-800:       #1E40AF;              /* Text on Blue 100 */
+
+  /* ---------- State colors ---------- */
+  --tw-green:          #34C759;              /* Success / complete */
+  --tw-yellow:         #FFCC00;              /* Alert */
+  --tw-red:            #FF3B30;              /* Error / destructive */
+  --tw-red-dest:       #FF383C;              /* Destructive label */
+  --tw-red-dest-50:    rgba(255,56,60,0.50); /* Destructive disabled */
+  --tw-red-dest-20:    rgba(255,56,60,0.20); /* Destructive prominent */
+  --tw-red-dest-14:    rgba(255,56,60,0.14); /* BG destructive */
+
+  /* ---------- Accent colors (not specifically assigned) ---------- */
+  --tw-cyan:           #22D3EE;
+  --tw-indigo:         #6B5DFF;
+  --tw-purple:         #CB30E0;
+  --tw-pink:           #FF2D55;
+  --tw-brown:          #AC7F5E;
+  --tw-orange:         #FF8D28;
+
+  /* ---------- Tag color pairs (100 fill + 800 text) ---------- */
+  --tw-tag-red-bg:      #FEE2E2;   --tw-tag-red-fg:      #991B1B;
+  --tw-tag-emerald-bg:  #D1FAE5;   --tw-tag-emerald-fg:  #065F46;
+  --tw-tag-cyan-bg:     #CFFAFE;   --tw-tag-cyan-fg:     #155E75;
+  --tw-tag-blue-bg:     #DBEAFE;   --tw-tag-blue-fg:     #1E40AF;
+  --tw-tag-orange-bg:   #FFEDD5;   --tw-tag-orange-fg:   #9A3412;
+
+  /* ---------- Semantic roles (map tokens → usage) ---------- */
+  --bg-page:           var(--tw-bg-secondary);   /* F7F8FA */
+  --bg-surface:        var(--tw-white);
+  --bg-hover:          var(--tw-gray-6);         /* F2F2F7 */
+
+  --border-weak:       var(--tw-gray-5);         /* E5E5EA — Lines/Light */
+  --border-strong:     var(--tw-gray-lines);     /* C6C6C8 — Lines/Dark */
+
+  --fg-1:              var(--tw-label-primary);    /* black */
+  --fg-2:              var(--tw-label-secondary);  /* 60% */
+  --fg-3:              var(--tw-label-tertiary);   /* 30% */
+  --fg-active:         var(--tw-label-active);     /* 555555 */
+  --fg-invert:         var(--tw-white);
+
+  --action-primary:    var(--tw-blue-600);       /* 0061FF */
+  --action-primary-hover: var(--tw-blue-web);    /* 3B82F6 */
+  --action-secondary-bg: var(--tw-blue-100);
+  --action-secondary-fg: var(--tw-blue-800);
+  --action-destructive:  var(--tw-red-dest);     /* FF383C */
+
+  --state-success:     var(--tw-green);
+  --state-warning:     var(--tw-yellow);
+  --state-error:       var(--tw-red);
+
+  /* ---------- Type families ---------- */
+  --font-ui:       "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-button:   "Roboto", "Inter", -apple-system, sans-serif;
+  --font-display:  "SF Pro Display", -apple-system, "Inter", sans-serif;
+  --font-body:     "SF Pro", -apple-system, "Inter", sans-serif;
+
+  /* ---------- Type scale (from /Text-Styles spot counts) ---------- */
+  --fs-xs:   11px;
+  --fs-sm:   12px;
+  --fs-md:   13px;
+  --fs-base: 14px;
+  --fs-lg:   15px;   /* SF Pro 15 — dominant body size (297× in Figma) */
+  --fs-xl:   16px;
+  --fs-2xl:  17px;   /* SF Pro Display 17 — common subheading */
+  --fs-3xl:  22px;   /* SF Pro Display 22 — section heading */
+  --fs-4xl:  28px;
+  --fs-display: 42px;
+
+  --fw-regular: 400;
+  --fw-medium:  500;
+  --fw-semi:    600;
+  --fw-bold:    700;
+
+  /* ---------- Radii (from /Radii page — not yet fully audited) ---------- */
+  --r-xs:  2px;
+  --r-sm:  4px;
+  --r-md:  6px;
+  --r-lg:  8px;
+  --r-xl:  12px;
+  --r-2xl: 16px;
+  --r-3xl: 20px;  /* swatch tiles in Foundations */
+  --r-4xl: 25px;  /* section headers in Foundations */
+  --r-5xl: 50px;  /* outer section in Foundations */
+  --r-pill: 9999px;
+
+  /* ---------- Spacing (8-point) ---------- */
+  --sp-0:  0;
+  --sp-1:  4px;
+  --sp-2:  8px;
+  --sp-3:  12px;
+  --sp-4:  16px;
+  --sp-5:  20px;
+  --sp-6:  24px;
+  --sp-8:  32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+
+  /* ---------- Shadows (rgba samples from METADATA) ---------- */
+  --shadow-sm:    0px 1px 2px 0px rgba(0,0,0,0.06);
+  --shadow-md:    0px 4px 12px 0px rgba(0,0,0,0.10);
+  --shadow-lg:    0px 8px 24px 0px rgba(0,0,0,0.12);
+  --shadow-modal: 0px 24px 48px rgba(0,0,0,0.20);
+
+  /* ---------- Motion ---------- */
+  --ease-std: cubic-bezier(0.2, 0, 0, 1);
+  --dur-fast: 120ms;
+  --dur-med:  180ms;
+  --dur-slow: 260ms;
+}
+
+/* ============================================================
+   Semantic type classes
+   ============================================================ */
+
+html, body {
+  font-family: var(--font-ui);
+  font-size: var(--fs-base);
+  color: var(--fg-1);
+  background: var(--bg-page);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, .tw-h1 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-4xl);            /* 28 */
+  line-height: 1.2;
+  color: var(--fg-1);
+  letter-spacing: 0.002em;
+}
+h2, .tw-h2 {
+  font-family: var(--font-display);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-3xl);            /* 22 */
+  line-height: 26px;
+  color: var(--fg-1);
+  letter-spacing: 0.002em;
+}
+h3, .tw-h3 {
+  font-family: var(--font-ui);
+  font-weight: var(--fw-semi);
+  font-size: 18px;
+  line-height: 24px;
+  color: var(--fg-1);
+}
+h4, .tw-h4 {
+  font-family: var(--font-ui);
+  font-weight: var(--fw-semi);
+  font-size: var(--fs-xl);             /* 16 */
+  line-height: 22px;
+  color: var(--fg-1);
+}
+
+p, .tw-body {
+  font-family: var(--font-body);
+  font-size: var(--fs-lg);             /* 15 — dominant body */
+  line-height: 20px;
+  color: var(--fg-1);
+}
+
+.tw-label {
+  font-family: var(--font-button);
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-xl);             /* 16 */
+  line-height: 1.5;
+  color: var(--fg-active);
+}
+.tw-caption {
+  font-family: var(--font-ui);
+  font-size: var(--fs-base);           /* 14 */
+  line-height: 20px;
+  color: var(--fg-2);
+}
+.tw-button-label {
+  font-family: var(--font-button);
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-xl);
+  line-height: 1.5;
+}
+.tw-wordmark {
+  font-family: var(--font-display);
+  font-size: 21.14px;
+  line-height: 24.87px;
+  letter-spacing: 0.002em;
+  color: var(--fg-1);
+}
+code, kbd, .tw-mono {
+  font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+  font-size: var(--fs-sm);
+}
