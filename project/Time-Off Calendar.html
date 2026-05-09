@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Pro-Support Calendar</title>
+<link rel="stylesheet" href="design_system/colors_and_type.css">
+<style>
+  html,body{ margin:0; background:#f0eee9; }
+  *{ box-sizing:border-box; }
+  button{ font-family:inherit; }
+  @keyframes twspin{ to{ transform:rotate(360deg); } }
+</style>
+
+<!-- Firebase init (modular SDK, ES module) -->
+<script type="module" src="firebase-config.js"></script>
+
+<!-- React + Babel -->
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel" src="design_system/Icons.jsx"></script>
+<script type="text/babel" src="design_system/Buttons.jsx"></script>
+<script type="text/babel" src="design_system/Fields.jsx"></script>
+<script type="text/babel" src="data.jsx"></script>
+<script type="text/babel" src="firestore.jsx"></script>
+<script type="text/babel" src="Celebrations.jsx"></script>
+<script type="text/babel" src="Toolbar.jsx"></script>
+<script type="text/babel" src="Detail.jsx"></script>
+<script type="text/babel" src="Holidays.jsx"></script>
+<script type="text/babel" src="MonthA.jsx"></script>
+<script type="text/babel" src="MonthB.jsx"></script>
+<script type="text/babel" src="MonthC.jsx"></script>
+<script type="text/babel" src="ContactDetails.jsx"></script>
+<script type="text/babel" src="Manage.jsx"></script>
+<script type="text/babel" src="WeekendSignup.jsx"></script>
+<script type="text/babel" src="Roster.jsx"></script>
+
+<script type="text/babel">
+const { useState, useMemo, useEffect } = React;
+
+// ---------- Auth gate ----------
+function useAuth() {
+  const [user, setUser] = useState(null);
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    const start = () => {
+      if (!window.fb) return false;
+      window.fb.onAuthStateChanged((u) => { setUser(u); setReady(true); });
+      return true;
+    };
+    if (!start()) {
+      const onReady = () => start();
+      window.addEventListener("firebase-ready", onReady, { once: true });
+      return () => window.removeEventListener("firebase-ready", onReady);
+    }
+  }, []);
+  return { user, ready };
+}
+
+function SignInScreen({ onSignIn, error, buttonLabel = "Sign in with Google", subtitle = "Sign in with your work Google account to view and edit the team calendar." }) {
+  return (
+    <div style={{
+      minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center",
+      background:"var(--bg-page)", fontFamily:"var(--font-ui)",
+    }}>
+      <div style={{
+        width:380, padding:"32px 32px 28px", background:"var(--bg-surface)",
+        borderRadius:"var(--r-xl)", boxShadow:"var(--shadow-modal)", textAlign:"center",
+      }}>
+        <div style={{ fontFamily:"var(--font-display)", fontSize:24, fontWeight:700, color:"var(--fg-1)", marginBottom:6 }}>
+          Pro-Support Calendar
+        </div>
+        <div style={{ fontSize:13, color:"var(--fg-2)", marginBottom:24 }}>
+          {subtitle}
+        </div>
+        <button onClick={onSignIn} style={{
+          width:"100%", height:42, border:"1px solid var(--border-strong)",
+          background:"#fff", color:"var(--fg-1)", borderRadius:"var(--r-lg)",
+          fontFamily:"var(--font-button)", fontWeight:500, fontSize:14, cursor:"pointer",
+          display:"inline-flex", alignItems:"center", justifyContent:"center", gap:10,
+        }}>
+          <svg width={18} height={18} viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/><path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238C29.211 35.091 26.715 36 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303c-.792 2.237-2.231 4.166-4.087 5.571.001-.001.002-.001.003-.002l6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/></svg>
+          {buttonLabel}
+        </button>
+        {error && (
+          <div style={{ marginTop:14, padding:"10px 12px", background:"#FEE2E2", color:"#7F1D1D", borderRadius:"var(--r-md)", fontSize:13 }}>
+            {error}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ---------- Calendar prototype ----------
+function CalendarPrototype({ variant, onVariantChange, fsData, user, onSignOut }) {
+  const {
+    employees, events: allEvents, coverage, holidays, tier2, contacts, status, error,
+    submitTimeOff, deleteTimeOff,
+    setWeekendCoverage, deleteWeekendCoverage,
+    setHoliday, deleteHoliday,
+    setOncall, deleteOncall,
+    setEmployee, deleteEmployee,
+  } = fsData;
+
+  // Admin gate — controls visibility of the Manage button + panel.
+  const adminEmails = (window.ADMIN_EMAILS || []).map(e => e.toLowerCase());
+  const isAdmin = !!user && !!user.email && adminEmails.includes(user.email.toLowerCase());
+
+  // Mirror live arrays onto window globals so existing calendar
+  // components (which reference EMPLOYEES/HOLIDAYS/WEEKEND_COVERAGE/
+  // TIER2_ONCALL directly) see live data.
+  React.useEffect(() => { window.EMPLOYEES = employees; }, [employees]);
+  React.useEffect(() => { window.HOLIDAYS = holidays; }, [holidays]);
+  React.useEffect(() => { window.WEEKEND_COVERAGE = coverage; }, [coverage]);
+  React.useEffect(() => { window.TIER2_ONCALL = tier2; }, [tier2]);
+  React.useEffect(() => { window.EVENTS = allEvents; }, [allEvents]);
+
+  const [monthDate, setMonthDate] = useState(() => new Date(TODAY.getFullYear(), TODAY.getMonth(), 1));
+
+  const [employeeFilter, setEmployeeFilter] = useState("all");
+  const [typeFilter, setTypeFilter] = useState("all");
+  const events = allEvents;
+  const [openEvent, setOpenEvent] = useState(null);
+  const [addOpen, setAddOpen] = useState(false);
+  const [editEvent, setEditEvent] = useState(null);
+  const [seedDate, setSeedDate] = useState(null);
+  const [weekendPopover, setWeekendPopover] = useState(null); // { date: 'YYYY-MM-DD' } | null
+  const [contactPopover, setContactPopover] = useState(null); // employee object | null
+  const [manageOpen, setManageOpen] = useState(false);
+  const [manageTab, setManageTab] = useState(null);
+  const [weekendSignupOpen, setWeekendSignupOpen] = useState(false);
+  const [rosterOpen, setRosterOpen] = useState(false);
+  const openManage = (tab = null) => { setManageTab(tab); setManageOpen(true); };
+  const openWeekendCoverageAt = (day) => {
+    setWeekendPopover({ date: iso(day) });
+  };
+
+  // Open the contact card for a Tier-2 / weekend-coverage employee.
+  // Accepts a full name (string) or an employee object.
+  const openContact = (empOrName) => {
+    if (!empOrName) return;
+    if (typeof empOrName === "string") {
+      const emp = employees.find(e => e.fullName === empOrName)
+               || employees.find(e => e.fullName.toLowerCase() === empOrName.toLowerCase())
+               || { fullName: empOrName, initials: (empOrName[0] || "?").toUpperCase() };
+      setContactPopover(emp);
+    } else {
+      setContactPopover(empOrName);
+    }
+  };
+
+  const prev = () => setMonthDate(d => new Date(d.getFullYear(), d.getMonth()-1, 1));
+  const next = () => setMonthDate(d => new Date(d.getFullYear(), d.getMonth()+1, 1));
+  const today = () => setMonthDate(new Date(TODAY.getFullYear(), TODAY.getMonth(), 1));
+  const openAddAt = (day) => { setSeedDate(day); setEditEvent(null); setAddOpen(true); };
+  const openEdit = (ev) => { setOpenEvent(null); setEditEvent(ev); setAddOpen(true); };
+
+  const ops = { setWeekendCoverage, deleteWeekendCoverage, setHoliday, deleteHoliday, setOncall, deleteOncall, setEmployee, deleteEmployee };
+
+  const body = (() => {
+    const props = { monthDate, events, employees, coverage, holidays, tier2, employeeFilter, typeFilter, onOpenEvent: setOpenEvent, onAddAt: openAddAt, onWeekendCoverageAt: openWeekendCoverageAt, onOpenContact: openContact };
+    if (variant === "A") return <MonthA {...props}/>;
+    if (variant === "B") return <MonthB {...props}/>;
+    if (variant === "C") return <MonthC {...props}/>;
+  })();
+
+  // Render error banner if Firestore failed
+  if (status === "error") {
+    return (
+      <div style={{ height:"100%", display:"flex", flexDirection:"column", background:"var(--bg-page)" }}>
+        <Toolbar
+          monthDate={monthDate} onPrev={prev} onNext={next} onToday={today}
+          employees={employees}
+          employeeFilter={employeeFilter} setEmployeeFilter={setEmployeeFilter}
+          typeFilter={typeFilter} setTypeFilter={setTypeFilter}
+          onAdd={() => {}} user={user} onSignOut={onSignOut}
+          currentVariant={variant} onVariantChange={onVariantChange}
+        />
+        <Legend status="error" error={error}/>
+        <div style={{ flex:1, display:"flex", alignItems:"center", justifyContent:"center", padding:24 }}>
+          <div style={{ maxWidth:480, padding:"22px 24px", background:"var(--bg-surface)", border:"1px solid var(--border-weak)", borderRadius:"var(--r-xl)", textAlign:"center", fontFamily:"var(--font-ui)" }}>
+            <div style={{ fontSize:15, fontWeight:600, color:"var(--fg-1)", marginBottom:6 }}>Couldn’t connect to Firestore</div>
+            <div style={{ fontSize:13, color:"var(--fg-2)" }}>{error || "Unknown error"}</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ height:"100%", display:"flex", flexDirection:"column", background:"var(--bg-page)" }}>
+      <Toolbar
+        monthDate={monthDate} onPrev={prev} onNext={next} onToday={today}
+        employees={employees}
+        employeeFilter={employeeFilter} setEmployeeFilter={setEmployeeFilter}
+        typeFilter={typeFilter} setTypeFilter={setTypeFilter}
+        onAdd={() => { setSeedDate(null); setEditEvent(null); setAddOpen(true); }}
+        onManage={isAdmin ? (() => openManage()) : null}
+        onWeekendSignup={() => setWeekendSignupOpen(true)}
+        onRoster={() => setRosterOpen(true)}
+        currentVariant={variant} onVariantChange={onVariantChange}
+        user={user} onSignOut={onSignOut}
+      />
+      <Legend status={status} error={error} employees={employees} onRoster={() => setRosterOpen(true)}/>
+      <div style={{ flex:1, minHeight:0, padding:"16px 20px 24px", overflow:"auto" }}>
+        {status === "loading"
+          ? <div style={{ padding:40, textAlign:"center", fontFamily:"var(--font-ui)", color:"var(--fg-2)" }}>Loading…</div>
+          : body}
+      </div>
+
+      <EventDetail event={openEvent} employees={employees} currentUid={user && user.uid} isAdmin={isAdmin}
+        onClose={() => setOpenEvent(null)}
+        onEdit={openEdit}
+        onDelete={async () => {
+          const id = openEvent.id;
+          setOpenEvent(null);
+          const r = await deleteTimeOff(id);
+          if (!r.ok) console.warn("Delete failed:", r.error);
+        }}/>
+
+      <AddRequest
+        open={addOpen} seedDate={seedDate} editEvent={editEvent}
+        employees={employees}
+        currentUserEmail={user && user.email}
+        isAdmin={isAdmin}
+        onClose={() => { setAddOpen(false); setEditEvent(null); }}
+        onSubmit={async (data) => {
+          // Support edits: if existingId is present and the start date
+          // changed, the deterministic id changes too — delete old, write new.
+          if (data.existingId) {
+            const orig = allEvents.find(e => e.id === data.existingId);
+            const newStartIso = iso(data.start);
+            const oldStartIso = orig ? iso(orig.start) : null;
+            const sameEmp = orig && orig.employeeId === data.employeeId;
+            if (oldStartIso && (oldStartIso !== newStartIso || !sameEmp)) {
+              await deleteTimeOff(data.existingId);
+              return await submitTimeOff({ ...data, existingId: null });
+            }
+            return await submitTimeOff(data);
+          }
+          return await submitTimeOff(data);
+        }}/>
+
+      <WeekendCoveragePopup
+        date={weekendPopover?.date}
+        coverage={coverage}
+        onClose={() => setWeekendPopover(null)}/>
+
+      <ContactDetails
+        employee={contactPopover}
+        contact={contactPopover ? contacts[(contactPopover.fullName || "").toLowerCase()] : null}
+        onClose={() => setContactPopover(null)}/>
+
+      <ManagePanel
+        open={manageOpen && isAdmin} onClose={() => setManageOpen(false)}
+        initialTab={manageTab}
+        employees={employees} coverage={coverage} holidays={holidays} tier2={tier2}
+        ops={ops}
+      />
+
+      <WeekendSignup
+        open={weekendSignupOpen}
+        onClose={() => setWeekendSignupOpen(false)}
+        currentUser={user}
+      />
+
+      <Roster
+        open={rosterOpen}
+        employees={employees}
+        onClose={() => setRosterOpen(false)}
+      />
+    </div>
+  );
+}
+
+function App() {
+  const { user, ready } = useAuth();
+  const [authError, setAuthError] = useState("");
+  const [variant, setVariant] = useState("A");
+  const fsData = useFirestoreData(user);
+
+  const handleSignIn = async () => {
+    setAuthError("");
+    try { await window.fb.signInWithGoogle(); }
+    catch (e) { setAuthError(e.message || String(e)); }
+  };
+  const handleSignOut = () => window.fb.signOut();
+
+  if (!ready) {
+    return (
+      <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"var(--font-ui)", color:"var(--fg-2)" }}>
+        Loading…
+      </div>
+    );
+  }
+  if (!user) return <SignInScreen onSignIn={handleSignIn} error={authError}/>;
+
+  // Block users whose Google account isn't on the allowed domain. Firestore
+  // rules already reject their reads, so without this check they'd land on
+  // a "Couldn't connect to Firestore" error instead of being told why.
+  const ALLOWED_DOMAIN = "@teamworkcommerce.com";
+  if (user.email && !user.email.toLowerCase().endsWith(ALLOWED_DOMAIN)) {
+    return <SignInScreen
+      onSignIn={async () => { await window.fb.signOut(); }}
+      buttonLabel="Sign out"
+      subtitle={`${user.email} isn't allowed to sign in. This calendar is restricted to Teamwork Commerce accounts. Sign out and try a different account.`}
+      error={`Access denied — Teamwork Commerce accounts only.`}
+    />;
+  }
+
+  return (
+    <div style={{ height:"100vh", overflow:"hidden" }}>
+      <CalendarPrototype
+        variant={variant} onVariantChange={setVariant}
+        fsData={fsData} user={user} onSignOut={handleSignOut}
+      />
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
