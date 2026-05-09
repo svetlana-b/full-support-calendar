@@ -1,0 +1,12 @@
+{
+  "name": "pro-support-calendar",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "npx serve project -l 3000",
+    "start": "npx serve project -l 3000"
+  },
+  "devDependencies": {
+    "serve": "^14.0.0"
+  }
+}
