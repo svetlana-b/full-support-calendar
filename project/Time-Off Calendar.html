@@ -120,6 +120,24 @@ function CalendarPrototype({ variant, onVariantChange, fsData, user, onSignOut }
   React.useEffect(() => { window.TIER2_ONCALL = tier2; }, [tier2]);
   React.useEffect(() => { window.EVENTS = allEvents; }, [allEvents]);
 
+  // Midnight tick — updates the TODAY global and re-renders so "today"
+  // highlighting stays correct when the tab is left open overnight.
+  const [, bumpToday] = React.useReducer(x => x + 1, 0);
+  React.useEffect(() => {
+    const msUntilMidnight = () => {
+      const now = new Date();
+      return new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1) - now;
+    };
+    let t;
+    const tick = () => {
+      window.TODAY = new Date();
+      bumpToday();
+      t = setTimeout(tick, msUntilMidnight());
+    };
+    t = setTimeout(tick, msUntilMidnight());
+    return () => clearTimeout(t);
+  }, []);
+
   const [monthDate, setMonthDate] = useState(() => new Date(TODAY.getFullYear(), TODAY.getMonth(), 1));
 
   const [employeeFilter, setEmployeeFilter] = useState("all");
