@@ -9,18 +9,37 @@ function Toolbar({
   currentVariant, onVariantChange,
 }) {
   const monthLabel = `${MONTH_NAMES[monthDate.getMonth()]} ${monthDate.getFullYear()}`;
+
+  // Detect whether the buttons group has wrapped to a second row.
+  const [twoRows, setTwoRows] = React.useState(false);
+  const leftRef = React.useRef(null);
+  const buttonsRef = React.useRef(null);
+  React.useLayoutEffect(() => {
+    const check = () => {
+      if (leftRef.current && buttonsRef.current) {
+        setTwoRows(buttonsRef.current.offsetTop > leftRef.current.offsetTop);
+      }
+    };
+    check();
+    const ro = new ResizeObserver(check);
+    if (leftRef.current && leftRef.current.parentElement) {
+      ro.observe(leftRef.current.parentElement);
+    }
+    return () => ro.disconnect();
+  }, []);
+
   return (
     <div style={{ background:"var(--bg-surface)", borderBottom:"1px solid var(--border-weak)" }}>
       {/* Outer row: main wrapping area + sign-out column (never wraps, always top-right) */}
       <div style={{ display:"flex", alignItems:"flex-start" }}>
 
-        {/* Main area — flex items wrap here; sign-out is excluded so it can never overlap */}
+        {/* Main area — flex items wrap here */}
         <div style={{
           flex:1, display:"flex", flexWrap:"wrap", alignItems:"center",
           gap:"8px 12px", padding:"10px 0 10px 20px",
         }}>
           {/* Left group: nav + month + view switcher */}
-          <div style={{ display:"flex", alignItems:"center", gap:6, flexShrink:0 }}>
+          <div ref={leftRef} style={{ display:"flex", alignItems:"center", gap:6, flexShrink:0 }}>
             <button onClick={onPrev} style={chromeBtn} title="Previous month">
               <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round"><path d="M15 6l-6 6 6 6"/></svg>
             </button>
@@ -37,13 +56,19 @@ function Toolbar({
             )}
           </div>
 
-          {/* Spacer — on a single row this fills the gap and centers celebrations between left group and buttons */}
-          <div style={{ flex:1, minWidth:0, display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden" }}>
-            <TodayCelebrationsBadge employees={employees} onOpen={onRoster}/>
-          </div>
+          {/* Celebrations: centered in spacer on one row; snaps left after nav on two rows */}
+          {twoRows ? (
+            <div style={{ flexShrink:0, display:"flex", alignItems:"center" }}>
+              <TodayCelebrationsBadge employees={employees} onOpen={onRoster}/>
+            </div>
+          ) : (
+            <div style={{ flex:1, minWidth:0, display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden" }}>
+              <TodayCelebrationsBadge employees={employees} onOpen={onRoster}/>
+            </div>
+          )}
 
           {/* Right group: filters + actions — wraps left-aligned to second row on narrow screens */}
-          <div style={{ display:"flex", alignItems:"center", flexWrap:"wrap", gap:8 }}>
+          <div ref={buttonsRef} style={{ display:"flex", alignItems:"center", flexWrap:"wrap", gap:8 }}>
             <FilterPill label="Team" value={employeeFilter} onChange={setEmployeeFilter}
               options={[["all","Everyone"], ...(employees || []).map(e => [e.id, e.name])]}/>
             <FilterPill label="Type" value={typeFilter} onChange={setTypeFilter}
