@@ -17,8 +17,9 @@ const LEAVE_TYPES = {
   Sick:     { id:"Sick",     label:"Sick leave",bar:"#FF8D28", barHover:"#FFA351", bg:"#FFEDD5", fg:"#9A3412", dot:"#FF8D28" },
 };
 
-// Demo "today" anchor — MonthA/B/C use this for "today" highlighting.
-const TODAY = new Date();
+// Today anchor used for "today" highlighting across all calendar variants.
+// var (not const) so the midnight timer in CalendarPrototype can reassign it.
+var TODAY = new Date();
 
 // Helpers
 const iso = (d) => {
