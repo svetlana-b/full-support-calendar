@@ -190,8 +190,8 @@ function Legend({ status = "loading", error = null }) {
 function ViewSwitcher({ current, onChange }) {
   const views = [
     { id:"A", label:"Month" },
-    { id:"B", label:"Swimlane" },
-    { id:"C", label:"Ops" },
+    { id:"B", label:"Employees" },
+    { id:"C", label:"Events" },
   ];
   return (
     <div style={{
