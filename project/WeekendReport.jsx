@@ -146,20 +146,19 @@ function WeekendReportTab({ coverage, employees }) {
       const XLSX = window.XLSX;
       // Build the sheet as an array-of-arrays so each cell type is explicit.
       const aoa = [
-        ["Name", "Month and QTY", "Earned", "Total"],
-        ...rows.map(r => [r.name, r.qty, r.earned, r.total]),
+        ["Name", "Earned", "Total"],
+        ...rows.map(r => [r.name, r.earned, r.total]),
       ];
       const ws = XLSX.utils.aoa_to_sheet(aoa);
       // Reasonable column widths so the file looks like the sample.
       ws["!cols"] = [
         { wch: 22 }, // Name
-        { wch: 28 }, // Month and QTY
         { wch: 22 }, // Earned (formula-ish string)
         { wch: 10 }, // Total
       ];
       // Force Total to render as a number, not a string.
       for (let i = 0; i < rows.length; i++) {
-        const addr = XLSX.utils.encode_cell({ r: i + 1, c: 3 });
+        const addr = XLSX.utils.encode_cell({ r: i + 1, c: 2 });
         if (ws[addr]) { ws[addr].t = "n"; ws[addr].v = rows[i].total; }
       }
       const wb = XLSX.utils.book_new();
@@ -242,7 +241,6 @@ function WeekendReportTab({ coverage, employees }) {
             <thead>
               <tr>
                 <th style={wrTh}>Name</th>
-                <th style={wrTh}>Month and QTY</th>
                 <th style={wrTh}>Earned</th>
                 <th style={{ ...wrTh, textAlign: "right" }}>Total</th>
               </tr>
@@ -251,7 +249,6 @@ function WeekendReportTab({ coverage, employees }) {
               {rows.map((r, i) => (
                 <tr key={r.name} style={{ borderTop: "1px solid var(--border-weak)" }}>
                   <td style={{ ...wrTd, fontWeight: 500 }}>{r.name}</td>
-                  <td style={wrTd}>{r.qty}</td>
                   <td style={{ ...wrTd, fontFeatureSettings: '"tnum"' }}>{r.earned}</td>
                   <td style={{ ...wrTd, textAlign: "right", fontWeight: 600, fontFeatureSettings: '"tnum"' }}>{r.total}</td>
                 </tr>
