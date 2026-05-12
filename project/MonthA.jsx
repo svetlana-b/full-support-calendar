@@ -162,12 +162,13 @@ function MonthA({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                             const cov = isWeekend && inMonth ? coverage[iso(day)] : null;
                             return (
                                 <div key={di} onClick={() => {
-                                    if (isWeekend && inMonth && onWeekendCoverageAt) onWeekendCoverageAt(day);
+                                    if (!inMonth) return;
+                                    if (isWeekend && onWeekendCoverageAt) onWeekendCoverageAt(day);
                                     else onAddAt(day);
                                 }} style={{
                                     borderRight: "1px solid var(--border-weak)",
                                     background: isWeekend && inMonth ? "var(--tw-gray-6)" : "var(--bg-surface)",
-                                    padding: "8px 10px 10px", cursor: "pointer", position: "relative",
+                                    padding: "8px 10px 10px", cursor: inMonth ? "pointer" : "default", position: "relative",
                                     opacity: inMonth ? 1 : 0.45,
                                     display: "flex", flexDirection: "column"
                                 }}>
