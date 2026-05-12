@@ -182,7 +182,7 @@ function WeekendReportTab({ coverage, employees }) {
         <div style={{ fontSize: 12.5, color: "var(--fg-2)", lineHeight: 1.45 }}>
           Export an Excel report of weekend shift coverage for a chosen month.
           Rates are <strong>{SHIFT_RATES.day}</strong> per day shift and
-          {" "}<strong>{SHIFT_RATES.night}</strong> per night shift.
+          {" "}<strong>{SHIFT_RATES.night}</strong> per night shift <strong>EST</strong> time.
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
           <select style={wrInput} value={month} onChange={e => setMonth(+e.target.value)} aria-label="Month">
