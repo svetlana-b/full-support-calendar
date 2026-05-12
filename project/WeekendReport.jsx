@@ -84,20 +84,43 @@ function buildWeekendRows(coverage, year, month) {
     .sort((a, b) => a.name.localeCompare(b.name));
 }
 
-function WeekendReportTab({ coverage }) {
+// Teams available in the filter. "all" exports everyone.
+const TEAM_OPTIONS = [
+  { id: "all", label: "All teams" },
+  { id: "UA",  label: "Ukraine (UA)" },
+  { id: "MX",  label: "Mexico (MX)" },
+  { id: "CN",  label: "China (CN)" },
+];
+
+function WeekendReportTab({ coverage, employees }) {
   const today = new Date();
   const [year, setYear]   = React.useState(today.getFullYear());
   const [month, setMonth] = React.useState(today.getMonth() + 1); // 1-12
+  const [team, setTeam]   = React.useState("all");
   const [busy, setBusy]   = React.useState(false);
   const [error, setError] = React.useState(null);
 
-  const rows = React.useMemo(
-    () => buildWeekendRows(coverage, year, month),
-    [coverage, year, month]
-  );
+  // Look-up: fullName (lowercased) -> team code ("UA"|"MX"|"CN"|"")
+  const teamByName = React.useMemo(() => {
+    const m = {};
+    for (const e of (employees || [])) {
+      const name = (e.fullName || e.name || "").toLowerCase();
+      if (name) m[name] = (e.team || "").toUpperCase();
+    }
+    return m;
+  }, [employees]);
+
+  const rows = React.useMemo(() => {
+    const all = buildWeekendRows(coverage, year, month);
+    if (team === "all") return all;
+    return all.filter(r => teamByName[r.name.toLowerCase()] === team);
+  }, [coverage, year, month, team, teamByName]);
 
   const monthName = MONTH_NAMES[month - 1];
-  const filename  = `Weekend Coverage ${monthName} ${year}`;
+  // Team suffix appears in both the on-screen filename hint and the saved
+  // file. "All teams" keeps the original short name from the brief.
+  const teamSuffix = team === "all" ? "" : ` (${team})`;
+  const filename   = `Weekend Coverage ${monthName} ${year}${teamSuffix}`;
 
   // Year picker range: 2 years back through 1 year forward, plus whatever
   // year/month is currently selected (in case the user navigates further out).
@@ -170,13 +193,17 @@ function WeekendReportTab({ coverage }) {
             {years.map(y => <option key={y} value={y}>{y}</option>)}
           </select>
         </div>
+        <select style={wrInput} value={team} onChange={e => setTeam(e.target.value)} aria-label="Team">
+          {TEAM_OPTIONS.map(t => <option key={t.id} value={t.id}>{t.label}</option>)}
+        </select>
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
           <div style={{ flex: 1, fontSize: 12, color: "var(--fg-3)" }}>
             {rows.length === 0
-              ? "No shifts in this month"
+              ? (team === "all" ? "No shifts in this month" : `No ${team} shifts in this month`)
               : `${rows.length} employee${rows.length === 1 ? "" : "s"} · `
                 + `${rows.reduce((n, r) => n + r.day + r.night, 0)} shift`
-                + `${rows.reduce((n, r) => n + r.day + r.night, 0) === 1 ? "" : "s"}`}
+                + `${rows.reduce((n, r) => n + r.day + r.night, 0) === 1 ? "" : "s"}`
+                + (team === "all" ? "" : ` · ${team} only`)}
           </div>
           <button
             onClick={onExport}
@@ -203,7 +230,8 @@ function WeekendReportTab({ coverage }) {
           padding: "16px 18px", border: "1px dashed var(--border-weak)",
           borderRadius: "var(--r-lg)", background: "var(--bg-page)",
         }}>
-          No weekend shifts scheduled for {monthName} {year}.
+          No weekend shifts scheduled for {monthName} {year}
+          {team === "all" ? "" : ` on the ${team} team`}.
         </div>
       ) : (
         <div style={{
