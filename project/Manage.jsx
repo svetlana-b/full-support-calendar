@@ -3,6 +3,8 @@
 // the toolbar; renders as a side sheet.
 
 function ManagePanel({ open, onClose, employees, coverage, holidays, tier2, ops, initialTab }) {
+  // Tabs: oncall | weekends | holidays | employees | reports
+  // "reports" is admin-only export tooling (e.g. weekend-coverage payroll xlsx).
   const [tab, setTab] = React.useState(initialTab || "oncall");
   // Reset tab to the requested one each time the panel is reopened so a
   // user clicking "Add holiday" lands on the holidays tab regardless of
@@ -22,7 +24,7 @@ function ManagePanel({ open, onClose, employees, coverage, holidays, tier2, ops,
             <button onClick={onClose} style={mpCloseBtn} aria-label="Close">×</button>
           </div>
           <div style={{ display:"flex", gap:4, marginTop:14, flexWrap:"wrap" }}>
-            {[["oncall","Tier 2 on-call"],["weekends","Weekend coverage"],["holidays","Holidays"],["employees","Employees"]].map(([id,l]) => (
+            {[["oncall","Tier 2 on-call"],["weekends","Weekend coverage"],["holidays","Holidays"],["employees","Employees"],["reports","Reports"]].map(([id,l]) => (
               <button key={id} onClick={() => setTab(id)} style={{
                 padding:"8px 14px", border:0, background:"transparent",
                 fontFamily:"var(--font-button)", fontWeight:500, fontSize:13,
@@ -38,6 +40,7 @@ function ManagePanel({ open, onClose, employees, coverage, holidays, tier2, ops,
           {tab === "weekends"  && <WeekendEditor   employees={employees} coverage={coverage} ops={ops}/>}
           {tab === "holidays"  && <HolidaysEditor  employees={employees} holidays={holidays} ops={ops}/>}
           {tab === "employees" && <EmployeeEditor  employees={employees} ops={ops}/>}
+          {tab === "reports"   && <WeekendReportTab coverage={coverage}/>}
         </div>
       </div>
     </div>
