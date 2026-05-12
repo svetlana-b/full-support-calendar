@@ -249,14 +249,7 @@ function MonthA({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                                         const emp = EMPLOYEES.find(e => e.id === s.ev.employeeId) || { name: s.ev.fullName || "Unknown", initials: "?" };
                                         const leftPct = (s.startIdx / 7) * 100;
                                         const widthPct = ((s.endIdx - s.startIdx + 1) / 7) * 100;
-                                        // Offset only by the max holiday chips within the
-                                        // columns this specific segment spans, not the
-                                        // week-wide maximum.
-                                        let segMaxHols = 0;
-                                        for (let ci = s.startIdx; ci <= s.endIdx; ci++) {
-                                            segMaxHols = Math.max(segMaxHols, colHolidayRows[ci] || 0);
-                                        }
-                                        const segOverlayTop = DATE_ROW_H + segMaxHols * CHIP_H + 4;
+                                        const segOverlayTop = DATE_ROW_H + _maxHols * CHIP_H + 4;
                                         return (
                                             <div key={s.ev.id + idx} onClick={(e) => { e.stopPropagation(); onOpenEvent(s.ev); }}
                                                 title={`${emp.name} · ${type.label}`}
