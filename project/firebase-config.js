@@ -30,6 +30,7 @@ const firebaseConfig = {
 // firestore.rules under the `isAdmin()` helper.
 window.ADMIN_EMAILS = [
   "sbazhynova@teamworkcommerce.com",
+  "slitvinov@teamworkcommerce.com",
 ];
 
 const app  = initializeApp(firebaseConfig);
