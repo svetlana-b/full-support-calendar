@@ -29,7 +29,7 @@ const firebaseConfig = {
 // shared collections (oncall, weekends, holidays). Mirror this list in
 // firestore.rules under the `isAdmin()` helper.
 window.ADMIN_EMAILS = [
-  "sbazhynova@teamworkcommerce.com",
+  //"sbazhynova@teamworkcommerce.com",
   "slitvinov@teamworkcommerce.com",
 ];
 
