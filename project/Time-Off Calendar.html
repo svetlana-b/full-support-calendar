@@ -235,7 +235,7 @@ function CalendarPrototype({ variant, onVariantChange, fsData, user, onSignOut }
           : body}
       </div>
 
-      <EventDetail event={openEvent} employees={employees} currentUid={user && user.uid} isAdmin={isAdmin}
+      <EventDetail event={openEvent} employees={employees} currentUid={user && user.uid} currentUserEmail={user && user.email} isAdmin={isAdmin}
         onClose={() => setOpenEvent(null)}
         onEdit={openEdit}
         onDelete={async () => {

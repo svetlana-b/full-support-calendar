@@ -1,10 +1,12 @@
 // Detail.jsx — event detail popover + add/edit-request modal (Firestore-backed)
 
-function EventDetail({ event, employees, currentUid, isAdmin, onClose, onDelete, onEdit }) {
+function EventDetail({ event, employees, currentUid, currentUserEmail, isAdmin, onClose, onDelete, onEdit }) {
   if (!event) return null;
   const emp = employees.find(e => e.id === event.employeeId) || { initials:"?", name:event.fullName||"Unknown", role:"" };
   const type = LEAVE_TYPES[event.type] || LEAVE_TYPES.Vacation;
-  const canEdit = !!isAdmin || (!!event.owner_uid && event.owner_uid === currentUid);
+  const isAssignedEmployee = !!emp.email && !!currentUserEmail
+    && emp.email.toLowerCase() === currentUserEmail.toLowerCase();
+  const canEdit = !!isAdmin || (!!event.owner_uid && event.owner_uid === currentUid) || isAssignedEmployee;
   const days = Math.round((event.end - event.start)/86400000) + 1;
   const fmt = (d) => `${["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][d.getDay()]}, ${MONTH_NAMES[d.getMonth()].slice(0,3)} ${d.getDate()}`;
   return ReactDOM.createPortal((
