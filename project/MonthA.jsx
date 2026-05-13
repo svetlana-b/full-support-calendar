@@ -74,6 +74,36 @@ function MonthA({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
             (laneIntervals[lane] = laneIntervals[lane] || []).push({ s: seg.startIdx, e: seg.endIdx });
         }
 
+        // Compute per-segment holiday row count (max across the days it spans).
+        for (const seg of segs) {
+            seg.segHols = 0;
+            for (let col = seg.startIdx; col <= seg.endIdx; col++) {
+                if (col === 0 || col === 6) continue;
+                const h = holidays[iso(week[col])];
+                if (h) seg.segHols = Math.max(seg.segHols, h.length);
+            }
+        }
+        // Normalize segHols within each connected component of overlapping segments
+        // so lane 0 always renders above lane 1 on shared days.
+        const seen = new Set();
+        for (let i = 0; i < segs.length; i++) {
+            if (seen.has(i)) continue;
+            const group = [i];
+            seen.add(i);
+            for (let qi = 0; qi < group.length; qi++) {
+                const ci = group[qi];
+                for (let j = 0; j < segs.length; j++) {
+                    if (seen.has(j)) continue;
+                    if (segs[ci].startIdx <= segs[j].endIdx && segs[ci].endIdx >= segs[j].startIdx) {
+                        seen.add(j);
+                        group.push(j);
+                    }
+                }
+            }
+            const groupHols = Math.max(...group.map(k => segs[k].segHols));
+            for (const k of group) segs[k].segHols = groupHols;
+        }
+
         return segs;
     });
 
@@ -232,7 +262,7 @@ function MonthA({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                                         const emp = EMPLOYEES.find(e => e.id === s.ev.employeeId) || { name: s.ev.fullName || "Unknown", initials: "?" };
                                         const leftPct = (s.startIdx / 7) * 100;
                                         const widthPct = ((s.endIdx - s.startIdx + 1) / 7) * 100;
-                                        const segOverlayTop = DATE_ROW_H + _maxHols * CHIP_H + 4;
+                                        const segOverlayTop = DATE_ROW_H + s.segHols * CHIP_H + 4;
                                         return (
                                             <div key={s.ev.id + idx} onClick={(e) => { e.stopPropagation(); onOpenEvent(s.ev); }}
                                                 title={`${emp.name} · ${type.label}`}
