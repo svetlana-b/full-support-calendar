@@ -42,7 +42,7 @@ function EventDetail({ event, employees, currentUid, currentUserEmail, isAdmin, 
           {!canEdit && (
             <div style={{ marginTop:14, padding:"8px 12px", background:"var(--bg-page)", border:"1px solid var(--border-weak)", borderRadius:"var(--r-md)", fontFamily:"var(--font-ui)", fontSize:12, color:"var(--fg-2)" }}>
               {event.owner_email
-                ? `Only ${event.owner_email} can edit this entry.`
+                ? `Only ${isAssignedEmployee} can edit this entry.`
                 : "This entry has no owner — sign in as the original requester to edit."}
             </div>
           )}
