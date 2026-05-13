@@ -45,18 +45,18 @@ const COUNTRY_TINT = {
 // holiday name and working coverage (if any).
 function HolidayChips({ items, size = "sm" }) {
   if (!items || items.length === 0) return null;
-  // Group working coverage across all holidays on this day
-  const flat = items.flatMap(h => h.teams.map(t => ({ team: t, name: h.name, working: h.working })));
   const pad = size === "sm" ? "2px 6px" : "3px 8px";
   const fsz = size === "sm" ? 10 : 11;
   return (
-    <div style={{ display:"flex", flexWrap:"wrap", gap:3, marginTop:2 }}>
-      {flat.map((it, i) => {
-        const tint = COUNTRY_TINT[it.team] || { bg:"var(--bg-page)", border:"var(--border-weak)", fg:"var(--fg-2)" };
-        return (
-          <HolidayChip key={i} tint={tint} team={it.team} name={it.name} working={it.working} pad={pad} fsz={fsz}/>
-        );
-      })}
+    <div style={{ display:"flex", flexDirection:"column", gap:3, marginTop:2 }}>
+      {items.map((h, i) => (
+        <div key={i} style={{ display:"flex", flexWrap:"wrap", gap:3 }}>
+          {h.teams.map((t, j) => {
+            const tint = COUNTRY_TINT[t] || { bg:"var(--bg-page)", border:"var(--border-weak)", fg:"var(--fg-2)" };
+            return <HolidayChip key={j} tint={tint} team={t} name={h.name} working={h.working} pad={pad} fsz={fsz}/>;
+          })}
+        </div>
+      ))}
     </div>
   );
 }

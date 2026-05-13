@@ -158,7 +158,7 @@ function MonthA({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                 } : null;
                 const _maxLanes = weekSegments[wi].length > 0 ? Math.max(...weekSegments[wi].map(s => s.lane)) + 1 : 0;
                 const _maxHols = week.reduce((m, d, di) => (di === 0 || di === 6) ? m : Math.max(m, (holidays[iso(d)] || []).length), 0);
-                const rowMinHeight = Math.max(140, 28 + _maxHols * 26 + 4 + (_maxLanes > 0 ? 4 + _maxLanes * 24 + 6 : 0));
+                const rowMinHeight = Math.max(140, 28 + _maxHols * 22 + 4 + (_maxLanes > 0 ? 4 + _maxLanes * 24 + 6 : 0));
 
                 return (
                     <div key={wi} style={{
@@ -247,7 +247,7 @@ function MonthA({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
               overlay down by that many chip rows (each chip is ~22 px tall). */}
                         {(() => {
                             // Build a per-column holiday count array (indices 0–6).
-                            const CHIP_H = 26;
+                            const CHIP_H = 22;
                             const DATE_ROW_H = 28;
                             const colHolidayRows = week.map((day, di) => {
                                 if (di === 0 || di === 6) return 0; // weekends have no chips
