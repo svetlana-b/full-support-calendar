@@ -80,7 +80,7 @@ function MonthA({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
             for (let col = seg.startIdx; col <= seg.endIdx; col++) {
                 if (col === 0 || col === 6) continue;
                 const h = holidays[iso(week[col])];
-                if (h) seg.segHols = Math.max(seg.segHols, h.length);
+                if (h && h.length) seg.segHols = 1;
             }
         }
         // Normalize segHols within each connected component of overlapping segments
@@ -157,7 +157,7 @@ function MonthA({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                     border: isCurrentWeek ? "#9ED8A6" : "var(--border-weak)",
                 } : null;
                 const _maxLanes = weekSegments[wi].length > 0 ? Math.max(...weekSegments[wi].map(s => s.lane)) + 1 : 0;
-                const _maxHols = week.reduce((m, d, di) => (di === 0 || di === 6) ? m : Math.max(m, (holidays[iso(d)] || []).length), 0);
+                const _maxHols = week.some((d, di) => di !== 0 && di !== 6 && (holidays[iso(d)] || []).length > 0) ? 1 : 0;
                 const rowMinHeight = Math.max(140, 28 + _maxHols * 22 + 4 + (_maxLanes > 0 ? 4 + _maxLanes * 24 + 6 : 0));
 
                 return (
