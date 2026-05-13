@@ -250,7 +250,11 @@ function MonthA({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                                         const emp = EMPLOYEES.find(e => e.id === s.ev.employeeId) || { name: s.ev.fullName || "Unknown", initials: "?" };
                                         const leftPct = (s.startIdx / 7) * 100;
                                         const widthPct = ((s.endIdx - s.startIdx + 1) / 7) * 100;
-                                        const segOverlayTop = DATE_ROW_H + _maxHols * CHIP_H + 4;
+                                        let maxHolsInSpan = 0;
+                                        for (let col = s.startIdx; col <= s.endIdx; col++) {
+                                            maxHolsInSpan = Math.max(maxHolsInSpan, colHolidayRows[col] ?? 0);
+                                            }
+                                        const segOverlayTop = DATE_ROW_H + maxHolsInSpan * CHIP_H + 4;
                                         return (
                                             <div key={s.ev.id + idx} onClick={(e) => { e.stopPropagation(); onOpenEvent(s.ev); }}
                                                 title={`${emp.name} · ${type.label}`}
