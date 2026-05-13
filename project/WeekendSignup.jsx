@@ -382,6 +382,11 @@ function WSSlot({ entry, day, shiftType, myName, selected, onSlotClick, onConfir
       {(isSelected || heldByMe) && (<>
         <div style={{ fontSize:13, fontWeight:500, color:"var(--tw-blue-800, #1E40AF)" }}>{myName}</div>
         <div style={{ fontSize:10, fontWeight:700, color:"var(--tw-blue-700, #1D4ED8)" }}>⏳ ON HOLD</div>
+        {othersHolding.length > 0 && (
+          <div style={{ fontSize:11, color:"#92400E", marginTop:2 }}>
+            Also holding: {othersHolding.join(", ")}
+          </div>
+        )}
         <button onClick={e=>{ e.stopPropagation(); onConfirm(); }} style={{
           marginTop:8, width:"100%", padding:"8px 10px",
           background:"var(--action-primary)", color:"var(--fg-invert)",
@@ -391,7 +396,7 @@ function WSSlot({ entry, day, shiftType, myName, selected, onSlotClick, onConfir
       </>)}
       {heldByOther && (<>
         <div style={{ fontSize:13, fontWeight:500, color:"#92400E" }}>
-          {othersHolding.slice(0,2).join(", ")}{othersHolding.length > 2 ? ` +${othersHolding.length - 2}` : ""}
+          {othersHolding.join(", ")}
         </div>
         <div style={{ fontSize:10, fontWeight:700, color:"#92400E" }}>⏳ ON HOLD</div>
       </>)}
