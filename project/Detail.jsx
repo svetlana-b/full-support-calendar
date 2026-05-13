@@ -6,7 +6,7 @@ function EventDetail({ event, employees, currentUid, currentUserEmail, isAdmin, 
   const type = LEAVE_TYPES[event.type] || LEAVE_TYPES.Vacation;
   const isAssignedEmployee = !!emp.email && !!currentUserEmail
     && emp.email.toLowerCase() === currentUserEmail.toLowerCase();
-  const canEdit = !!isAdmin || (!!event.owner_uid && event.owner_uid === currentUid) || isAssignedEmployee;
+  const canEdit = !!isAdmin || isAssignedEmployee;
   const days = Math.round((event.end - event.start)/86400000) + 1;
   const fmt = (d) => `${["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][d.getDay()]}, ${MONTH_NAMES[d.getMonth()].slice(0,3)} ${d.getDate()}`;
   return ReactDOM.createPortal((
