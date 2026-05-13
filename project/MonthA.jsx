@@ -63,32 +63,38 @@ function MonthA({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
         }
         segs.sort((a, b) => a.startIdx - b.startIdx || b.endIdx - a.endIdx);
 
-        // Assign lanes so that:
-        //   • No two segments that overlap horizontally share a lane.
-        //   • Once an employee is assigned a lane in this week, all their
-        //     segments in this week reuse that same lane (visual consistency).
-        //   • Each employee therefore occupies exactly one row.
+        // Pre-compute each employee's full weekday span (union of all their
+        // segments this week) before assigning lanes. This prevents a later
+        // segment from colliding with another employee that slipped into the
+        // same lane between two of the first employee's segments.
+        const empSpans = {};
+        for (const s of segs) {
+            const empId = s.ev.employeeId;
+            if (!empSpans[empId]) {
+                empSpans[empId] = { startIdx: s.startIdx, endIdx: s.endIdx };
+            } else {
+                empSpans[empId].startIdx = Math.min(empSpans[empId].startIdx, s.startIdx);
+                empSpans[empId].endIdx   = Math.max(empSpans[empId].endIdx,   s.endIdx);
+            }
+        }
+
         const empLaneMap = {};   // employeeId → lane index
-        const laneEndIdx = [];   // lane → furthest endIdx currently occupying it
+        const laneEndIdx = [];   // lane → furthest endIdx reserved
 
         for (const s of segs) {
             const empId = s.ev.employeeId;
 
             if (empId in empLaneMap) {
-                // Employee already has a lane; reuse it unconditionally.
                 s.lane = empLaneMap[empId];
-                laneEndIdx[s.lane] = Math.max(laneEndIdx[s.lane] ?? -1, s.endIdx);
             } else {
-                // Find the first lane free at this segment's startIdx.
-                // Two segments may share a lane if they don't overlap horizontally,
-                // even if they belong to different employees.
+                const span = empSpans[empId];
                 let lane = 0;
-                while (laneEndIdx[lane] !== undefined && laneEndIdx[lane] >= s.startIdx) {
+                while (laneEndIdx[lane] !== undefined && laneEndIdx[lane] >= span.startIdx) {
                     lane++;
                 }
                 empLaneMap[empId] = lane;
                 s.lane = lane;
-                laneEndIdx[lane] = s.endIdx;
+                laneEndIdx[lane] = span.endIdx;
             }
         }
 
@@ -250,7 +256,12 @@ function MonthA({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                                         const emp = EMPLOYEES.find(e => e.id === s.ev.employeeId) || { name: s.ev.fullName || "Unknown", initials: "?" };
                                         const leftPct = (s.startIdx / 7) * 100;
                                         const widthPct = ((s.endIdx - s.startIdx + 1) / 7) * 100;
-                                        const segOverlayTop = DATE_ROW_H + _maxHols * CHIP_H + 4;
+                                        let segHols = 0;
+                                        for (let col = s.startIdx; col <= s.endIdx; col++) {
+                                            if (col === 0 || col === 6) continue;
+                                            segHols = Math.max(segHols, colHolidayRows[col] ?? 0);
+                                        }
+                                        const segOverlayTop = DATE_ROW_H + segHols * CHIP_H + 4;
                                         return (
                                             <div key={s.ev.id + idx} onClick={(e) => { e.stopPropagation(); onOpenEvent(s.ev); }}
                                                 title={`${emp.name} · ${type.label}`}
