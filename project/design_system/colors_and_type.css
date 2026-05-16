@@ -192,6 +192,14 @@
   --dur-fast: 120ms;
   --dur-med:  180ms;
   --dur-slow: 260ms;
+
+  /* Leave-type chip colors — light mode uses solid soft fills + dark fg */
+  --ev-vacation-bg: #EDE9FE;
+  --ev-vacation-fg: #5B21B6;
+  --ev-sick-bg:     #FFEDD5;
+  --ev-sick-fg:     #9A3412;
+  --ev-pto-bg:      #DBEAFE;
+  --ev-pto-fg:      #1E3A8A;
 }
 
 /* ============================================================
@@ -346,6 +354,14 @@ code, kbd, .tw-mono {
   --shadow-md:    0px 4px 12px rgba(0,0,0,0.45);
   --shadow-lg:    0px 8px 24px rgba(0,0,0,0.55);
   --shadow-modal: 0px 24px 48px rgba(0,0,0,0.65);
+
+  /* Leave-type chip colors — dark mode uses rgba fills + bright fg */
+  --ev-vacation-bg: rgba(167,139,250,0.12);
+  --ev-vacation-fg: #a78bfa;
+  --ev-sick-bg:     rgba(251,146,60,0.12);
+  --ev-sick-fg:     #fb923c;
+  --ev-pto-bg:      rgba(0,97,255,0.12);
+  --ev-pto-fg:      #0061FF;
 }
 
 /* Smooth the swap so the whole UI doesn't strobe when toggled. */

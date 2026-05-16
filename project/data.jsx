@@ -14,9 +14,9 @@ window.TIER2_ONCALL = window.TIER2_ONCALL || {};
 // Each type also carries an icon image (in /assets) so event bars read as
 // themed pills (matches the companion Pro-Support Schedule app).
 const LEAVE_TYPES = {
-  Vacation: { id:"Vacation", label:"Vacation",  icon:"assets/vacation.png",   bar:"#a78bfa", barHover:"#c4b5fd", bg:"rgba(167,139,250,0.12)", fg:"#a78bfa", dot:"#a78bfa" },
-  PTO:      { id:"PTO",      label:"PTO",       icon:"assets/pto.png",        bar:"#0061FF", barHover:"#3B82F6", bg:"#DBEAFE",              fg:"#1E3A8A", dot:"#0061FF" },
-  Sick:     { id:"Sick",     label:"Sick leave",icon:"assets/sick-leave.png", bar:"#fb923c", barHover:"#fdba74", bg:"rgba(251,146,60,0.12)", fg:"#fb923c", dot:"#fb923c" },
+  Vacation: { id:"Vacation", label:"Vacation",  icon:"assets/vacation.png",   bar:"#a78bfa", barHover:"#c4b5fd", bg:"var(--ev-vacation-bg)", fg:"var(--ev-vacation-fg)", dot:"#a78bfa" },
+  PTO:      { id:"PTO",      label:"PTO",       icon:"assets/pto.png",        bar:"#0061FF", barHover:"#3B82F6", bg:"var(--ev-pto-bg)",      fg:"var(--ev-pto-fg)",      dot:"#0061FF" },
+  Sick:     { id:"Sick",     label:"Sick leave",icon:"assets/sick-leave.png", bar:"#fb923c", barHover:"#fdba74", bg:"var(--ev-sick-bg)",     fg:"var(--ev-sick-fg)",     dot:"#fb923c" },
 };
 
 // Today anchor used for "today" highlighting across all calendar variants.
