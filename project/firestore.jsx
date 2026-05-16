@@ -153,12 +153,33 @@ function _buildCoverageMap(weekendDocs) {
   return out;
 }
 
-// holidays/{HolidayName CC} -> { "YYYY-MM-DD": [ { docId, name, teams: [...], working: [...] } ] }
+// Expand a date range into individual weekday dates (skip Sat/Sun).
+// Supports both new (date_start/date_end) and legacy single-date docs.
+function _expandWeekdayDates(dateStart, dateEnd) {
+  const dates = [];
+  const start = new Date(dateStart + "T00:00:00");
+  const end   = new Date((dateEnd || dateStart) + "T00:00:00");
+  for (let cur = new Date(start); cur <= end; cur.setDate(cur.getDate() + 1)) {
+    const dow = cur.getDay();
+    if (dow !== 0 && dow !== 6) {
+      const y = cur.getFullYear();
+      const m = String(cur.getMonth() + 1).padStart(2, "0");
+      const d = String(cur.getDate()).padStart(2, "0");
+      dates.push(`${y}-${m}-${d}`);
+    }
+  }
+  return dates;
+}
+
+// holidays/{HolidayName CC} -> { "YYYY-MM-DD": [ { docId, name, teams, working, date_start, date_end } ] }
+// Multi-day holidays are expanded to one entry per weekday; weekend dates are skipped.
 function _buildHolidaysMap(holidayDocs) {
   const out = {};
   for (const { id, data } of holidayDocs) {
-    const date = data.date;
-    if (!date) continue;
+    // Support both new (date_start/date_end) and legacy (date) Firestore shape.
+    const dateStart = data.date_start || data.date;
+    if (!dateStart) continue;
+    const dateEnd = data.date_end || dateStart;
     const teams = (data.teams_off || "")
       .split(/[,;/]/).map(s => s.trim().toUpperCase()).filter(Boolean);
     const workingArr = Array.isArray(data.working) ? data.working : [];
@@ -187,12 +208,14 @@ function _buildHolidaysMap(holidayDocs) {
         tz,
       };
     }).sort((a, b) => (a.startRaw || "").localeCompare(b.startRaw || ""));
-    const list = out[date] ||= [];
-    // Keep each doc as its own item — the working coverage stays tied to
-    // the originating team, so the MX chip's popover shows only MX
-    // coverage and the UA chip's popover shows only UA coverage even
-    // when the two share a holiday name (e.g. Labour Day on May 1).
-    list.push({ docId: id, name: data.name || "", teams, working });
+    // Add one entry per weekday in the range. Weekend dates are skipped so
+    // holiday chips never appear in Sat/Sun cells.
+    for (const date of _expandWeekdayDates(dateStart, dateEnd)) {
+      const list = out[date] ||= [];
+      // Keep each doc as its own item — working coverage stays tied to the
+      // originating team. date_start/date_end are carried for the editor.
+      list.push({ docId: id, name: data.name || "", teams, working, date_start: dateStart, date_end: dateEnd });
+    }
   }
   return out;
 }
@@ -273,11 +296,11 @@ async function _deleteWeekendCoverage(docId) {
   return { ok: true };
 }
 
-async function _setHoliday({ docId, name, date, teams_off, working }) {
+async function _setHoliday({ docId, name, date_start, date_end, teams_off, working }) {
   const { fbDb, fb } = window;
   const id = docId || `${name} ${teams_off}`.trim();
   const payload = {
-    name, date, teams_off,
+    name, date_start, date_end: date_end || date_start, teams_off,
     working: Array.isArray(working) ? working : [],
   };
   await fb.setDoc(fb.doc(fbDb, "holidays", id), payload, { merge: false });

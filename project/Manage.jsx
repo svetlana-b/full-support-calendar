@@ -244,24 +244,28 @@ function WeekendEditor({ employees, coverage, ops }) {
 
 function HolidaysEditor({ employees, holidays, ops }) {
   const [editing, setEditing] = React.useState(null); // docId | "__new__"
-  const [draft, setDraft] = React.useState({ docId:"", name:"", date:"", teams_off:"UA", workingRows:[] });
+  const [draft, setDraft] = React.useState({ docId:"", name:"", date_start:"", date_end:"", teams_off:"UA", workingRows:[] });
+  // De-duplicate by docId — multi-day holidays appear under multiple dates in the map.
+  const seen = new Set();
   const rows = [];
-  for (const [date, list] of Object.entries(holidays)) {
+  for (const [, list] of Object.entries(holidays)) {
     for (const h of list) {
+      const docId = h.docId || `${h.name} ${(h.teams||[]).join("")}`;
+      if (seen.has(docId)) continue;
+      seen.add(docId);
       rows.push({
-        docId: h.docId || `${h.name} ${(h.teams||[]).join("")}`,
-        date, name: h.name, teams: h.teams || [],
+        docId,
+        date_start: h.date_start || "",
+        date_end:   h.date_end   || h.date_start || "",
+        name: h.name, teams: h.teams || [],
         workingArr: h.working || [],
       });
     }
   }
-  rows.sort((a,b) => a.date.localeCompare(b.date));
+  rows.sort((a,b) => a.date_start.localeCompare(b.date_start));
 
   const startEdit = (row) => {
     const teams = (row.teams && row.teams[0]) || "UA";
-    // Map each Firestore working entry → { employeeId, start, end }.
-    // Match by full name; fall back to a placeholder so the row still
-    // shows up and the user can re-pick the employee.
     const workingRows = row.workingArr.map(w => {
       const emp = employees.find(e => e.fullName === w.fullName || e.name === w.fullName);
       return {
@@ -272,15 +276,14 @@ function HolidaysEditor({ employees, holidays, ops }) {
       };
     });
     setEditing(row.docId);
-    setDraft({ docId: row.docId, name: row.name, date: row.date, teams_off: teams, workingRows });
+    setDraft({ docId: row.docId, name: row.name, date_start: row.date_start, date_end: row.date_end, teams_off: teams, workingRows });
   };
   const startNew = () => {
     setEditing("__new__");
-    setDraft({ docId:"", name:"", date:"", teams_off:"UA", workingRows:[] });
+    setDraft({ docId:"", name:"", date_start:"", date_end:"", teams_off:"UA", workingRows:[] });
   };
   const save = async () => {
-    if (!draft.name || !draft.date || !draft.teams_off) return;
-    // Convert structured rows → Firestore "Full Name HH:MM/HH:MM" entries.
+    if (!draft.name || !draft.date_start || !draft.teams_off) return;
     const workingArr = draft.workingRows
       .filter(r => r.employeeId && r.start && r.end)
       .map(r => {
@@ -290,21 +293,22 @@ function HolidaysEditor({ employees, holidays, ops }) {
       });
     await ops.setHoliday({
       docId: draft.docId || `${draft.name} ${draft.teams_off}`,
-      name: draft.name, date: draft.date, teams_off: draft.teams_off,
-      working: workingArr,
+      name: draft.name, date_start: draft.date_start, date_end: draft.date_end || draft.date_start,
+      teams_off: draft.teams_off, working: workingArr,
     });
     setEditing(null);
   };
   const remove = async (row) => {
-    if (!confirm(`Remove holiday "${row.name}" on ${row.date}?`)) return;
+    if (!confirm(`Remove holiday "${row.name}"?`)) return;
     await ops.deleteHoliday(row.docId);
   };
 
   const editor = (lockId) => (
     <>
-      <div style={{ display:"grid", gridTemplateColumns:"2fr 1fr", gap:8 }}>
-        <input style={inputStyle} placeholder="Holiday name" value={draft.name} onChange={e => setDraft(d => ({...d, name: e.target.value}))}/>
-        <input type="date" style={inputStyle} value={draft.date} onChange={e => setDraft(d => ({...d, date: e.target.value}))}/>
+      <input style={inputStyle} placeholder="Holiday name" value={draft.name} onChange={e => setDraft(d => ({...d, name: e.target.value}))}/>
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8 }}>
+        <input type="date" style={inputStyle} value={draft.date_start} onChange={e => setDraft(d => ({...d, date_start: e.target.value}))} title="From"/>
+        <input type="date" style={inputStyle} value={draft.date_end} onChange={e => setDraft(d => ({...d, date_end: e.target.value}))} title="To (leave same for single day)"/>
       </div>
       <select style={inputStyle} value={draft.teams_off} onChange={e => setDraft(d => ({...d, teams_off: e.target.value}))}>
         <option value="UA">Ukraine (UA)</option>
@@ -384,7 +388,10 @@ function HolidaysEditor({ employees, holidays, ops }) {
             <div style={{ display:"flex", alignItems:"center", gap:10 }}>
               <div style={{ flex:1 }}>
                 <div style={{ fontSize:13, fontWeight:600, color:"var(--fg-1)" }}>{row.name} <span style={{ color:"var(--fg-3)", fontWeight:400 }}>· {(row.teams||[]).join(", ")}</span></div>
-                <div style={{ fontSize:12, color:"var(--fg-2)" }}>{row.date}{row.workingArr.length ? ` · ${row.workingArr.length} working` : ""}</div>
+                <div style={{ fontSize:12, color:"var(--fg-2)" }}>
+                  {row.date_start}{row.date_end && row.date_end !== row.date_start ? ` – ${row.date_end}` : ""}
+                  {row.workingArr.length ? ` · ${row.workingArr.length} working` : ""}
+                </div>
               </div>
               <button onClick={() => startEdit(row)} style={inlineBtn()}>Edit</button>
               <button onClick={() => remove(row)} style={inlineBtn("danger")}>Delete</button>
