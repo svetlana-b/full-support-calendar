@@ -73,7 +73,7 @@ function ContactDetails({ employee, contact, onClose }) {
             {employee.initials || "?"}
           </div>
           <div style={{ minWidth:0 }}>
-            <div style={{ fontSize:16, fontWeight:600, color:"var(--fg-1)", lineHeight:1.2 }}>
+            <div style={{ fontFamily:"var(--font-name)", fontSize:16, fontWeight:500, color:"var(--fg-1)", lineHeight:1.2 }}>
               {employee.fullName || employee.name || "—"}
             </div>
             {role && (

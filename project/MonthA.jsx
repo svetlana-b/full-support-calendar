@@ -336,7 +336,7 @@ function MonthA({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                                         }}/>
                                         {t2RoleLabel}
                                     </div>
-                                    <div style={{ fontSize: 14, fontWeight: 700, letterSpacing: "-0.01em" }}>
+                                    <div style={{ fontFamily: "var(--font-name)", fontSize: 14, fontWeight: 500, letterSpacing: "-0.01em" }}>
                                         {t2.fullName}
                                     </div>
                                 </>

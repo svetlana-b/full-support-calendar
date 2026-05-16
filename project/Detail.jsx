@@ -22,7 +22,7 @@ function EventDetail({ event, employees, currentUid, currentUserEmail, isAdmin, 
             <div style={{ width:44, height:44, borderRadius:"var(--r-pill)", background: av.bg, border: `1px solid ${av.border}`, color: av.fg, display:"flex", alignItems:"center", justifyContent:"center", fontWeight:600, fontSize:15, fontFamily:"var(--font-ui)" }}>{emp.initials}</div>
             ); })()}
             <div style={{ flex:1 }}>
-              <div style={{ fontFamily:"var(--font-ui)", fontWeight:600, fontSize:16, color:"var(--fg-1)" }}>{emp.name}</div>
+              <div style={{ fontFamily:"var(--font-name)", fontWeight:500, fontSize:16, color:"var(--fg-1)" }}>{emp.name}</div>
               <div style={{ fontFamily:"var(--font-ui)", fontSize:13, color:"var(--fg-2)" }}>{emp.roleRaw || emp.role}</div>
             </div>
             <span style={{ display:"inline-flex", alignItems:"center", gap:6, padding:"4px 10px", borderRadius:"var(--r-pill)", background:type.bg, color:type.fg, fontFamily:"var(--font-ui)", fontSize:12, fontWeight:600 }}>
@@ -128,7 +128,7 @@ function WeekendCoveragePopup({ date, coverage, employees, onClose }) {
                 {c ? (
                   <div style={{ display:"flex", flexDirection:"column", gap:2, marginTop:6 }}>
                     <div style={{ display:"flex", alignItems:"baseline", gap:10, flexWrap:"wrap" }}>
-                      <div style={{ fontFamily:"var(--font-ui)", fontSize:14, fontWeight:500, color:"var(--fg-1)" }}>{c.name}</div>
+                      <div style={{ fontFamily:"var(--font-name)", fontSize:14, fontWeight:500, color:"var(--fg-1)" }}>{c.name}</div>
                       <div style={{ fontFamily:"var(--font-ui)", fontSize:12, color:"var(--fg-2)" }}>{c.start} – {c.end}</div>
                     </div>
                     {role ? (

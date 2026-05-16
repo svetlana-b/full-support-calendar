@@ -210,7 +210,7 @@ function Roster({ open, employees, onClose }) {
                           }}>{emp.initials}</div>
                         );
                       })()}
-                      <span>{emp.fullName}</span>
+                      <span style={{ fontFamily:"var(--font-name)", fontWeight:500 }}>{emp.fullName}</span>
                     </div>
                   </td>
                   <td style={{ ...cellStyle,

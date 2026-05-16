@@ -244,7 +244,7 @@ function PersonRow({ ev, onOpen, showDates = true }) {
     }}>
       <div style={{ width:28, height:28, borderRadius:"var(--r-pill)", background: av.bg, border: `1px solid ${av.border}`, color: av.fg, display:"flex", alignItems:"center", justifyContent:"center", fontWeight:600, fontSize:11, fontFamily:"var(--font-ui)", flex:"none" }}>{emp.initials}</div>
       <div style={{ flex:1, minWidth:0 }}>
-        <div style={{ fontFamily:"var(--font-ui)", fontSize:13, fontWeight:500, color:"var(--fg-1)", whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{emp.name}</div>
+        <div style={{ fontFamily:"var(--font-name)", fontSize:13, fontWeight:500, color:"var(--fg-1)", whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{emp.name}</div>
         {showDates && (
           <div style={{ fontFamily:"var(--font-ui)", fontSize:11, color:"var(--fg-2)" }}>
             {fmt(ev.start)}{!sameDay(ev.start, ev.end) ? ` – ${fmt(ev.end)}` : ""}
