@@ -232,9 +232,10 @@ function MonthA({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                                                             fontVariantNumeric: "tabular-nums"
                                                         }}>{sh.label}</div>
                                                         <div style={{
+                                                            fontFamily: "var(--font-name)",
                                                             fontSize: 12,
                                                             color: name ? "var(--fg-1)" : "var(--fg-3)",
-                                                            fontWeight: name ? 600 : 500,
+                                                            fontWeight: 500,
                                                             whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"
                                                         }}
                                                             title={slot ? `${name} · ${slot.start}–${slot.end}${slot.timezone ? " " + slot.timezone : ""}` : "Unassigned"}>

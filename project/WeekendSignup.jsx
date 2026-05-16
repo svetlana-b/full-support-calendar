@@ -375,12 +375,12 @@ function WSSlot({ entry, day, shiftType, myName, selected, onSlotClick, onConfir
         <span style={{ fontFamily:"var(--font-mono, monospace)", color:"var(--fg-2)" }}>{time}</span>
       </div>
       {isMine && (<>
-        <div style={{ fontSize:13, fontWeight:500 }}>{slot.person}</div>
+        <div style={{ fontFamily:"var(--font-name)", fontSize:13, fontWeight:500 }}>{slot.person}</div>
         <div style={{ fontSize:10, fontWeight:600, color:"var(--tw-blue-700, #1D4ED8)" }}>▸ YOUR SHIFT · tap to release</div>
       </>)}
-      {isTaken && <div style={{ fontSize:13, fontWeight:500 }}>{slot.person}</div>}
+      {isTaken && <div style={{ fontFamily:"var(--font-name)", fontSize:13, fontWeight:500 }}>{slot.person}</div>}
       {(isSelected || heldByMe) && (<>
-        <div style={{ fontSize:13, fontWeight:500, color:"var(--tw-blue-800, #1E40AF)" }}>{myName}</div>
+        <div style={{ fontFamily:"var(--font-name)", fontSize:13, fontWeight:500, color:"var(--tw-blue-800, #1E40AF)" }}>{myName}</div>
         <div style={{ fontSize:10, fontWeight:700, color:"var(--tw-blue-700, #1D4ED8)" }}>⏳ ON HOLD</div>
         {othersHolding.length > 0 && (
           <div style={{ fontSize:11, color:"#92400E", marginTop:2 }}>
