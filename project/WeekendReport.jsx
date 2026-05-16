@@ -6,7 +6,7 @@
 // business rule, not per-employee data). Edit the values below to change.
 
 // ---------- Shift rates (USD per shift, gross) ----------
-const SHIFT_RATES = { day: 150, night: 100 };
+const SHIFT_RATES = { day: 150, night: 100, holiday: 100 };
 
 // ---------- Local style helpers (scoped to this file to avoid clobbering
 // the `styles`-style globals other scripts define) ----------
@@ -48,38 +48,58 @@ const MONTH_NAMES = [
   "July", "August", "September", "October", "November", "December",
 ];
 
-// Given the coverage map ({ "YYYY-MM-DD": { day, night } }) and a target
-// year+month (month is 1-12), return one row per employee who had at least
-// one weekend shift that month, sorted by name.
-function buildWeekendRows(coverage, year, month) {
-  const tally = {}; // fullName -> { day, night }
+// Given the coverage map and holidays map for a target year+month (month is
+// 1-12), return one row per employee who had at least one shift, sorted by name.
+// Holiday coverage is counted once per unique holiday document (not per day in
+// a multi-day holiday range) and earns SHIFT_RATES.holiday each.
+function buildWeekendRows(coverage, holidays, year, month) {
+  const tally = {}; // fullName -> { day, night, holiday }
+  // Weekend shifts
   for (const [dateStr, byslot] of Object.entries(coverage || {})) {
-    // Parse the YYYY-MM-DD as local date — we only care about year/month.
     const [yStr, mStr] = dateStr.split("-");
     if (+yStr !== year || +mStr !== month) continue;
     for (const slot of ["day", "night"]) {
       const shift = byslot && byslot[slot];
       const name = shift && (shift.fullName || shift.name);
       if (!name) continue;
-      const rec = tally[name] || (tally[name] = { day: 0, night: 0 });
+      const rec = tally[name] || (tally[name] = { day: 0, night: 0, holiday: 0 });
       rec[slot] += 1;
+    }
+  }
+  // Holiday coverage — de-duplicate by docId+employee so multi-day holidays
+  // count as one appearance, not one per expanded weekday date.
+  const seenHoliday = new Set();
+  for (const [dateStr, list] of Object.entries(holidays || {})) {
+    const [yStr, mStr] = dateStr.split("-");
+    if (+yStr !== year || +mStr !== month) continue;
+    for (const h of list) {
+      for (const w of (h.working || [])) {
+        const name = w.fullName || w.name;
+        if (!name) continue;
+        const key = `${h.docId}|${name}`;
+        if (seenHoliday.has(key)) continue;
+        seenHoliday.add(key);
+        const rec = tally[name] || (tally[name] = { day: 0, night: 0, holiday: 0 });
+        rec.holiday += 1;
+      }
     }
   }
   const monthName = MONTH_NAMES[month - 1];
   return Object.entries(tally)
     .map(([name, c]) => {
-      // "May - 2 night, 1 day" — night first to match the screenshot.
       const qtyBits = [];
-      if (c.night) qtyBits.push(`${c.night} night`);
-      if (c.day)   qtyBits.push(`${c.day} day`);
+      if (c.night)   qtyBits.push(`${c.night} night`);
+      if (c.day)     qtyBits.push(`${c.day} day`);
+      if (c.holiday) qtyBits.push(`${c.holiday} holiday`);
       const qty = `${monthName} - ${qtyBits.join(", ")}`;
-      // "100+100+150" — list each individual shift's rate.
+      // "100+100+150+100" — list each individual shift's rate.
       const earnedBits = [];
-      for (let i = 0; i < c.night; i++) earnedBits.push(SHIFT_RATES.night);
-      for (let i = 0; i < c.day;   i++) earnedBits.push(SHIFT_RATES.day);
+      for (let i = 0; i < c.night;   i++) earnedBits.push(SHIFT_RATES.night);
+      for (let i = 0; i < c.day;     i++) earnedBits.push(SHIFT_RATES.day);
+      for (let i = 0; i < c.holiday; i++) earnedBits.push(SHIFT_RATES.holiday);
       const earned = earnedBits.join("+");
-      const total = c.night * SHIFT_RATES.night + c.day * SHIFT_RATES.day;
-      return { name, qty, earned, total, day: c.day, night: c.night };
+      const total  = c.night * SHIFT_RATES.night + c.day * SHIFT_RATES.day + c.holiday * SHIFT_RATES.holiday;
+      return { name, qty, earned, total, day: c.day, night: c.night, holiday: c.holiday };
     })
     .sort((a, b) => a.name.localeCompare(b.name));
 }
@@ -92,7 +112,7 @@ const TEAM_OPTIONS = [
   { id: "CN",  label: "China (CN)" },
 ];
 
-function WeekendReportTab({ coverage, employees }) {
+function WeekendReportTab({ coverage, holidays, employees }) {
   const today = new Date();
   const [year, setYear]   = React.useState(today.getFullYear());
   const [month, setMonth] = React.useState(today.getMonth() + 1); // 1-12
@@ -111,7 +131,7 @@ function WeekendReportTab({ coverage, employees }) {
   }, [employees]);
 
   const rows = React.useMemo(() => {
-    const all = buildWeekendRows(coverage, year, month);
+    const all = buildWeekendRows(coverage, holidays, year, month);
     if (team === "all") return all;
     return all.filter(r => teamByName[r.name.toLowerCase()] === team);
   }, [coverage, year, month, team, teamByName]);
@@ -180,9 +200,8 @@ function WeekendReportTab({ coverage, employees }) {
 
       <div style={wrCard}>
         <div style={{ fontSize: 12.5, color: "var(--fg-2)", lineHeight: 1.45 }}>
-          Export an Excel report of weekend shift coverage for a chosen month.
-          Rates are <strong>{SHIFT_RATES.day}</strong> per day shift and
-          {" "}<strong>{SHIFT_RATES.night}</strong> per night shift <strong>EST</strong> time.
+          Export an Excel report of weekend and holiday shift coverage for a chosen month.
+          Rates: <strong>{SHIFT_RATES.day}</strong> day · <strong>{SHIFT_RATES.night}</strong> night · <strong>{SHIFT_RATES.holiday}</strong> holiday (<strong>EST</strong>).
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
           <select style={wrInput} value={month} onChange={e => setMonth(+e.target.value)} aria-label="Month">
@@ -200,8 +219,8 @@ function WeekendReportTab({ coverage, employees }) {
             {rows.length === 0
               ? (team === "all" ? "No shifts in this month" : `No ${team} shifts in this month`)
               : `${rows.length} employee${rows.length === 1 ? "" : "s"} · `
-                + `${rows.reduce((n, r) => n + r.day + r.night, 0)} shift`
-                + `${rows.reduce((n, r) => n + r.day + r.night, 0) === 1 ? "" : "s"}`
+                + `${rows.reduce((n, r) => n + r.day + r.night + r.holiday, 0)} shift`
+                + `${rows.reduce((n, r) => n + r.day + r.night + r.holiday, 0) === 1 ? "" : "s"}`
                 + (team === "all" ? "" : ` · ${team} only`)}
           </div>
           <button

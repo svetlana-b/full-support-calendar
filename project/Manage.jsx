@@ -40,7 +40,7 @@ function ManagePanel({ open, onClose, employees, coverage, holidays, tier2, ops,
           {tab === "weekends"  && <WeekendEditor   employees={employees} coverage={coverage} ops={ops}/>}
           {tab === "holidays"  && <HolidaysEditor  employees={employees} holidays={holidays} ops={ops}/>}
           {tab === "employees" && <EmployeeEditor  employees={employees} ops={ops}/>}
-          {tab === "reports"   && <WeekendReportTab coverage={coverage} employees={employees}/>}
+          {tab === "reports"   && <WeekendReportTab coverage={coverage} holidays={holidays} employees={employees}/>}
         </div>
       </div>
     </div>
