@@ -42,7 +42,7 @@ function MonthB({ monthDate, events, employees = EMPLOYEES, coverage, holidays =
                 marginTop:2,
                 fontSize:12, fontWeight: today ? 700 : 500,
                 background: today ? "var(--action-primary)" : "transparent",
-                color: today ? "var(--fg-invert)" : "var(--fg-1)"
+                color: today ? "var(--fg-on-primary)" : "var(--fg-1)"
               }}>{d.getDate()}</div>
               <HolidayMarker items={holidays[iso(d)]}/>
             </div>
@@ -52,6 +52,7 @@ function MonthB({ monthDate, events, employees = EMPLOYEES, coverage, holidays =
 
       {visibleEmps.map((emp, ri) => {
         const empEvents = events.filter(e => e.employeeId === emp.id && visibleTypes(e.type));
+        const empTint = roleAvatarTint(emp.roleRaw || emp.role);
         return (
           <div key={emp.id} style={{ display:"grid",
             gridTemplateColumns:`${NAME_W}px repeat(${days.length}, ${DAY_W})`,
@@ -59,10 +60,10 @@ function MonthB({ monthDate, events, employees = EMPLOYEES, coverage, holidays =
             position:"relative", minHeight:52
           }}>
             <div style={{ padding:"10px 14px", borderRight:"1px solid var(--border-weak)", display:"flex", alignItems:"center", gap:10, background:"var(--bg-surface)" }}>
-              <div style={{ width:28, height:28, borderRadius:"var(--r-pill)", background:"var(--tw-blue-100)", color:"var(--tw-blue-800)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:600, fontSize:11, fontFamily:"var(--font-ui)" }}>{emp.initials}</div>
+              <div style={{ width:28, height:28, borderRadius:"var(--r-pill)", background: empTint.bg, color: empTint.fg, display:"flex", alignItems:"center", justifyContent:"center", fontWeight:600, fontSize:11, fontFamily:"var(--font-ui)" }}>{emp.initials}</div>
               <div style={{ lineHeight:1.25, minWidth:0 }}>
                 <div style={{ fontFamily:"var(--font-ui)", fontSize:13, fontWeight:500, color:"var(--fg-1)", whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{emp.name}</div>
-                <div style={{ fontFamily:"var(--font-ui)", fontSize:11, color:"var(--fg-2)" }}>{emp.role}</div>
+                <div style={{ fontFamily:"var(--font-ui)", fontSize:11, color:"var(--fg-2)" }}>{emp.roleRaw || emp.role}</div>
               </div>
             </div>
             {days.map((d,i) => {
@@ -97,20 +98,18 @@ function MonthB({ monthDate, events, employees = EMPLOYEES, coverage, holidays =
                       left: `calc(${leftPct}% + 3px)`,
                       width: `calc(${widthPct}% - 6px)`,
                       top:0, bottom:0,
-                      background: type.bar,
-                      color:"#fff",
+                      background: type.bg,
+                      color: type.fg,
+                      border: `1px solid ${type.bar}`,
                       borderRadius: 4,
                       padding:"0 10px",
-                      display:"flex", alignItems:"center",
+                      display:"flex", alignItems:"center", gap:5,
                       fontFamily:"var(--font-ui)", fontSize:11, fontWeight:600,
                       whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis",
                       cursor:"pointer", pointerEvents:"auto",
-                      borderTopLeftRadius: continuesLeft ? 0 : 4,
-                      borderBottomLeftRadius: continuesLeft ? 0 : 4,
-                      borderTopRightRadius: continuesRight ? 0 : 4,
-                      borderBottomRightRadius: continuesRight ? 0 : 4,
                     }}>
-                    {type.label}
+                    {type.icon ? <img src={type.icon} alt="" aria-hidden width={14} height={14} style={{ flexShrink:0, objectFit:"contain", display:"block" }}/> : null}
+                    <span style={{ overflow:"hidden", textOverflow:"ellipsis", fontWeight:700 }}>{type.label}</span>
                   </div>
                 );
               })}

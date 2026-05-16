@@ -55,9 +55,31 @@ function EventDetail({ event, employees, currentUid, currentUserEmail, isAdmin, 
   ), document.body);
 }
 
-function WeekendCoveragePopup({ date, coverage, onClose }) {
+function WeekendCoveragePopup({ date, coverage, employees, onClose }) {
   if (!date) return null;
   const cov = coverage[date] || {};
+  const empList = employees || window.EMPLOYEES || [];
+  const lookupRole = (fullName) => {
+    if (!fullName) return "";
+    const emp = empList.find(e => (e.fullName || e.name) === fullName)
+             || empList.find(e => (e.fullName || e.name || "").toLowerCase() === fullName.toLowerCase());
+    return (emp && (emp.roleRaw || emp.role)) || "";
+  };
+  // Light-mode tint per role — mirrors the dark-app palette
+  // (Tier1 #4ade80, Tier2 #64d4f5, Tech Lead #818cf8, Team Lead #fbbf24).
+  // Used to tint the NIGHT/DAY chip in each shift row by the assignee's tier.
+  const roleChipTint = (role) => {
+    const r = (role || "").toLowerCase();
+    if (r.includes("tier1") || r.includes("tier 1"))
+      return { bg: "rgba(110,231,160,0.15)", fg: "#6ee7a0", dot: "#6ee7a0" };
+    if (r.includes("tier2") || r.includes("tier 2"))
+      return { bg: "rgba(56,189,248,0.15)",  fg: "#38bdf8", dot: "#38bdf8" };
+    if (r.includes("tech lead") || r.includes("teach lead"))
+      return { bg: "rgba(129,140,248,0.15)", fg: "#818cf8", dot: "#818cf8" };
+    if (r.includes("team lead"))
+      return { bg: "rgba(240,208,128,0.15)", fg: "#f0d080", dot: "#f0d080" };
+    return { bg: "rgba(240,208,128,0.15)", fg: "#f0d080", dot: "#f0d080" };
+  };
   const d = new Date(date + "T00:00:00");
   const dow = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][d.getDay()];
   const fmtDate = `${dow}, ${MONTH_NAMES[d.getMonth()].slice(0,3)} ${d.getDate()}`;
@@ -69,22 +91,47 @@ function WeekendCoveragePopup({ date, coverage, onClose }) {
     <div onClick={onClose} style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.20)", display:"flex", alignItems:"center", justifyContent:"center", zIndex:50 }}>
       <div onClick={e=>e.stopPropagation()} style={{
         width:380, background:"var(--bg-surface)", borderRadius:"var(--r-xl)",
-        boxShadow:"var(--shadow-modal)", overflow:"hidden"
+        boxShadow:"var(--shadow-modal)", overflow:"hidden",
+        borderTop:"3px solid var(--tw-gold-accent)",
       }}>
         <div style={{ padding:"18px 22px 8px" }}>
-          <div style={{ fontFamily:"var(--font-ui)", fontSize:11, fontWeight:600, textTransform:"uppercase", letterSpacing:".08em", color:"var(--fg-3)" }}>Weekend coverage</div>
+          <div style={{
+            fontFamily:"var(--font-ui)", fontSize:11, fontWeight:700,
+            textTransform:"uppercase", letterSpacing:".08em",
+            color:"var(--tw-gold-fg-deep)",
+            display:"inline-flex", alignItems:"center", gap:6,
+          }}>
+            <span style={{ width:6, height:6, borderRadius:"50%", background:"var(--tw-gold-accent)" }}/>
+            Weekend coverage
+          </div>
           <div style={{ fontFamily:"var(--font-ui)", fontSize:18, fontWeight:600, color:"var(--fg-1)", marginTop:2 }}>{fmtDate}</div>
         </div>
         <div style={{ padding:"4px 22px 18px" }}>
           {SHIFTS.map(sh => {
             const c = cov[sh.id];
+            const role = c ? lookupRole(c.fullName || c.name) : "";
+            const chipTint = roleChipTint(role);
             return (
               <div key={sh.id} style={{ padding:"12px 0", borderTop:"1px solid var(--border-weak)" }}>
-                <div style={{ fontFamily:"var(--font-ui)", fontSize:11, fontWeight:600, textTransform:"uppercase", letterSpacing:".06em", color:"var(--fg-3)" }}>{sh.label}</div>
+                <div style={{
+                  display:"inline-flex", alignItems:"center", gap:6,
+                  padding:"2px 8px", borderRadius:"var(--r-pill)",
+                  background: chipTint.bg, color: chipTint.fg,
+                  fontFamily:"var(--font-ui)", fontSize:10, fontWeight:700,
+                  textTransform:"uppercase", letterSpacing:".06em",
+                }}>
+                  <span style={{ width:5, height:5, borderRadius:"50%", background: chipTint.dot }}/>
+                  {sh.label}
+                </div>
                 {c ? (
-                  <div style={{ display:"flex", alignItems:"center", gap:10, marginTop:6 }}>
-                    <div style={{ fontFamily:"var(--font-ui)", fontSize:14, fontWeight:500, color:"var(--fg-1)" }}>{c.name}</div>
-                    <div style={{ fontFamily:"var(--font-ui)", fontSize:12, color:"var(--fg-2)" }}>{c.start} – {c.end}</div>
+                  <div style={{ display:"flex", flexDirection:"column", gap:2, marginTop:6 }}>
+                    <div style={{ display:"flex", alignItems:"baseline", gap:10, flexWrap:"wrap" }}>
+                      <div style={{ fontFamily:"var(--font-ui)", fontSize:14, fontWeight:500, color:"var(--fg-1)" }}>{c.name}</div>
+                      <div style={{ fontFamily:"var(--font-ui)", fontSize:12, color:"var(--fg-2)" }}>{c.start} – {c.end}</div>
+                    </div>
+                    {role ? (
+                      <div style={{ fontFamily:"var(--font-ui)", fontSize:12, color:"var(--fg-2)" }}>{role}</div>
+                    ) : null}
                   </div>
                 ) : (
                   <div style={{ fontFamily:"var(--font-ui)", fontSize:13, color:"var(--fg-3)", marginTop:6, fontStyle:"italic" }}>No coverage scheduled</div>
@@ -187,8 +234,9 @@ function AddRequest({ open, seedDate, editEvent, employees, currentUserEmail, is
                 {selfEmp && (
                   <button type="button" onClick={() => { setEmp(selfEmp.id); setPickOther(false); }} style={{
                     alignSelf:"flex-start", border:0, background:"transparent", padding:"2px 0",
-                    color:"var(--action-primary)", fontFamily:"var(--font-button)", fontSize:12,
-                    fontWeight:500, cursor:"pointer",
+                    color:"var(--tw-lime-fg-deep)", fontFamily:"var(--font-button)", fontSize:12,
+                    fontWeight:600, cursor:"pointer", textDecoration:"underline",
+                    textUnderlineOffset:"2px",
                   }}>← Back to me</button>
                 )}
               </div>
@@ -204,8 +252,9 @@ function AddRequest({ open, seedDate, editEvent, employees, currentUserEmail, is
                 {isAdmin && (
                   <button type="button" onClick={() => setPickOther(true)} style={{
                     alignSelf:"flex-start", border:0, background:"transparent", padding:"2px 0",
-                    color:"var(--action-primary)", fontFamily:"var(--font-button)", fontSize:12,
-                    fontWeight:500, cursor:"pointer",
+                    color:"var(--tw-lime-fg-deep)", fontFamily:"var(--font-button)", fontSize:12,
+                    fontWeight:600, cursor:"pointer", textDecoration:"underline",
+                    textUnderlineOffset:"2px",
                   }}>Select another employee →</button>
                 )}
               </div>
@@ -268,7 +317,7 @@ function TextArea({ value, onChange }) {
 
 const primaryBtn = {
   height:36, padding:"0 16px", border:"1px solid transparent",
-  background:"var(--action-primary)", color:"var(--fg-invert)",
+  background:"var(--action-primary)", color:"var(--fg-on-primary)",
   borderRadius:"var(--r-lg)", fontFamily:"var(--font-button)", fontWeight:500, fontSize:14, cursor:"pointer"
 };
 const outlineBtn = (destructive=false) => ({

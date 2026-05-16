@@ -389,7 +389,7 @@ function WSSlot({ entry, day, shiftType, myName, selected, onSlotClick, onConfir
         )}
         <button onClick={e=>{ e.stopPropagation(); onConfirm(); }} style={{
           marginTop:8, width:"100%", padding:"8px 10px",
-          background:"var(--action-primary)", color:"var(--fg-invert)",
+          background:"var(--action-primary)", color:"var(--fg-on-primary)",
           border:0, borderRadius:"var(--r-md)", cursor:"pointer",
           fontFamily:"var(--font-button)", fontWeight:600, fontSize:12,
         }}>Claim selected shift</button>
@@ -419,7 +419,7 @@ const wsCancelBtn = {
 };
 const wsConfirmBtn = {
   flex:2, padding:"9px 12px", border:0, background:"var(--action-primary)",
-  color:"var(--fg-invert)", borderRadius:"var(--r-md)",
+  color:"var(--fg-on-primary)", borderRadius:"var(--r-md)",
   fontFamily:"var(--font-button)", fontSize:13, fontWeight:600, cursor:"pointer",
 };
 

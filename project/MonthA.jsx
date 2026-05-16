@@ -149,12 +149,26 @@ function MonthA({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
             {weeks.map((week, wi) => {
                 const t2 = tier2ForWeek(week);
                 const isCurrentWeek = week.some(d => sameDay(d, TODAY));
-                // Unified Tier 2 styling: same font color for everyone, neutral surface
-                // by default, light green when this week is the current week.
+                const t2emp = t2 ? employees.find(e => (e.fullName || e.name) === t2.fullName) : null;
+                const t2RoleLabel = ({
+                    "Pro-Support Tier2":    "Tier 2",
+                    "Pro-Support Tech Lead": "Tech Lead",
+                    "Pro-Support Team Lead": "Team Lead",
+                })[t2emp?.roleRaw || ""] || "Tier 2";
+                // Role color applies only to the caption label; card chrome stays sky-blue.
+                const _t2LabelFg = (() => {
+                    const r = (t2emp?.roleRaw || "").toLowerCase();
+                    if (r.includes("tech lead") || r.includes("teach lead")) return "#818cf8";
+                    if (r.includes("team lead")) return "#f0d080";
+                    return "#38bdf8";
+                })();
                 const tint = t2 ? {
-                    bg: isCurrentWeek ? "#E6F6E8" : "var(--bg-surface)",
-                    fg: "var(--fg-1)",
-                    border: isCurrentWeek ? "#9ED8A6" : "var(--border-weak)",
+                    bg:     isCurrentWeek ? "var(--tw-sky-bg-soft)" : "var(--bg-surface)",
+                    fg:     "var(--fg-1)",
+                    border: isCurrentWeek ? "var(--tw-sky-border)" : "var(--border-weak)",
+                    label:  _t2LabelFg,
+                    dot:    "var(--tw-sky-accent)",
+                    glow:   "rgba(14,165,233,0.18)",
                 } : null;
                 const _maxLanes = weekSegments[wi].length > 0 ? Math.max(...weekSegments[wi].map(s => s.lane)) + 1 : 0;
                 const _maxHols = week.some((d, di) => di !== 0 && di !== 6 && (holidays[iso(d)] || []).length > 0) ? 1 : 0;
@@ -189,7 +203,7 @@ function MonthA({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                                         minWidth: 20, height: 20, padding: "0 5px", borderRadius: "var(--r-pill)",
                                         fontFamily: "var(--font-ui)", fontSize: 11, fontWeight: isToday ? 700 : 500,
                                         background: isToday ? "var(--action-primary)" : "transparent",
-                                        color: isToday ? "var(--fg-invert)" : "var(--fg-1)",
+                                        color: isToday ? "var(--fg-on-primary)" : "var(--fg-1)",
                                         alignSelf: "flex-start"
                                     }}>{day.getDate()}</div>
 
@@ -201,20 +215,23 @@ function MonthA({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                                         <div style={{
                                             marginTop: "auto", paddingTop: 6,
                                             display: "flex", flexDirection: "column",
-                                            borderTop: "1px solid var(--border-weak)"
+                                            borderTop: "1px solid var(--tw-gold-border)"
                                         }}>
                                             {SHIFTS.map((sh, si) => {
                                                 const slot = cov && cov[sh.id];
                                                 const name = slot ? slot.name : null;
+                                                // Gold shift-type caption mirrors the "WEEKEND
+                                                // SCHEDULE / SATURDAY MAY 16" amber/gold accent
+                                                // in the companion Pro-Support Schedule app.
                                                 return (
                                                     <div key={sh.id} style={{
                                                         padding: "5px 0 4px",
-                                                        borderTop: si > 0 ? "1px dashed var(--border-weak)" : "none",
+                                                        borderTop: si > 0 ? "1px dashed var(--tw-gold-border)" : "none",
                                                         display: "flex", flexDirection: "column", gap: 1, lineHeight: 1.2
                                                     }}>
                                                         <div style={{
-                                                            fontSize: 10, fontWeight: 600, color: "var(--fg-3)",
-                                                            letterSpacing: ".03em",
+                                                            fontSize: 10, fontWeight: 700, color: "var(--tw-gold-fg-deep)",
+                                                            letterSpacing: ".05em", textTransform: "uppercase",
                                                             fontVariantNumeric: "tabular-nums"
                                                         }}>{sh.label}</div>
                                                         <div style={{
@@ -272,21 +289,20 @@ function MonthA({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                                                     width: `calc(${widthPct}% - 8px)`,
                                                     top: segOverlayTop + 4 + s.lane * 24,
                                                     height: 20,
-                                                    background: type.bar,
-                                                    color: "#fff",
-                                                    borderRadius: 3,
+                                                    background: type.bg,
+                                                    color: type.fg,
+                                                    border: `1px solid ${type.bar}`,
+                                                    borderRadius: 4,
                                                     padding: "0 8px",
-                                                    display: "flex", alignItems: "center",
+                                                    display: "flex", alignItems: "center", gap: 4,
                                                     fontFamily: "var(--font-ui)", fontSize: 11, fontWeight: 600,
                                                     whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
                                                     cursor: "pointer", pointerEvents: "auto",
-                                                    boxShadow: "0 1px 0 rgba(0,0,0,0.04)",
-                                                    borderTopLeftRadius: s.continuesLeft ? 0 : 3,
-                                                    borderBottomLeftRadius: s.continuesLeft ? 0 : 3,
-                                                    borderTopRightRadius: s.continuesRight ? 0 : 3,
-                                                    borderBottomRightRadius: s.continuesRight ? 0 : 3,
                                                 }}>
-                                                {s.continuesLeft ? "…" : ""} {abbrevName(emp.name)} · {type.label}
+                                                {type.icon ? <img src={type.icon} alt="" aria-hidden width={14} height={14} style={{ flexShrink: 0, objectFit: "contain", display: "block" }}/> : null}
+                                                <span style={{ overflow: "hidden", textOverflow: "ellipsis", fontWeight: 700 }}>
+                                                    {s.continuesLeft ? "…" : ""}{abbrevName(emp.name)} · {type.label}
+                                                </span>
                                             </div>
                                         );
                                     })}
@@ -301,7 +317,7 @@ function MonthA({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                             style={{
                                 background: tint ? tint.bg : "var(--bg-surface)",
                                 color: tint ? tint.fg : "var(--fg-3)",
-                                borderLeft: "1px solid var(--border-weak)",
+                                borderLeft: tint ? `3px solid ${tint.border}` : "1px solid var(--border-weak)",
                                 display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center",
                                 padding: "10px 12px", textAlign: "center", lineHeight: 1.25,
                                 fontFamily: "var(--font-ui)",
@@ -312,10 +328,16 @@ function MonthA({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                             {t2 ? (
                                 <>
                                     <div style={{
-                                        fontSize: 9, fontWeight: 600, letterSpacing: ".06em",
-                                        textTransform: "uppercase", opacity: 0.75, marginBottom: 4
+                                        fontSize: 9, fontWeight: 700, letterSpacing: ".08em",
+                                        textTransform: "uppercase", color: tint.label, marginBottom: 4,
+                                        display: "inline-flex", alignItems: "center", gap: 5,
                                     }}>
-                                        Tier 2
+                                        <span style={{
+                                            width: 6, height: 6, borderRadius: "50%",
+                                            background: tint.dot,
+                                            boxShadow: isCurrentWeek ? `0 0 0 3px ${tint.glow}` : "none",
+                                        }}/>
+                                        {t2RoleLabel}
                                     </div>
                                     <div style={{ fontSize: 14, fontWeight: 700, letterSpacing: "-0.01em" }}>
                                         {t2.fullName}

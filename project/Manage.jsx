@@ -64,7 +64,7 @@ const inlineBtn = (variant="default") => ({
   height:30, padding:"0 10px",
   border:"1px solid var(--border-strong)",
   background: variant==="primary" ? "var(--action-primary)" : "var(--bg-surface)",
-  color: variant==="primary" ? "var(--fg-invert)" : (variant==="danger" ? "var(--action-destructive)" : "var(--fg-active)"),
+  color: variant==="primary" ? "var(--fg-on-primary)" : (variant==="danger" ? "var(--action-destructive)" : "var(--fg-active)"),
   borderRadius:"var(--r-md)", fontFamily:"var(--font-button)", fontWeight:500, fontSize:12, cursor:"pointer",
 });
 const inputStyle = {
@@ -402,7 +402,7 @@ const EMPLOYEE_ROLES = [
   "Pro-Support Tier1 Trainee",
   "Pro-Support Tier1",
   "Pro-Support Tier2",
-  "Pro-Support Teach Lead",
+  "Pro-Support Tech Lead",
   "Pro-Support Team Lead",
 ];
 const EMPLOYEE_TEAMS = ["UA", "MX", "CN"];

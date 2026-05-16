@@ -14,14 +14,19 @@ function ContactDetails({ employee, contact, onClose }) {
   const phone = contact && contact.phone ? contact.phone : "";
   const role = employee.roleRaw || employee.role || "";
   const team = employee.team || "";
-
-  // Team accent — pulls from the existing TW palette so the avatar reads
-  // as part of the same visual family as the rest of the calendar.
-  const teamAccent = ({
-    UA: { bg:"var(--tw-blue-100)",  fg:"var(--tw-blue-800)"  },
-    MX: { bg:"#FDE7E1",             fg:"#7A2A12"             },
-    CN: { bg:"#FEE2E2",             fg:"#7F1D1D"             },
-  })[team] || { bg:"var(--bg-page)", fg:"var(--fg-1)" };
+  // Palette from the Pro-Support Schedule app (index.html reference).
+  const _accent = (() => {
+    const r = role.toLowerCase();
+    if (r.includes("tech lead") || r.includes("teach lead"))
+      return { avatarBg:"rgba(129,140,248,0.15)", avatarFg:"#818cf8", chipBg:"rgba(129,140,248,0.08)", chipBorder:"rgba(129,140,248,0.2)", chipFg:"#a5b4fc", ring:"rgba(129,140,248,0.3)" };
+    if (r.includes("team lead"))
+      return { avatarBg:"rgba(240,208,128,0.15)", avatarFg:"#f0d080", chipBg:"rgba(240,208,128,0.08)", chipBorder:"rgba(240,208,128,0.2)", chipFg:"#f5d78a", ring:"rgba(240,208,128,0.3)" };
+    if (r.includes("tier1") || r.includes("tier 1"))
+      return { avatarBg:"rgba(110,231,160,0.15)", avatarFg:"#6ee7a0", chipBg:"rgba(110,231,160,0.08)", chipBorder:"rgba(110,231,160,0.2)", chipFg:"#86efac", ring:"rgba(110,231,160,0.3)" };
+    return { avatarBg:"rgba(56,189,248,0.15)", avatarFg:"#38bdf8", chipBg:"rgba(56,189,248,0.08)", chipBorder:"rgba(56,189,248,0.2)", chipFg:"#7dd3fc", ring:"rgba(56,189,248,0.3)" };
+  })();
+  const teamAccent = { bg: _accent.avatarBg, fg: _accent.avatarFg };
+  const linkColor  = _accent.chipFg;
 
   // Format a phone number for tel: links — strip spaces but keep +.
   const telHref = phone ? `tel:${phone.replace(/\s+/g, "")}` : null;
@@ -39,9 +44,10 @@ function ContactDetails({ employee, contact, onClose }) {
         zIndex:1000, padding:24,
       }}>
       <div onClick={e => e.stopPropagation()} style={{
-        background:"var(--bg-surface)", border:"1px solid var(--border-weak)",
+        background:"var(--bg-surface)",
+        border: `1px solid ${_accent.ring}`,
         borderRadius:"var(--r-xl)", width:"min(420px, 100%)",
-        boxShadow:"0 20px 60px rgba(15,23,42,0.25)",
+        boxShadow: "0 20px 60px rgba(15,23,42,0.25)",
         fontFamily:"var(--font-ui)", overflow:"hidden",
       }}>
         {/* Header */}
@@ -97,7 +103,8 @@ function ContactDetails({ employee, contact, onClose }) {
                   <span key={m} style={{
                     display:"inline-flex", alignItems:"center",
                     height:24, padding:"0 10px",
-                    background:"var(--tw-blue-100)", color:"var(--tw-blue-800)",
+                    background: _accent.chipBg, border:`1px solid ${_accent.chipBorder}`,
+                    color: _accent.chipFg,
                     borderRadius:"var(--r-pill)",
                     fontSize:12, fontWeight:500,
                   }}>{m}</span>
@@ -108,13 +115,13 @@ function ContactDetails({ employee, contact, onClose }) {
 
           {employee.slackUrl && (
             <ContactSection label="Slack">
-              <a href={employee.slackUrl} target="_blank" rel="noreferrer" style={contactLink}>Open in Slack ↗</a>
+              <a href={employee.slackUrl} target="_blank" rel="noreferrer" style={{...contactLink, color: linkColor}}>Open in Slack ↗</a>
             </ContactSection>
           )}
 
           {employee.email && (
             <ContactSection label="Email">
-              <a href={`mailto:${employee.email}`} style={contactLink}>{employee.email}</a>
+              <a href={`mailto:${employee.email}`} style={{...contactLink, color: linkColor}}>{employee.email}</a>
             </ContactSection>
           )}
 
@@ -128,12 +135,12 @@ function ContactDetails({ employee, contact, onClose }) {
         {/* Footer disclaimer */}
         <div style={{
           padding:"12px 20px",
-          background:"var(--tw-blue-50, #EFF6FF)",
+          background:"transparent",
           borderTop:"1px solid var(--border-weak)",
           display:"flex", alignItems:"center", gap:10,
-          fontSize:13, fontWeight:500, color:"var(--tw-blue-800)",
+          fontSize:13, fontWeight:500, color:"var(--fg-2)",
         }}>
-          <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink:0, color:"var(--tw-blue-700, #1D4ED8)" }}>
+          <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink:0, color:"var(--fg-2)" }}>
             <rect x="4" y="11" width="16" height="9" rx="2"/>
             <path d="M8 11V7a4 4 0 1 1 8 0v4"/>
           </svg>

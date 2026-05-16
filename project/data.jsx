@@ -11,10 +11,12 @@ window.HOLIDAYS = window.HOLIDAYS || {};
 window.TIER2_ONCALL = window.TIER2_ONCALL || {};
 
 // Type → color mapping. Three leave types are visually distinct at a glance.
+// Each type also carries an icon image (in /assets) so event bars read as
+// themed pills (matches the companion Pro-Support Schedule app).
 const LEAVE_TYPES = {
-  Vacation: { id:"Vacation", label:"Vacation",  bar:"#0061FF", barHover:"#3B82F6", bg:"#DBEAFE", fg:"#1E40AF", dot:"#0061FF" },
-  PTO:      { id:"PTO",      label:"PTO",       bar:"#8B5CF6", barHover:"#A78BFA", bg:"#EDE9FE", fg:"#5B21B6", dot:"#8B5CF6" },
-  Sick:     { id:"Sick",     label:"Sick leave",bar:"#FF8D28", barHover:"#FFA351", bg:"#FFEDD5", fg:"#9A3412", dot:"#FF8D28" },
+  Vacation: { id:"Vacation", label:"Vacation",  icon:"assets/vacation.png",   bar:"#a78bfa", barHover:"#c4b5fd", bg:"rgba(167,139,250,0.12)", fg:"#a78bfa", dot:"#a78bfa" },
+  PTO:      { id:"PTO",      label:"PTO",       icon:"assets/pto.png",        bar:"#0061FF", barHover:"#3B82F6", bg:"#DBEAFE",              fg:"#1E3A8A", dot:"#0061FF" },
+  Sick:     { id:"Sick",     label:"Sick leave",icon:"assets/sick-leave.png", bar:"#fb923c", barHover:"#fdba74", bg:"rgba(251,146,60,0.12)", fg:"#fb923c", dot:"#fb923c" },
 };
 
 // Today anchor used for "today" highlighting across all calendar variants.
@@ -53,6 +55,24 @@ const abbrevName = (name) => {
   const parts = name.trim().split(" ");
   if (parts.length < 2) return name;
   return `${parts[0]} ${parts[parts.length - 1][0]}.`;
+};
+
+// Role → avatar tint (bg + fg). Mirrors the dark-app palette
+// (Tier1 green, Tier2 sky, Tech Lead indigo, Team Lead gold).
+// Used by every "circle initials" badge across the calendar so a
+// person reads as the same color everywhere (Roster, MonthB swimlane,
+// MonthC PersonRow, etc.). Falls back to neutral blue for unknown roles.
+const roleAvatarTint = (role) => {
+  const r = (role || "").toLowerCase();
+  if (r.includes("tier1") || r.includes("tier 1"))
+    return { bg: "rgba(110,231,160,0.15)", fg: "#6ee7a0" };
+  if (r.includes("tier2") || r.includes("tier 2"))
+    return { bg: "rgba(56,189,248,0.15)",  fg: "#38bdf8" };
+  if (r.includes("tech lead") || r.includes("teach lead"))
+    return { bg: "rgba(129,140,248,0.15)", fg: "#818cf8" };
+  if (r.includes("team lead"))
+    return { bg: "rgba(240,208,128,0.15)", fg: "#f0d080" };
+  return { bg: "rgba(56,189,248,0.10)", fg: "#7dd3fc" };
 };
 
 // Date helpers
@@ -101,4 +121,5 @@ Object.assign(window, {
   COUNTRIES, TIER2_TINTS,
   MONTH_NAMES, DOW_SHORT_SU,
   sameDay, dateInRange, addDays, startOfMonth, endOfMonth, startOfWeek, buildMonthGrid, iso,
+  abbrevName, roleAvatarTint,
 });

@@ -30,7 +30,7 @@ const wrBtn = (variant = "default", disabled = false) => ({
   background: variant === "primary"
     ? (disabled ? "var(--border-strong)" : "var(--action-primary)")
     : "var(--bg-surface)",
-  color: variant === "primary" ? "var(--fg-invert)" : "var(--fg-active)",
+  color: variant === "primary" ? "var(--fg-on-primary)" : "var(--fg-active)",
   borderRadius: "var(--r-md)",
   fontFamily: "var(--font-button)", fontWeight: 500, fontSize: 13,
   cursor: disabled ? "not-allowed" : "pointer",

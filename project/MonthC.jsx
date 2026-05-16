@@ -83,7 +83,7 @@ function MonthC({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                           background: tint.bg, border:`1px solid ${tint.border}`, color: tint.fg,
                           fontFamily:"var(--font-ui)", fontSize:10, fontWeight:600, letterSpacing:".02em"
                         }}>
-                          <span aria-hidden>{c?.flag}</span>{c?.name || t}
+                          <CountryFlag code={t}/>{c?.name || t}
                         </span>
                       );
                     })}
@@ -100,14 +100,14 @@ function MonthC({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
           })}
         </OpsPanel>
 
-        <OpsPanel title="Weekend on-call">
+        <OpsPanel title="Weekend coverage">
           {coverageEntries.length === 0 && <EmptyRow>No coverage set.</EmptyRow>}
           {coverageEntries.map(([k, cov]) => {
             const d = new Date(k);
             return (
-              <div key={k} style={{ padding:"8px 14px", borderTop:"1px solid var(--border-weak)", display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:10, fontFamily:"var(--font-ui)", fontSize:12 }}>
+              <div key={k} style={{ padding:"8px 14px", borderTop:"1px solid var(--tw-gold-border)", display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:10, fontFamily:"var(--font-ui)", fontSize:12 }}>
                 <div style={{ minWidth:90 }}>
-                  <div style={{ color:"var(--fg-2)", fontSize:10, fontWeight:600, textTransform:"uppercase", letterSpacing:".06em" }}>
+                  <div style={{ color:"var(--tw-gold-fg-deep)", fontSize:10, fontWeight:700, textTransform:"uppercase", letterSpacing:".06em" }}>
                     {["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][d.getDay()]} · {MONTH_NAMES[d.getMonth()].slice(0,3)} {d.getDate()}
                   </div>
                 </div>
@@ -117,7 +117,7 @@ function MonthC({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                     const name = slot ? slot.name : null;
                     return (
                     <div key={sh.id}>
-                      <div style={{ color:"var(--fg-3)", fontSize:9, fontWeight:600, textTransform:"uppercase", letterSpacing:".06em" }}>{sh.label}</div>
+                      <div style={{ color:"var(--tw-gold-fg-deep)", fontSize:9, fontWeight:700, textTransform:"uppercase", letterSpacing:".06em" }}>{sh.label}</div>
                       <div style={{ color: name ? "var(--fg-1)" : "var(--fg-3)", fontWeight: name ? 600 : 500 }}
                            title={slot ? `${name} · ${slot.start}–${slot.end}${slot.timezone ? " " + slot.timezone : ""}` : "Unassigned"}>
                         {name || "—"}
@@ -167,7 +167,7 @@ function MonthC({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                       minWidth:20, height:20, padding:"0 5px", borderRadius:"var(--r-pill)",
                       fontFamily:"var(--font-ui)", fontSize:11, fontWeight: isToday ? 700 : 500,
                       background: isToday ? "var(--action-primary)" : "transparent",
-                      color: isToday ? "var(--fg-invert)" : "var(--fg-1)"
+                      color: isToday ? "var(--fg-on-primary)" : "var(--fg-1)"
                     }}>{day.getDate()}</span>
                     {dayEvents.length > 2 && inMonth && (
                       <span style={{ fontFamily:"var(--font-ui)", fontSize:10, color:"var(--fg-2)" }}>{dayEvents.length}</span>
@@ -185,13 +185,14 @@ function MonthC({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                           title={`${emp.name} · ${t.label}`}
                           style={{
                             display:"flex", alignItems:"center", gap:5,
-                            padding:"2px 5px", borderRadius:3,
+                            padding:"2px 6px", borderRadius:4,
                             background: t.bg, color: t.fg,
+                            border: `1px solid ${t.bar}`,
                             fontFamily:"var(--font-ui)", fontSize:10, fontWeight:600,
                             whiteSpace:"nowrap", overflow:"hidden"
                           }}>
-                          <span style={{ width:5, height:5, borderRadius:3, background:t.bar, flex:"none" }}/>
-                          <span style={{ overflow:"hidden", textOverflow:"ellipsis" }}>{emp.initials}</span>
+                          {t.icon ? <img src={t.icon} alt="" aria-hidden width={11} height={11} style={{ flexShrink:0, objectFit:"contain", display:"block" }}/> : null}
+                          <span style={{ overflow:"hidden", textOverflow:"ellipsis", fontWeight:700 }}>{emp.initials}</span>
                         </div>
                       );
                     })}
@@ -235,12 +236,13 @@ function PersonRow({ ev, onOpen, showDates = true }) {
   const emp = EMPLOYEES.find(e => e.id === ev.employeeId) || { name: ev.fullName || "Unknown", initials: "?", role: "" };
   const t = LEAVE_TYPES[ev.type];
   const fmt = (d) => `${MONTH_NAMES[d.getMonth()].slice(0,3)} ${d.getDate()}`;
+  const av = roleAvatarTint(emp.roleRaw || emp.role);
   return (
     <div onClick={onOpen} style={{
       padding:"10px 14px", borderTop:"1px solid var(--border-weak)",
       display:"flex", alignItems:"center", gap:10, cursor:"pointer"
     }}>
-      <div style={{ width:28, height:28, borderRadius:"var(--r-pill)", background:"var(--tw-blue-100)", color:"var(--tw-blue-800)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:600, fontSize:11, fontFamily:"var(--font-ui)", flex:"none" }}>{emp.initials}</div>
+      <div style={{ width:28, height:28, borderRadius:"var(--r-pill)", background: av.bg, color: av.fg, display:"flex", alignItems:"center", justifyContent:"center", fontWeight:600, fontSize:11, fontFamily:"var(--font-ui)", flex:"none" }}>{emp.initials}</div>
       <div style={{ flex:1, minWidth:0 }}>
         <div style={{ fontFamily:"var(--font-ui)", fontSize:13, fontWeight:500, color:"var(--fg-1)", whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{emp.name}</div>
         {showDates && (

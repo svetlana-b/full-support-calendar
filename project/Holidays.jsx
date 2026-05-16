@@ -150,4 +150,4 @@ function HolidayMarker({ items }) {
   );
 }
 
-Object.assign(window, { HolidayChips, HolidayChip, HolidayMarker, COUNTRY_TINT });
+Object.assign(window, { HolidayChips, HolidayChip, HolidayMarker, COUNTRY_TINT, CountryFlag });

@@ -8,6 +8,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Newsreader:wght@400;600;700&display=swap");
 
 :root {
+  /* Tells the browser to render native form controls (date picker icon,
+     select dropdown chevron, scrollbars, etc.) in the matching scheme.
+     Overridden to `dark` further down when [data-theme="dark"] is set. */
+  color-scheme: light;
+
   /* ---------- Apple system grays ---------- */
   --tw-white:         #FFFFFF;
   --tw-gray-6:        #F2F2F7;   /* "Gray 6" */
@@ -62,6 +67,35 @@
   --tw-brown:          #AC7F5E;
   --tw-orange:         #FF8D28;
 
+  /* ---------- Lime accent (Pro-Support Schedule theme, light-mode) ----
+     The companion dark app uses #C8F564 lime as its signature accent on
+     a near-black ground. We carry that lime into light-mode here:
+     it stays as the primary action fill, paired with dark text instead
+     of white (since white on lime is unreadable).                       */
+  --tw-lime-accent:        #C8F564;   /* hero lime — buttons, today dot */
+  --tw-lime-accent-hover:  #B6E443;   /* one notch darker for hover */
+  --tw-lime-bg-soft:       #F1F8DA;   /* very pale lime — tints, hover */
+  --tw-lime-fg-deep:       #5C8C1F;   /* deep lime — text on pale bg */
+
+  /* ---------- Tier-2 sky-blue accent (mirrors #38BDF8 from the dark app) */
+  --tw-sky-accent:         #0EA5E9;   /* sky-500 — borders, text on light */
+  --tw-sky-bg-soft:        #E0F2FE;   /* sky-100 — pale fill for cards */
+  --tw-sky-fg-deep:        #075985;   /* sky-800 — text on the pale fill */
+  --tw-sky-border:         #7DD3FC;   /* sky-300 — soft borders */
+
+  /* ---------- Gold accent (mirrors #FBBF24 / #F0D080 weekend captions) */
+  --tw-gold-accent:        #C99A2E;   /* mid gold — for dots / chips */
+  --tw-gold-bg-soft:       #FBF1D5;   /* pale gold — backgrounds */
+  --tw-gold-fg-deep:       #8B6914;   /* deep gold — readable on white */
+  --tw-gold-border:        #E5C97C;   /* soft gold border */
+
+  --tw-paper:              #FAFAF7;   /* warm off-white page bg */
+  --tw-line:               #E8E6DE;   /* warm hairline */
+  --tw-line-strong:        #C9C9C0;
+  --tw-ink:                #18181C;   /* near-black body text */
+  --tw-ink-2:              #6E6E78;   /* muted */
+  --tw-ink-3:              #A4A4AC;   /* tertiary */
+
   /* ---------- Tag color pairs (100 fill + 800 text) ---------- */
   --tw-tag-red-bg:      #FEE2E2;   --tw-tag-red-fg:      #991B1B;
   --tw-tag-emerald-bg:  #D1FAE5;   --tw-tag-emerald-fg:  #065F46;
@@ -69,25 +103,32 @@
   --tw-tag-blue-bg:     #DBEAFE;   --tw-tag-blue-fg:     #1E40AF;
   --tw-tag-orange-bg:   #FFEDD5;   --tw-tag-orange-fg:   #9A3412;
 
-  /* ---------- Semantic roles (map tokens → usage) ---------- */
-  --bg-page:           var(--tw-bg-secondary);   /* F7F8FA */
+  /* ---------- Semantic roles (map tokens → usage) ----------
+     Rewired May 2026 to a light-mode variant of the Pro-Support
+     Schedule palette: warm paper background, monochrome ink, and
+     lime as the primary action accent. */
+  --bg-page:           var(--tw-paper);          /* FAFAF7 */
   --bg-surface:        var(--tw-white);
-  --bg-hover:          var(--tw-gray-6);         /* F2F2F7 */
+  --bg-hover:          var(--tw-lime-bg-soft);   /* pale lime hover */
 
-  --border-weak:       var(--tw-gray-5);         /* E5E5EA — Lines/Light */
-  --border-strong:     var(--tw-gray-lines);     /* C6C6C8 — Lines/Dark */
+  --border-weak:       var(--tw-line);           /* E8E6DE */
+  --border-strong:     var(--tw-line-strong);    /* C9C9C0 */
 
-  --fg-1:              var(--tw-label-primary);    /* black */
-  --fg-2:              var(--tw-label-secondary);  /* 60% */
-  --fg-3:              var(--tw-label-tertiary);   /* 30% */
-  --fg-active:         var(--tw-label-active);     /* 555555 */
+  --fg-1:              var(--tw-ink);            /* 18181C */
+  --fg-2:              var(--tw-ink-2);          /* 6E6E78 */
+  --fg-3:              var(--tw-ink-3);          /* A4A4AC */
+  --fg-active:         var(--tw-ink);            /* deep ink for active labels */
+
+  /* Text on the primary lime fill is DARK — white-on-lime is unreadable.
+     --fg-invert remains white for destructive red buttons. */
+  --fg-on-primary:     var(--tw-ink);
   --fg-invert:         var(--tw-white);
 
-  --action-primary:    var(--tw-blue-600);       /* 0061FF */
-  --action-primary-hover: var(--tw-blue-web);    /* 3B82F6 */
-  --action-secondary-bg: var(--tw-blue-100);
-  --action-secondary-fg: var(--tw-blue-800);
-  --action-destructive:  var(--tw-red-dest);     /* FF383C */
+  --action-primary:        var(--tw-lime-accent);        /* C8F564 — hero lime */
+  --action-primary-hover:  var(--tw-lime-accent-hover);  /* B6E443 */
+  --action-secondary-bg:   var(--tw-lime-bg-soft);       /* F1F8DA */
+  --action-secondary-fg:   var(--tw-lime-fg-deep);       /* 5C8C1F */
+  --action-destructive:    var(--tw-red-dest);           /* FF383C */
 
   --state-success:     var(--tw-green);
   --state-warning:     var(--tw-yellow);
@@ -234,3 +275,78 @@ code, kbd, .tw-mono {
   font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
   font-size: var(--fs-sm);
 }
+
+/* ============================================================
+   Dark mode
+   Activated by `data-theme="dark"` on <html> (set by ThemeToggle).
+   Mirrors the companion Pro-Support Schedule app's near-black ground
+   with the lime / sky / gold accents from the light theme preserved
+   as lighter, more saturated text-on-dark colors.
+   ============================================================ */
+
+:root[data-theme="dark"] {
+  /* Switch native form-control rendering to dark — fixes the black
+     calendar-picker icon on <input type="date"> being invisible on
+     a dark surface, makes scrollbars / dropdowns themed, etc. */
+  color-scheme: dark;
+
+  /* Page / surface / ink — flipped to dark */
+  --tw-paper:        #0F0F11;
+  --tw-line:         #2A2A30;
+  --tw-line-strong:  #3A3A42;
+  --tw-ink:          #E8E8EC;
+  --tw-ink-2:        #A4A4AC;
+  --tw-ink-3:        #6E6E78;
+
+  --bg-page:         #0F0F11;
+  --bg-surface:      #18181C;
+  --bg-hover:        rgba(200, 245, 100, 0.08);
+
+  --border-weak:     #2A2A30;
+  --border-strong:   #3A3A42;
+
+  --fg-1:            #E8E8EC;
+  --fg-2:            #A4A4AC;
+  --fg-3:            #6E6E78;
+  --fg-active:       #E8E8EC;
+  --fg-invert:       #FFFFFF;
+  /* lime button still wants dark text */
+  --fg-on-primary:   #18181C;
+
+  /* Accent families — text/border versions stay light, fills go translucent */
+  --tw-lime-bg-soft:  rgba(200, 245, 100, 0.12);
+  --tw-lime-fg-deep:  #C8F564;
+
+  --tw-sky-bg-soft:   rgba(56, 189, 248, 0.12);
+  --tw-sky-fg-deep:   #7DD3FC;
+  --tw-sky-border:    rgba(56, 189, 248, 0.40);
+
+  --tw-gold-bg-soft:  rgba(251, 191, 36, 0.12);
+  --tw-gold-fg-deep:  #F0D080;
+  --tw-gold-border:   rgba(240, 208, 128, 0.40);
+
+  --action-secondary-bg: rgba(200, 245, 100, 0.12);
+  --action-secondary-fg: #C8F564;
+
+  /* Legacy TW palette tokens used directly in components — remap to
+     dark-friendly equivalents so e.g. UA-team avatars and EFF6FF
+     footers in ContactDetails still read correctly. */
+  --tw-blue-50:      rgba(96, 165, 250, 0.10);
+  --tw-blue-100:     rgba(96, 165, 250, 0.18);
+  --tw-blue-700:     #93C5FD;
+  --tw-blue-800:     #93C5FD;
+  --tw-gray-6:       #1F1F23;
+  --tw-gray-5:       #2A2A30;
+  --tw-gray-lines:   #3A3A42;
+  --tw-gray-3:       #4A4A52;
+  --tw-bg-secondary: #0F0F11;
+
+  /* Heavier shadows read better on dark ground */
+  --shadow-sm:    0px 1px 2px rgba(0,0,0,0.40);
+  --shadow-md:    0px 4px 12px rgba(0,0,0,0.45);
+  --shadow-lg:    0px 8px 24px rgba(0,0,0,0.55);
+  --shadow-modal: 0px 24px 48px rgba(0,0,0,0.65);
+}
+
+/* Smooth the swap so the whole UI doesn't strobe when toggled. */
+html, body { transition: background-color 180ms ease; }

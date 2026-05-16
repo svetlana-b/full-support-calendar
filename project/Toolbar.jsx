@@ -1,5 +1,49 @@
 // Toolbar.jsx — filter bar shared across calendar directions.
 
+// Tiny hook + button used by the toolbar to flip between light & dark.
+// State of truth is the `data-theme` attribute on <html>; localStorage
+// persistence is handled here so the choice survives reloads. An inline
+// bootstrap script in the HTML head sets the initial attribute BEFORE
+// React renders, which is why we don't need to also set it in a useEffect.
+function useTheme() {
+  const getInitial = () =>
+    (typeof document !== "undefined" && document.documentElement.getAttribute("data-theme")) || "light";
+  const [theme, setTheme] = React.useState(getInitial);
+  const apply = React.useCallback((next) => {
+    setTheme(next);
+    try {
+      document.documentElement.setAttribute("data-theme", next);
+      localStorage.setItem("calendar-theme", next);
+    } catch (_) { /* localStorage blocked — attr-only is fine */ }
+  }, []);
+  return [theme, () => apply(theme === "dark" ? "light" : "dark")];
+}
+
+function ThemeToggle() {
+  const [theme, toggle] = useTheme();
+  const isDark = theme === "dark";
+  return (
+    <button
+      onClick={toggle}
+      title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      style={chromeBtn}>
+      {isDark ? (
+        // Sun icon — click to go light
+        <svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="4"/>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+        </svg>
+      ) : (
+        // Moon icon — click to go dark
+        <svg width={15} height={15} viewBox="0 0 24 24" fill="currentColor" stroke="none">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/>
+        </svg>
+      )}
+    </button>
+  );
+}
+
 function Toolbar({
   monthDate, onPrev, onNext, onToday,
   employees,
@@ -94,7 +138,7 @@ function Toolbar({
 
             <button onClick={onAdd} style={{
               height:32, padding:"0 14px", border:"1px solid transparent",
-              background:"var(--action-primary)", color:"var(--fg-invert)",
+              background:"var(--action-primary)", color:"var(--fg-on-primary)",
               borderRadius:"var(--r-lg)", fontFamily:"var(--font-button)",
               fontWeight:500, fontSize:13, cursor:"pointer",
               display:"inline-flex", alignItems:"center", gap:6
@@ -102,12 +146,14 @@ function Toolbar({
               <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
               Take day off
             </button>
+
           </div>
         </div>
 
         {/* Sign-out column — outside the wrapping flow, always stays at top-right */}
         {user && (
-          <div style={{ flexShrink:0, alignSelf:"flex-start", padding:"10px 20px 10px 8px" }}>
+          <div style={{ flexShrink:0, alignSelf:"flex-start", padding:"10px 20px 10px 8px", display:"flex", alignItems:"center", gap:8 }}>
+            <ThemeToggle/>
             <div title={user.email || user.displayName || ""} style={{
               display:"inline-flex", alignItems:"center", gap:6, height:32, padding:"0 4px 0 8px",
               border:"1px solid var(--border-weak)", borderRadius:"var(--r-pill)",
@@ -148,9 +194,17 @@ function FilterPill({ label, value, onChange, options }) {
       <span style={{ color:"var(--fg-2)" }}>{label}</span>
       <select value={value} onChange={e=>onChange(e.target.value)} style={{
         border:0, background:"transparent", outline:"none", color:"var(--fg-1)",
-        fontFamily:"inherit", fontSize:13, cursor:"pointer", padding:"0 4px 0 0"
+        fontFamily:"inherit", fontSize:13, cursor:"pointer", padding:"0 4px 0 0",
+        // Inherit the document-level light/dark color-scheme so the native
+        // dropdown popup (chevron + option list) flips with the theme.
+        colorScheme: "inherit",
       }}>
-        {options.map(([v,l]) => <option key={v} value={v}>{l}</option>)}
+        {options.map(([v,l]) => (
+          // Explicit bg + color on the option keeps the rendered list
+          // readable in both themes — Chrome/Edge respect option inline
+          // styles for the popup.
+          <option key={v} value={v} style={{ background:"var(--bg-surface)", color:"var(--fg-1)" }}>{l}</option>
+        ))}
       </select>
     </label>
   );
@@ -203,7 +257,7 @@ function ViewSwitcher({ current, onChange }) {
           height:32, padding:"0 14px", border:0,
           borderRight: i < views.length - 1 ? "1px solid var(--border-weak)" : "none",
           background: current === v.id ? "var(--action-primary)" : "var(--bg-surface)",
-          color: current === v.id ? "var(--fg-invert)" : "var(--fg-active)",
+          color: current === v.id ? "var(--fg-on-primary)" : "var(--fg-active)",
           fontFamily:"var(--font-button)", fontSize:13, fontWeight:500, cursor:"pointer",
           transition:"background 120ms, color 120ms",
         }}>{v.label}</button>
@@ -212,7 +266,7 @@ function ViewSwitcher({ current, onChange }) {
   );
 }
 
-Object.assign(window, { Toolbar, Legend, ViewSwitcher });
+Object.assign(window, { Toolbar, Legend, ViewSwitcher, ThemeToggle, useTheme });
 
 // Compact pill that appears in the toolbar ONLY when today is someone's
 // birthday or work anniversary. Shows up to 3 individual pills; any

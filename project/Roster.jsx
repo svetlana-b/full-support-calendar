@@ -85,6 +85,7 @@ function Roster({ open, employees, onClose }) {
 
   const today = new Date();
   const curMonth = today.getMonth() + 1; // 1-12
+  const curDay   = today.getDate();
   const rows = (employees || []).map(emp => {
     const b = _parseBirthday(emp.birthday);
     const start = _parseDate(emp.careerStart);
@@ -92,17 +93,40 @@ function Roster({ open, employees, onClose }) {
     const bdayThisMonth = !!(b && b.month === curMonth);
     const annivThisMonth = !!(start && (start.getMonth() + 1) === curMonth
       && start.getFullYear() < today.getFullYear());
-    return { emp, b, start, tenure, bdayThisMonth, annivThisMonth };
+    // Narrow today-only flags drive the strong lime highlight that
+    // matches the "Take day off" button. Same-month-but-not-today
+    // stays on the softer lime tint.
+    const bdayToday  = !!(b && b.month === curMonth && b.day === curDay);
+    const annivToday = !!(start && (start.getMonth() + 1) === curMonth
+      && start.getDate() === curDay
+      && start.getFullYear() < today.getFullYear());
+    return { emp, b, start, tenure, bdayThisMonth, annivThisMonth, bdayToday, annivToday };
   });
   rows.sort((a, b) => a.emp.fullName.localeCompare(b.emp.fullName));
 
   const headerStyle = {
     padding: "10px 12px",
-    fontFamily: "var(--font-ui)", fontSize: 12, fontWeight: 600,
-    color: "#fff", background: "var(--tw-blue-700, #1e3a8a)",
+    fontFamily: "var(--font-ui)", fontSize: 12, fontWeight: 700,
+    color: "var(--tw-gold-fg-deep)", background: "var(--tw-gold-bg-soft)",
     textAlign: "left", letterSpacing: ".03em",
-    borderRight: "1px solid rgba(255,255,255,0.18)",
+    borderRight: "1px solid var(--tw-gold-border)",
+    borderBottom: "1px solid var(--tw-gold-border)",
     position: "sticky", top: 0, zIndex: 1,
+  };
+
+  // Role-based tint for the initials avatar — mirrors the dark-app palette
+  // (Tier1 green, Tier2 sky, Tech Lead indigo, Team Lead gold).
+  const roleAvatarTint = (role) => {
+    const r = (role || "").toLowerCase();
+    if (r.includes("tier1") || r.includes("tier 1"))
+      return { bg: "rgba(110,231,160,0.15)", fg: "#6ee7a0" };
+    if (r.includes("tier2") || r.includes("tier 2"))
+      return { bg: "rgba(56,189,248,0.15)",  fg: "#38bdf8" };
+    if (r.includes("tech lead") || r.includes("teach lead"))
+      return { bg: "rgba(129,140,248,0.15)", fg: "#818cf8" };
+    if (r.includes("team lead"))
+      return { bg: "rgba(240,208,128,0.15)", fg: "#f0d080" };
+    return { bg: "rgba(56,189,248,0.10)", fg: "#7dd3fc" };
   };
   const cellStyle = {
     padding: "8px 12px",
@@ -162,25 +186,45 @@ function Roster({ open, employees, onClose }) {
                   </td>
                 </tr>
               )}
-              {rows.map(({ emp, b, start, tenure, bdayThisMonth, annivThisMonth }, i) => {
-                const HL = "#DCFCE7";
+              {rows.map(({ emp, b, start, tenure, bdayThisMonth, annivThisMonth, bdayToday, annivToday }, i) => {
+                // Any event this month (incl. today) uses the lime action
+                // color matching the "Take day off" button, with dark text.
+                // Today-only rows get bold weight so the day still pops.
+                const HL_NOW  = "var(--action-primary)";
+                const HL_FG   = "var(--fg-on-primary)";
+                const bdayCellBg  = bdayThisMonth  ? HL_NOW : undefined;
+                const annivCellBg = annivThisMonth ? HL_NOW : undefined;
                 const baseBg = i % 2 ? "var(--bg-page)" : "var(--bg-surface)";
                 return (
                 <tr key={emp.id} style={{ background: baseBg }}>
                   <td style={{ ...cellStyle, fontWeight:600 }}>
                     <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-                      <div style={{
-                        width:24, height:24, borderRadius:"var(--r-pill)",
-                        background:"var(--tw-blue-100)", color:"var(--tw-blue-800)",
-                        display:"flex", alignItems:"center", justifyContent:"center",
-                        fontSize:10, fontWeight:600,
-                      }}>{emp.initials}</div>
+                      {(() => {
+                        const av = roleAvatarTint(emp.roleRaw || emp.role);
+                        return (
+                          <div style={{
+                            width:24, height:24, borderRadius:"var(--r-pill)",
+                            background: av.bg, color: av.fg,
+                            display:"flex", alignItems:"center", justifyContent:"center",
+                            fontSize:10, fontWeight:600,
+                          }}>{emp.initials}</div>
+                        );
+                      })()}
                       <span>{emp.fullName}</span>
                     </div>
                   </td>
-                  <td style={{ ...cellStyle, color: b ? "var(--fg-1)" : "var(--fg-3)", background: bdayThisMonth ? HL : undefined }}>{_fmtBirthday(b)}</td>
-                  <td style={{ ...cellStyle, color: start ? "var(--fg-1)" : "var(--fg-3)", background: annivThisMonth ? HL : undefined }}>{_fmtDate(start)}</td>
-                  <td style={{ ...cellStyle, color: tenure ? "var(--fg-1)" : "var(--fg-3)", background: annivThisMonth ? HL : undefined }}>{_fmtYMD(tenure)}</td>
+                  <td style={{ ...cellStyle,
+                    color: bdayThisMonth ? HL_FG : (b ? "var(--fg-1)" : "var(--fg-3)"),
+                    fontWeight: bdayToday ? 700 : (bdayThisMonth ? 600 : (cellStyle.fontWeight || 400)),
+                    background: bdayCellBg }}>{_fmtBirthday(b)}</td>
+                  <td style={{ ...cellStyle,
+                    color: annivThisMonth ? HL_FG : (start ? "var(--fg-1)" : "var(--fg-3)"),
+                    fontWeight: annivToday ? 700 : (annivThisMonth ? 600 : (cellStyle.fontWeight || 400)),
+                    background: annivCellBg }}>{_fmtDate(start)}</td>
+                  <td style={{ ...cellStyle,
+                    color: annivThisMonth ? HL_FG : (tenure ? "var(--fg-1)" : "var(--fg-3)"),
+                    fontWeight: annivToday ? 700 : (annivThisMonth ? 600 : (cellStyle.fontWeight || 400)),
+                    background: annivCellBg }}>{_fmtYMD(tenure)}</td>
                   <td style={{ ...cellStyle, borderRight:"none", textAlign:"center" }}
                     title={TEAM_NAMES[emp.team] || emp.team || ""}>
                     <span style={{ display:"inline-flex", alignItems:"center", justifyContent:"center" }}>
