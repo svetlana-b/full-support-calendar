@@ -18,7 +18,9 @@ function EventDetail({ event, employees, currentUid, currentUserEmail, isAdmin, 
         <div style={{ height:6, background:type.bar }}/>
         <div style={{ padding:"20px 24px 24px" }}>
           <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:18 }}>
-            <div style={{ width:44, height:44, borderRadius:"var(--r-pill)", background:"var(--tw-blue-100)", color:"var(--tw-blue-800)", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:600, fontSize:15, fontFamily:"var(--font-ui)" }}>{emp.initials}</div>
+            {(() => { const av = roleAvatarTint(emp.roleRaw || emp.role); return (
+            <div style={{ width:44, height:44, borderRadius:"var(--r-pill)", background: av.bg, border: `1px solid ${av.border}`, color: av.fg, display:"flex", alignItems:"center", justifyContent:"center", fontWeight:600, fontSize:15, fontFamily:"var(--font-ui)" }}>{emp.initials}</div>
+            ); })()}
             <div style={{ flex:1 }}>
               <div style={{ fontFamily:"var(--font-ui)", fontWeight:600, fontSize:16, color:"var(--fg-1)" }}>{emp.name}</div>
               <div style={{ fontFamily:"var(--font-ui)", fontSize:13, color:"var(--fg-2)" }}>{emp.roleRaw || emp.role}</div>
@@ -71,14 +73,14 @@ function WeekendCoveragePopup({ date, coverage, employees, onClose }) {
   const roleChipTint = (role) => {
     const r = (role || "").toLowerCase();
     if (r.includes("tier1") || r.includes("tier 1"))
-      return { bg: "var(--role-tier1-bg)",    fg: "var(--role-tier1-fg)",    dot: "var(--role-tier1-fg)"    };
+      return { bg: "var(--role-tier1-bg)",    border: "var(--role-tier1-border)",    fg: "var(--role-tier1-fg)",    dot: "var(--role-tier1-fg)"    };
     if (r.includes("tier2") || r.includes("tier 2"))
-      return { bg: "var(--role-tier2-bg)",    fg: "var(--role-tier2-fg)",    dot: "var(--role-tier2-fg)"    };
+      return { bg: "var(--role-tier2-bg)",    border: "var(--role-tier2-border)",    fg: "var(--role-tier2-fg)",    dot: "var(--role-tier2-fg)"    };
     if (r.includes("tech lead") || r.includes("teach lead"))
-      return { bg: "var(--role-techlead-bg)", fg: "var(--role-techlead-fg)", dot: "var(--role-techlead-fg)" };
+      return { bg: "var(--role-techlead-bg)", border: "var(--role-techlead-border)", fg: "var(--role-techlead-fg)", dot: "var(--role-techlead-fg)" };
     if (r.includes("team lead"))
-      return { bg: "var(--role-teamlead-bg)", fg: "var(--role-teamlead-fg)", dot: "var(--role-teamlead-fg)" };
-    return   { bg: "var(--role-teamlead-bg)", fg: "var(--role-teamlead-fg)", dot: "var(--role-teamlead-fg)" };
+      return { bg: "var(--role-teamlead-bg)", border: "var(--role-teamlead-border)", fg: "var(--role-teamlead-fg)", dot: "var(--role-teamlead-fg)" };
+    return   { bg: "var(--role-teamlead-bg)", border: "var(--role-teamlead-border)", fg: "var(--role-teamlead-fg)", dot: "var(--role-teamlead-fg)" };
   };
   const d = new Date(date + "T00:00:00");
   const dow = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][d.getDay()];
@@ -116,7 +118,7 @@ function WeekendCoveragePopup({ date, coverage, employees, onClose }) {
                 <div style={{
                   display:"inline-flex", alignItems:"center", gap:6,
                   padding:"2px 8px", borderRadius:"var(--r-pill)",
-                  background: chipTint.bg, color: chipTint.fg,
+                  background: chipTint.bg, border: `1px solid ${chipTint.border}`, color: chipTint.fg,
                   fontFamily:"var(--font-ui)", fontSize:10, fontWeight:700,
                   textTransform:"uppercase", letterSpacing:".06em",
                 }}>

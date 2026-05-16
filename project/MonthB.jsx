@@ -60,7 +60,7 @@ function MonthB({ monthDate, events, employees = EMPLOYEES, coverage, holidays =
             position:"relative", minHeight:52
           }}>
             <div style={{ padding:"10px 14px", borderRight:"1px solid var(--border-weak)", display:"flex", alignItems:"center", gap:10, background:"var(--bg-surface)" }}>
-              <div style={{ width:28, height:28, borderRadius:"var(--r-pill)", background: empTint.bg, color: empTint.fg, display:"flex", alignItems:"center", justifyContent:"center", fontWeight:600, fontSize:11, fontFamily:"var(--font-ui)" }}>{emp.initials}</div>
+              <div style={{ width:28, height:28, borderRadius:"var(--r-pill)", background: empTint.bg, border: `1px solid ${empTint.border}`, color: empTint.fg, display:"flex", alignItems:"center", justifyContent:"center", fontWeight:600, fontSize:11, fontFamily:"var(--font-ui)" }}>{emp.initials}</div>
               <div style={{ lineHeight:1.25, minWidth:0 }}>
                 <div style={{ fontFamily:"var(--font-ui)", fontSize:13, fontWeight:500, color:"var(--fg-1)", whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{emp.name}</div>
                 <div style={{ fontFamily:"var(--font-ui)", fontSize:11, color:"var(--fg-2)" }}>{emp.roleRaw || emp.role}</div>

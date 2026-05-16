@@ -72,7 +72,7 @@ function ContactDetails({ employee, contact, onClose }) {
         <div style={{ padding:"16px 20px", display:"flex", alignItems:"center", gap:12 }}>
           <div style={{
             width:44, height:44, borderRadius:"50%",
-            background: teamAccent.bg, color: teamAccent.fg,
+            background: teamAccent.bg, border: `1px solid ${teamAccent.border}`, color: teamAccent.fg,
             display:"flex", alignItems:"center", justifyContent:"center",
             fontWeight:700, fontSize:14, letterSpacing:".02em",
             flexShrink:0,

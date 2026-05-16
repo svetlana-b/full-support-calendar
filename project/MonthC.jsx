@@ -242,7 +242,7 @@ function PersonRow({ ev, onOpen, showDates = true }) {
       padding:"10px 14px", borderTop:"1px solid var(--border-weak)",
       display:"flex", alignItems:"center", gap:10, cursor:"pointer"
     }}>
-      <div style={{ width:28, height:28, borderRadius:"var(--r-pill)", background: av.bg, color: av.fg, display:"flex", alignItems:"center", justifyContent:"center", fontWeight:600, fontSize:11, fontFamily:"var(--font-ui)", flex:"none" }}>{emp.initials}</div>
+      <div style={{ width:28, height:28, borderRadius:"var(--r-pill)", background: av.bg, border: `1px solid ${av.border}`, color: av.fg, display:"flex", alignItems:"center", justifyContent:"center", fontWeight:600, fontSize:11, fontFamily:"var(--font-ui)", flex:"none" }}>{emp.initials}</div>
       <div style={{ flex:1, minWidth:0 }}>
         <div style={{ fontFamily:"var(--font-ui)", fontSize:13, fontWeight:500, color:"var(--fg-1)", whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{emp.name}</div>
         {showDates && (

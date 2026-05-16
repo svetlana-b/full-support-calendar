@@ -32,12 +32,10 @@ function CountryFlag({ code }) {
   return FLAG_SVG[code] || null;
 }
 
-// Palette per country — distinct enough to scan at a glance, but kept
-// muted so holiday chips don't compete with event bars for attention.
 const COUNTRY_TINT = {
-  UA: { bg: "#F0F6FF", border: "#BFD7FF", fg: "#1E40AF" }, // blue
-  MX: { bg: "#F1FAF1", border: "#B7E4C0", fg: "#166534" }, // green
-  CN: { bg: "#FDF0F0", border: "#F5C4C4", fg: "#9F1239" }, // red
+  UA: { bg: "var(--holiday-ua-bg)", border: "var(--holiday-ua-border)", fg: "var(--holiday-ua-fg)" },
+  MX: { bg: "var(--holiday-mx-bg)", border: "var(--holiday-mx-border)", fg: "var(--holiday-mx-fg)" },
+  CN: { bg: "var(--holiday-cn-bg)", border: "var(--holiday-cn-border)", fg: "var(--holiday-cn-fg)" },
 };
 
 // Compact row of country-coded holiday chips for a single day.

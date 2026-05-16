@@ -119,14 +119,14 @@ function Roster({ open, employees, onClose }) {
   const roleAvatarTint = (role) => {
     const r = (role || "").toLowerCase();
     if (r.includes("tier1") || r.includes("tier 1"))
-      return { bg: "var(--role-tier1-bg)",    fg: "var(--role-tier1-fg)"    };
+      return { bg: "var(--role-tier1-bg)",    border: "var(--role-tier1-border)",    fg: "var(--role-tier1-fg)"    };
     if (r.includes("tier2") || r.includes("tier 2"))
-      return { bg: "var(--role-tier2-bg)",    fg: "var(--role-tier2-fg)"    };
+      return { bg: "var(--role-tier2-bg)",    border: "var(--role-tier2-border)",    fg: "var(--role-tier2-fg)"    };
     if (r.includes("tech lead") || r.includes("teach lead"))
-      return { bg: "var(--role-techlead-bg)", fg: "var(--role-techlead-fg)" };
+      return { bg: "var(--role-techlead-bg)", border: "var(--role-techlead-border)", fg: "var(--role-techlead-fg)" };
     if (r.includes("team lead"))
-      return { bg: "var(--role-teamlead-bg)", fg: "var(--role-teamlead-fg)" };
-    return   { bg: "var(--role-default-bg)",  fg: "var(--role-default-fg)"  };
+      return { bg: "var(--role-teamlead-bg)", border: "var(--role-teamlead-border)", fg: "var(--role-teamlead-fg)" };
+    return   { bg: "var(--role-default-bg)",  border: "var(--role-default-border)",  fg: "var(--role-default-fg)"  };
   };
   const cellStyle = {
     padding: "8px 12px",
@@ -204,7 +204,7 @@ function Roster({ open, employees, onClose }) {
                         return (
                           <div style={{
                             width:24, height:24, borderRadius:"var(--r-pill)",
-                            background: av.bg, color: av.fg,
+                            background: av.bg, border: `1px solid ${av.border}`, color: av.fg,
                             display:"flex", alignItems:"center", justifyContent:"center",
                             fontSize:10, fontWeight:600,
                           }}>{emp.initials}</div>

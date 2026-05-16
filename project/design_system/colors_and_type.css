@@ -202,11 +202,16 @@
   --ev-pto-fg:      #1E3A8A;
 
   /* Role badge colors — light mode */
-  --role-tier1-bg:    #DCFCE7;  --role-tier1-fg:    #14532D;
-  --role-tier2-bg:    #E0F2FE;  --role-tier2-fg:    #075985;
-  --role-techlead-bg: #EEF2FF;  --role-techlead-fg: #3730A3;
-  --role-teamlead-bg: #FBF1D5;  --role-teamlead-fg: #8B6914;
-  --role-default-bg:  #DBEAFE;  --role-default-fg:  #1E3A8A;
+  --role-tier1-bg:    #DCFCE7;  --role-tier1-border:    #BBF7D0;  --role-tier1-fg:    #14532D;
+  --role-tier2-bg:    #E0F2FE;  --role-tier2-border:    #BAE6FD;  --role-tier2-fg:    #075985;
+  --role-techlead-bg: #EEF2FF;  --role-techlead-border: #C7D2FE;  --role-techlead-fg: #3730A3;
+  --role-teamlead-bg: #FBF1D5;  --role-teamlead-border: #E5C97C;  --role-teamlead-fg: #8B6914;
+  --role-default-bg:  #DBEAFE;  --role-default-border:  #BFDBFE;  --role-default-fg:  #1E3A8A;
+
+  /* Holiday chip colors — light mode (solid soft fills + dark fg) */
+  --holiday-ua-bg: #F0F6FF;  --holiday-ua-border: #BFD7FF;  --holiday-ua-fg: #1E40AF;
+  --holiday-mx-bg: #F1FAF1;  --holiday-mx-border: #B7E4C0;  --holiday-mx-fg: #166534;
+  --holiday-cn-bg: #FDF0F0;  --holiday-cn-border: #F5C4C4;  --holiday-cn-fg: #9F1239;
 }
 
 /* ============================================================
@@ -371,11 +376,16 @@ code, kbd, .tw-mono {
   --ev-pto-fg:      #0061FF;
 
   /* Role badge colors — dark mode */
-  --role-tier1-bg:    rgba(110,231,160,0.15);  --role-tier1-fg:    #6ee7a0;
-  --role-tier2-bg:    rgba(56,189,248,0.15);   --role-tier2-fg:    #38bdf8;
-  --role-techlead-bg: rgba(129,140,248,0.15);  --role-techlead-fg: #818cf8;
-  --role-teamlead-bg: rgba(240,208,128,0.15);  --role-teamlead-fg: #f0d080;
-  --role-default-bg:  rgba(56,189,248,0.10);   --role-default-fg:  #7dd3fc;
+  --role-tier1-bg:    rgba(110,231,160,0.15);  --role-tier1-border:    rgba(110,231,160,0.35);  --role-tier1-fg:    #6ee7a0;
+  --role-tier2-bg:    rgba(56,189,248,0.15);   --role-tier2-border:    rgba(56,189,248,0.35);   --role-tier2-fg:    #38bdf8;
+  --role-techlead-bg: rgba(129,140,248,0.15);  --role-techlead-border: rgba(129,140,248,0.35);  --role-techlead-fg: #818cf8;
+  --role-teamlead-bg: rgba(240,208,128,0.15);  --role-teamlead-border: rgba(240,208,128,0.35);  --role-teamlead-fg: #f0d080;
+  --role-default-bg:  rgba(56,189,248,0.10);   --role-default-border:  rgba(56,189,248,0.25);   --role-default-fg:  #7dd3fc;
+
+  /* Holiday chip colors — dark mode (rgba fills + bright fg) */
+  --holiday-ua-bg: rgba(56,189,248,0.12);   --holiday-ua-border: rgba(56,189,248,0.30);   --holiday-ua-fg: #38bdf8;
+  --holiday-mx-bg: rgba(74,222,128,0.12);   --holiday-mx-border: rgba(74,222,128,0.30);   --holiday-mx-fg: #4ade80;
+  --holiday-cn-bg: rgba(248,113,113,0.12);  --holiday-cn-border: rgba(248,113,113,0.30);  --holiday-cn-fg: #f87171;
 }
 
 /* Smooth the swap so the whole UI doesn't strobe when toggled. */
