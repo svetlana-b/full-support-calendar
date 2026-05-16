@@ -164,7 +164,7 @@ function MonthA({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                     fg:     "var(--fg-1)",
                     border: isCurrentWeek ? "var(--tw-sky-border)" : "var(--border-weak)",
                     label:  _t2LabelFg,
-                    dot:    "var(--tw-sky-accent)",
+                    dot:    _t2LabelFg,
                     glow:   "rgba(14,165,233,0.18)",
                 } : null;
                 const _maxLanes = weekSegments[wi].length > 0 ? Math.max(...weekSegments[wi].map(s => s.lane)) + 1 : 0;
