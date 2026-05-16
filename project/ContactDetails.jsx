@@ -85,7 +85,7 @@ function ContactDetails({ employee, contact, onClose }) {
         <div style={{ padding:"0 20px 16px", display:"flex", flexDirection:"column", gap:14 }}>
           {phone && (
             <ContactSection label="Phone">
-              <a href={telHref} style={contactLink}>{displayPhone}</a>
+              <a href={telHref} style={{...contactLink, color: _SKY_CHIP.fg}}>{displayPhone}</a>
             </ContactSection>
           )}
 
@@ -132,7 +132,7 @@ function ContactDetails({ employee, contact, onClose }) {
           textAlign:"center",
           fontSize:13, fontWeight:500, color:"var(--fg-2)",
         }}>
-          🔒 Can be used <strong style={{ fontWeight:700 }}>ONLY</strong> by Support members
+          🔒 Phone number can be used <strong style={{ fontWeight:700 }}>ONLY</strong> by Support members
         </div>
       </div>
     </div>
