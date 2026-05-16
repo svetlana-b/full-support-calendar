@@ -48,7 +48,7 @@ function ContactDetails({ employee, contact, onClose }) {
           display:"flex", alignItems:"center", justifyContent:"space-between",
           padding:"16px 20px", borderBottom:"1px solid var(--border-weak)",
         }}>
-          <div style={{ fontSize:16, fontWeight:600, color:"var(--fg-1)" }}>Contact details</div>
+          <div style={{ fontFamily:"var(--font-name)", fontSize:20, fontWeight:300, color:"var(--fg-1)" }}>Contact details</div>
           <button onClick={onClose} style={{
             display:"inline-flex", alignItems:"center", gap:4,
             height:28, padding:"0 10px",
@@ -67,7 +67,7 @@ function ContactDetails({ employee, contact, onClose }) {
             width:44, height:44, borderRadius:"50%",
             background: teamAccent.bg, border: `1px solid ${teamAccent.border}`, color: teamAccent.fg,
             display:"flex", alignItems:"center", justifyContent:"center",
-            fontWeight:700, fontSize:14, letterSpacing:".02em",
+            fontFamily:"var(--font-name)", fontWeight:700, fontSize:14, letterSpacing:".02em",
             flexShrink:0,
           }}>
             {employee.initials || "?"}
