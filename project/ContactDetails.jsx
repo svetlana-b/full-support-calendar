@@ -12,7 +12,7 @@
 // modal border, chips, and links are always sky-blue regardless of role.
 // Only the initials avatar tint is role-aware.
 const _SKY_RING  = "rgba(56,189,248,0.3)";
-const _SKY_CHIP  = { bg: "rgba(56,189,248,0.08)", border: "rgba(56,189,248,0.2)", fg: "#7dd3fc" };
+const _SKY_CHIP  = { bg: "rgba(56,189,248,0.08)", border: "rgba(56,189,248,0.2)", fg: "var(--role-tier2-fg)" };
 
 function ContactDetails({ employee, contact, onClose }) {
   if (!employee) return null;
