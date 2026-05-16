@@ -156,12 +156,9 @@ function MonthA({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                     "Pro-Support Team Lead": "Team Lead",
                 })[t2emp?.roleRaw || ""] || "Tier 2";
                 // Role color applies only to the caption label; card chrome stays sky-blue.
-                const _t2LabelFg = (() => {
-                    const r = (t2emp?.roleRaw || "").toLowerCase();
-                    if (r.includes("tech lead") || r.includes("teach lead")) return "#818cf8";
-                    if (r.includes("team lead")) return "#f0d080";
-                    return "#38bdf8";
-                })();
+                const _t2LabelFg = t2emp
+                    ? roleAvatarTint(t2emp.roleRaw).fg
+                    : "var(--role-tier2-fg)";
                 const tint = t2 ? {
                     bg:     isCurrentWeek ? "var(--tw-sky-bg-soft)" : "var(--bg-surface)",
                     fg:     "var(--fg-1)",

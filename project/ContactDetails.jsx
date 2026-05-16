@@ -18,14 +18,14 @@ function ContactDetails({ employee, contact, onClose }) {
   const _accent = (() => {
     const r = role.toLowerCase();
     if (r.includes("tech lead") || r.includes("teach lead"))
-      return { avatarBg:"rgba(129,140,248,0.15)", avatarFg:"#818cf8", chipBg:"rgba(129,140,248,0.08)", chipBorder:"rgba(129,140,248,0.2)", chipFg:"#a5b4fc", ring:"rgba(129,140,248,0.3)" };
+      return { chipBg:"rgba(129,140,248,0.08)", chipBorder:"rgba(129,140,248,0.2)", chipFg:"#a5b4fc", ring:"rgba(129,140,248,0.3)" };
     if (r.includes("team lead"))
-      return { avatarBg:"rgba(240,208,128,0.15)", avatarFg:"#f0d080", chipBg:"rgba(240,208,128,0.08)", chipBorder:"rgba(240,208,128,0.2)", chipFg:"#f5d78a", ring:"rgba(240,208,128,0.3)" };
+      return { chipBg:"rgba(240,208,128,0.08)", chipBorder:"rgba(240,208,128,0.2)", chipFg:"#f5d78a", ring:"rgba(240,208,128,0.3)" };
     if (r.includes("tier1") || r.includes("tier 1"))
-      return { avatarBg:"rgba(110,231,160,0.15)", avatarFg:"#6ee7a0", chipBg:"rgba(110,231,160,0.08)", chipBorder:"rgba(110,231,160,0.2)", chipFg:"#86efac", ring:"rgba(110,231,160,0.3)" };
-    return { avatarBg:"rgba(56,189,248,0.15)", avatarFg:"#38bdf8", chipBg:"rgba(56,189,248,0.08)", chipBorder:"rgba(56,189,248,0.2)", chipFg:"#7dd3fc", ring:"rgba(56,189,248,0.3)" };
+      return { chipBg:"rgba(110,231,160,0.08)", chipBorder:"rgba(110,231,160,0.2)", chipFg:"#86efac", ring:"rgba(110,231,160,0.3)" };
+    return { chipBg:"rgba(56,189,248,0.08)", chipBorder:"rgba(56,189,248,0.2)", chipFg:"#7dd3fc", ring:"rgba(56,189,248,0.3)" };
   })();
-  const teamAccent = { bg: _accent.avatarBg, fg: _accent.avatarFg };
+  const teamAccent = roleAvatarTint(role);
   const linkColor  = _accent.chipFg;
 
   // Format a phone number for tel: links — strip spaces but keep +.

@@ -71,14 +71,14 @@ function WeekendCoveragePopup({ date, coverage, employees, onClose }) {
   const roleChipTint = (role) => {
     const r = (role || "").toLowerCase();
     if (r.includes("tier1") || r.includes("tier 1"))
-      return { bg: "rgba(110,231,160,0.15)", fg: "#6ee7a0", dot: "#6ee7a0" };
+      return { bg: "var(--role-tier1-bg)",    fg: "var(--role-tier1-fg)",    dot: "var(--role-tier1-fg)"    };
     if (r.includes("tier2") || r.includes("tier 2"))
-      return { bg: "rgba(56,189,248,0.15)",  fg: "#38bdf8", dot: "#38bdf8" };
+      return { bg: "var(--role-tier2-bg)",    fg: "var(--role-tier2-fg)",    dot: "var(--role-tier2-fg)"    };
     if (r.includes("tech lead") || r.includes("teach lead"))
-      return { bg: "rgba(129,140,248,0.15)", fg: "#818cf8", dot: "#818cf8" };
+      return { bg: "var(--role-techlead-bg)", fg: "var(--role-techlead-fg)", dot: "var(--role-techlead-fg)" };
     if (r.includes("team lead"))
-      return { bg: "rgba(240,208,128,0.15)", fg: "#f0d080", dot: "#f0d080" };
-    return { bg: "rgba(240,208,128,0.15)", fg: "#f0d080", dot: "#f0d080" };
+      return { bg: "var(--role-teamlead-bg)", fg: "var(--role-teamlead-fg)", dot: "var(--role-teamlead-fg)" };
+    return   { bg: "var(--role-teamlead-bg)", fg: "var(--role-teamlead-fg)", dot: "var(--role-teamlead-fg)" };
   };
   const d = new Date(date + "T00:00:00");
   const dow = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][d.getDay()];

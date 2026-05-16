@@ -200,6 +200,13 @@
   --ev-sick-fg:     #9A3412;
   --ev-pto-bg:      #DBEAFE;
   --ev-pto-fg:      #1E3A8A;
+
+  /* Role badge colors — light mode */
+  --role-tier1-bg:    #DCFCE7;  --role-tier1-fg:    #14532D;
+  --role-tier2-bg:    #E0F2FE;  --role-tier2-fg:    #075985;
+  --role-techlead-bg: #EEF2FF;  --role-techlead-fg: #3730A3;
+  --role-teamlead-bg: #FBF1D5;  --role-teamlead-fg: #8B6914;
+  --role-default-bg:  #DBEAFE;  --role-default-fg:  #1E3A8A;
 }
 
 /* ============================================================
@@ -362,6 +369,13 @@ code, kbd, .tw-mono {
   --ev-sick-fg:     #fb923c;
   --ev-pto-bg:      rgba(0,97,255,0.12);
   --ev-pto-fg:      #0061FF;
+
+  /* Role badge colors — dark mode */
+  --role-tier1-bg:    rgba(110,231,160,0.15);  --role-tier1-fg:    #6ee7a0;
+  --role-tier2-bg:    rgba(56,189,248,0.15);   --role-tier2-fg:    #38bdf8;
+  --role-techlead-bg: rgba(129,140,248,0.15);  --role-techlead-fg: #818cf8;
+  --role-teamlead-bg: rgba(240,208,128,0.15);  --role-teamlead-fg: #f0d080;
+  --role-default-bg:  rgba(56,189,248,0.10);   --role-default-fg:  #7dd3fc;
 }
 
 /* Smooth the swap so the whole UI doesn't strobe when toggled. */

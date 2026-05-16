@@ -119,14 +119,14 @@ function Roster({ open, employees, onClose }) {
   const roleAvatarTint = (role) => {
     const r = (role || "").toLowerCase();
     if (r.includes("tier1") || r.includes("tier 1"))
-      return { bg: "rgba(110,231,160,0.15)", fg: "#6ee7a0" };
+      return { bg: "var(--role-tier1-bg)",    fg: "var(--role-tier1-fg)"    };
     if (r.includes("tier2") || r.includes("tier 2"))
-      return { bg: "rgba(56,189,248,0.15)",  fg: "#38bdf8" };
+      return { bg: "var(--role-tier2-bg)",    fg: "var(--role-tier2-fg)"    };
     if (r.includes("tech lead") || r.includes("teach lead"))
-      return { bg: "rgba(129,140,248,0.15)", fg: "#818cf8" };
+      return { bg: "var(--role-techlead-bg)", fg: "var(--role-techlead-fg)" };
     if (r.includes("team lead"))
-      return { bg: "rgba(240,208,128,0.15)", fg: "#f0d080" };
-    return { bg: "rgba(56,189,248,0.10)", fg: "#7dd3fc" };
+      return { bg: "var(--role-teamlead-bg)", fg: "var(--role-teamlead-fg)" };
+    return   { bg: "var(--role-default-bg)",  fg: "var(--role-default-fg)"  };
   };
   const cellStyle = {
     padding: "8px 12px",
