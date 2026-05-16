@@ -7,7 +7,7 @@
 // React renders, which is why we don't need to also set it in a useEffect.
 function useTheme() {
   const getInitial = () =>
-    (typeof document !== "undefined" && document.documentElement.getAttribute("data-theme")) || "light";
+    (typeof document !== "undefined" && document.documentElement.getAttribute("data-theme")) || "dark";
   const [theme, setTheme] = React.useState(getInitial);
   const apply = React.useCallback((next) => {
     setTheme(next);

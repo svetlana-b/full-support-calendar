@@ -201,7 +201,7 @@ function WeekendReportTab({ coverage, holidays, employees }) {
       <div style={wrCard}>
         <div style={{ fontSize: 12.5, color: "var(--fg-2)", lineHeight: 1.45 }}>
           Export an Excel report of weekend and holiday shift coverage for a chosen month.
-          Rates: <strong>{SHIFT_RATES.day}</strong> day · <strong>{SHIFT_RATES.night}</strong> night · <strong>{SHIFT_RATES.holiday}</strong> holiday (<strong>EST</strong>).
+          Rates: <strong>{SHIFT_RATES.day}</strong> day · <strong>{SHIFT_RATES.night}</strong> night (<strong>EST</strong>) · <strong>{SHIFT_RATES.holiday}</strong> holiday.
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
           <select style={wrInput} value={month} onChange={e => setMonth(+e.target.value)} aria-label="Month">

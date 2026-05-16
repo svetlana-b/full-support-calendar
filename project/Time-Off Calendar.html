@@ -4,6 +4,18 @@
 <meta charset="utf-8"/>
 <title>Pro-Support Calendar</title>
 <link rel="stylesheet" href="design_system/colors_and_type.css">
+<!-- Bootstrap theme before React renders to avoid flash of wrong theme.
+     Reads the saved preference; defaults to dark if none is stored. -->
+<script>
+  (function() {
+    try {
+      var t = localStorage.getItem("calendar-theme") || "dark";
+      document.documentElement.setAttribute("data-theme", t);
+    } catch (_) {
+      document.documentElement.setAttribute("data-theme", "dark");
+    }
+  })();
+</script>
 <style>
   html,body{ margin:0; background:#f0eee9; }
   *{ box-sizing:border-box; }
