@@ -253,7 +253,7 @@ function PersonRow({ ev, onOpen, showDates = true }) {
       </div>
       <span style={{ display:"inline-flex", alignItems:"center", gap:4,
         padding:"2px 8px", borderRadius:"var(--r-pill)",
-        background: t.bg, color: t.fg,
+        background: t.bg, border: `1px solid ${t.bar}`, color: t.fg,
         fontFamily:"var(--font-ui)", fontSize:11, fontWeight:600 }}>
         <span style={{ width:6, height:6, borderRadius:3, background:t.bar }}/>{t.label}
       </span>

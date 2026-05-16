@@ -8,25 +8,18 @@
 //
 // Portals to document.body so it escapes the design-canvas transform.
 
+// Fixed sky-blue chrome from the Pro-Support Schedule app (index.html):
+// modal border, chips, and links are always sky-blue regardless of role.
+// Only the initials avatar tint is role-aware.
+const _SKY_RING  = "rgba(56,189,248,0.3)";
+const _SKY_CHIP  = { bg: "rgba(56,189,248,0.08)", border: "rgba(56,189,248,0.2)", fg: "#7dd3fc" };
+
 function ContactDetails({ employee, contact, onClose }) {
   if (!employee) return null;
   const messengers = (contact && Array.isArray(contact.messengers)) ? contact.messengers : [];
   const phone = contact && contact.phone ? contact.phone : "";
   const role = employee.roleRaw || employee.role || "";
-  const team = employee.team || "";
-  // Palette from the Pro-Support Schedule app (index.html reference).
-  const _accent = (() => {
-    const r = role.toLowerCase();
-    if (r.includes("tech lead") || r.includes("teach lead"))
-      return { chipBg:"rgba(129,140,248,0.08)", chipBorder:"rgba(129,140,248,0.2)", chipFg:"#a5b4fc", ring:"rgba(129,140,248,0.3)" };
-    if (r.includes("team lead"))
-      return { chipBg:"rgba(240,208,128,0.08)", chipBorder:"rgba(240,208,128,0.2)", chipFg:"#f5d78a", ring:"rgba(240,208,128,0.3)" };
-    if (r.includes("tier1") || r.includes("tier 1"))
-      return { chipBg:"rgba(110,231,160,0.08)", chipBorder:"rgba(110,231,160,0.2)", chipFg:"#86efac", ring:"rgba(110,231,160,0.3)" };
-    return { chipBg:"rgba(56,189,248,0.08)", chipBorder:"rgba(56,189,248,0.2)", chipFg:"#7dd3fc", ring:"rgba(56,189,248,0.3)" };
-  })();
   const teamAccent = roleAvatarTint(role);
-  const linkColor  = _accent.chipFg;
 
   // Format a phone number for tel: links — strip spaces but keep +.
   const telHref = phone ? `tel:${phone.replace(/\s+/g, "")}` : null;
@@ -45,7 +38,7 @@ function ContactDetails({ employee, contact, onClose }) {
       }}>
       <div onClick={e => e.stopPropagation()} style={{
         background:"var(--bg-surface)",
-        border: `1px solid ${_accent.ring}`,
+        border: `1px solid ${_SKY_RING}`,
         borderRadius:"var(--r-xl)", width:"min(420px, 100%)",
         boxShadow: "0 20px 60px rgba(15,23,42,0.25)",
         fontFamily:"var(--font-ui)", overflow:"hidden",
@@ -68,7 +61,7 @@ function ContactDetails({ employee, contact, onClose }) {
           </button>
         </div>
 
-        {/* Identity row */}
+        {/* Identity row — avatar tint is role-aware; everything else is sky-blue */}
         <div style={{ padding:"16px 20px", display:"flex", alignItems:"center", gap:12 }}>
           <div style={{
             width:44, height:44, borderRadius:"50%",
@@ -103,8 +96,8 @@ function ContactDetails({ employee, contact, onClose }) {
                   <span key={m} style={{
                     display:"inline-flex", alignItems:"center",
                     height:24, padding:"0 10px",
-                    background: _accent.chipBg, border:`1px solid ${_accent.chipBorder}`,
-                    color: _accent.chipFg,
+                    background: _SKY_CHIP.bg, border:`1px solid ${_SKY_CHIP.border}`,
+                    color: _SKY_CHIP.fg,
                     borderRadius:"var(--r-pill)",
                     fontSize:12, fontWeight:500,
                   }}>{m}</span>
@@ -115,13 +108,13 @@ function ContactDetails({ employee, contact, onClose }) {
 
           {employee.slackUrl && (
             <ContactSection label="Slack">
-              <a href={employee.slackUrl} target="_blank" rel="noreferrer" style={{...contactLink, color: linkColor}}>Open in Slack ↗</a>
+              <a href={employee.slackUrl} target="_blank" rel="noreferrer" style={{...contactLink, color: _SKY_CHIP.fg}}>Open in Slack ↗</a>
             </ContactSection>
           )}
 
           {employee.email && (
             <ContactSection label="Email">
-              <a href={`mailto:${employee.email}`} style={{...contactLink, color: linkColor}}>{employee.email}</a>
+              <a href={`mailto:${employee.email}`} style={{...contactLink, color: _SKY_CHIP.fg}}>{employee.email}</a>
             </ContactSection>
           )}
 
@@ -132,19 +125,14 @@ function ContactDetails({ employee, contact, onClose }) {
           )}
         </div>
 
-        {/* Footer disclaimer */}
+        {/* Footer disclaimer — matches index.html: 🔒 emoji + centered text */}
         <div style={{
           padding:"12px 20px",
-          background:"transparent",
           borderTop:"1px solid var(--border-weak)",
-          display:"flex", alignItems:"center", gap:10,
+          textAlign:"center",
           fontSize:13, fontWeight:500, color:"var(--fg-2)",
         }}>
-          <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink:0, color:"var(--fg-2)" }}>
-            <rect x="4" y="11" width="16" height="9" rx="2"/>
-            <path d="M8 11V7a4 4 0 1 1 8 0v4"/>
-          </svg>
-          <span>Phone number can be used <strong style={{ fontWeight:700 }}>ONLY</strong> by Support members.</span>
+          🔒 Can be used <strong style={{ fontWeight:700 }}>ONLY</strong> by Support members
         </div>
       </div>
     </div>
