@@ -305,7 +305,12 @@ function P0ContactsModal({ open, onClose, employees }) {
 
   if (!open) return null;
 
-  const leads = (employees || []).filter(e => /team\s*lead/i.test(e.roleRaw || e.role || ""));
+  const leads = (employees || [])
+    .filter(e => /team\s*lead/i.test(e.roleRaw || e.role || ""))
+    .sort((a, b) => {
+      const isMX = e => /mx/i.test(e.roleRaw || e.role || "");
+      return isMX(a) - isMX(b); // non-MX first
+    });
 
   return ReactDOM.createPortal((
     <div onClick={onClose} role="dialog" aria-modal="true" style={{
@@ -399,17 +404,7 @@ function P0ContactsModal({ open, onClose, employees }) {
                       </div>
                     </P0ContactRow>
                   )}
-                  {emp.slackUrl && (
-                    <P0ContactRow label="Slack">
-                      <a href={emp.slackUrl} target="_blank" rel="noreferrer" style={{ color:_P0_CHIP.fg, textDecoration:"none", fontWeight:500 }}>Open in Slack ↗</a>
-                    </P0ContactRow>
-                  )}
-                  {emp.email && (
-                    <P0ContactRow label="Email">
-                      <a href={`mailto:${emp.email}`} style={{ color:_P0_CHIP.fg, textDecoration:"none", fontWeight:500 }}>{emp.email}</a>
-                    </P0ContactRow>
-                  )}
-                  {!phone && !messengers.length && !emp.slackUrl && !emp.email && (
+                  {!phone && !messengers.length && (
                     <div style={{ fontSize:12, color:"var(--fg-3)", fontStyle:"italic" }}>No contact info on file.</div>
                   )}
                 </div>
