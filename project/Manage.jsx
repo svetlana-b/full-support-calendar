@@ -541,7 +541,7 @@ function EmployeeEditor({ employees, ops }) {
       <div style={{ display:"flex", alignItems:"center", marginBottom:10 }}>
         <div style={sectionLabel}>Employees · {sorted.length}</div>
         <div style={{ flex:1 }}/>
-        <button onClick={startNew} style={inlineBtn("primary")}>+ Add employee</button>
+        <button onClick={startNew} style={inlineBtn("primary")}>+ Add Employee</button>
       </div>
 
       {editing === "__new__" && <div style={rowCard}>{editor}</div>}
