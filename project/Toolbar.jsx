@@ -54,6 +54,8 @@ function Toolbar({
 }) {
   const monthLabel = `${MONTH_NAMES[monthDate.getMonth()]} ${monthDate.getFullYear()}`;
 
+  const [p0Open, setP0Open] = React.useState(false);
+
   // Detect whether the buttons group has wrapped to a second row.
   const [twoRows, setTwoRows] = React.useState(false);
   const leftRef = React.useRef(null);
@@ -153,6 +155,20 @@ function Toolbar({
         {/* Sign-out column — outside the wrapping flow, always stays at top-right */}
         {user && (
           <div style={{ flexShrink:0, alignSelf:"flex-start", padding:"10px 20px 10px 8px", display:"flex", alignItems:"center", gap:8 }}>
+            <button onClick={() => setP0Open(true)} title="P0 Escalation — Team Lead contacts" style={{
+              height:32, padding:"0 10px",
+              border:"1px solid var(--tw-gold-border)",
+              background:"var(--role-teamlead-bg)", color:"var(--role-teamlead-fg)",
+              borderRadius:"var(--r-lg)", fontFamily:"var(--font-button)",
+              fontSize:12, fontWeight:700, cursor:"pointer",
+              display:"inline-flex", alignItems:"center", gap:5, letterSpacing:".03em",
+              boxShadow:"0 0 8px rgba(240,208,128,0.35), 0 0 0 1px rgba(240,208,128,0.15)",
+            }}>
+              <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.36 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 16.92z"/>
+              </svg>
+              P0
+            </button>
             <ThemeToggle/>
             <div title={user.email || user.displayName || ""} style={{
               display:"inline-flex", alignItems:"center", gap:6, height:32, padding:"0 4px 0 8px",
@@ -165,6 +181,7 @@ function Toolbar({
           </div>
         )}
       </div>
+      <P0ContactsModal open={p0Open} onClose={() => setP0Open(false)} employees={employees}/>
     </div>
   );
 }
@@ -262,6 +279,161 @@ function ViewSwitcher({ current, onChange }) {
           transition:"background 120ms, color 120ms",
         }}>{v.label}</button>
       ))}
+    </div>
+  );
+}
+
+const _P0_GOLD_RING = "rgba(240,208,128,0.40)";
+const _P0_CHIP = { bg:"var(--role-teamlead-bg)", border:"var(--role-teamlead-border)", fg:"var(--role-teamlead-fg)" };
+
+function P0ContactsModal({ open, onClose, employees }) {
+  const [contacts, setContacts] = React.useState({});
+
+  React.useEffect(() => {
+    if (!open || !window.__firebaseReady) return;
+    const { fbDb, fb } = window;
+    const leads = (employees || []).filter(e => /team\s*lead/i.test(e.roleRaw || e.role || ""));
+    if (!leads.length) return;
+    Promise.all(
+      leads.map(emp =>
+        fb.getDoc(fb.doc(fbDb, "contacts", emp.fullName))
+          .then(snap => [emp.fullName, snap.exists() ? snap.data() : {}])
+          .catch(() => [emp.fullName, {}])
+      )
+    ).then(pairs => setContacts(Object.fromEntries(pairs)));
+  }, [open]);
+
+  if (!open) return null;
+
+  const leads = (employees || []).filter(e => /team\s*lead/i.test(e.roleRaw || e.role || ""));
+
+  return ReactDOM.createPortal((
+    <div onClick={onClose} role="dialog" aria-modal="true" style={{
+      position:"fixed", inset:0, background:"rgba(15,23,42,0.45)",
+      display:"flex", alignItems:"center", justifyContent:"center",
+      zIndex:1000, padding:24,
+    }}>
+      <div onClick={e => e.stopPropagation()} style={{
+        background:"var(--bg-surface)", border:`1px solid ${_P0_GOLD_RING}`,
+        borderRadius:"var(--r-xl)", width:"min(460px,100%)",
+        boxShadow:"0 20px 60px rgba(15,23,42,0.25)",
+        fontFamily:"var(--font-ui)", overflow:"hidden",
+      }}>
+        {/* Header */}
+        <div style={{
+          display:"flex", alignItems:"center", justifyContent:"space-between",
+          padding:"16px 20px", borderBottom:`1px solid ${_P0_GOLD_RING}`,
+        }}>
+          <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+            <span style={{
+              width:30, height:30, borderRadius:"var(--r-md)", flexShrink:0,
+              background:"var(--role-teamlead-bg)", color:"var(--role-teamlead-fg)",
+              border:"1px solid var(--role-teamlead-border)",
+              display:"inline-flex", alignItems:"center", justifyContent:"center", fontSize:14,
+            }}>⚡</span>
+            <div>
+              <div style={{ fontFamily:"var(--font-name)", fontSize:18, fontWeight:300, color:"var(--fg-1)" }}>P0 Escalation</div>
+              <div style={{ fontSize:11, color:"var(--role-teamlead-fg)", marginTop:1, opacity:.8 }}>Team Lead contacts</div>
+            </div>
+          </div>
+          <button onClick={onClose} style={{
+            display:"inline-flex", alignItems:"center", gap:4,
+            height:28, padding:"0 10px",
+            border:`1px solid ${_P0_GOLD_RING}`, borderRadius:"var(--r-pill)",
+            background:"var(--role-teamlead-bg)", color:"var(--role-teamlead-fg)",
+            fontFamily:"var(--font-button)", fontSize:12, cursor:"pointer",
+          }}>
+            <svg width={10} height={10} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+            Close
+          </button>
+        </div>
+
+        {/* Team lead cards */}
+        <div style={{ padding:"12px 20px 20px", display:"flex", flexDirection:"column", gap:12 }}>
+          {leads.length === 0 ? (
+            <div style={{ fontSize:13, color:"var(--fg-3)", fontStyle:"italic", padding:"8px 0" }}>No team leads found.</div>
+          ) : leads.map((emp, i) => {
+            const contact = contacts[emp.fullName] || {};
+            const phone = contact.phone || "";
+            const messengers = Array.isArray(contact.messengers) ? contact.messengers : [];
+            const telHref = phone ? `tel:${phone.replace(/\s+/g, "")}` : null;
+            const displayPhone = phone ? (/^\+/.test(phone) ? phone : "+" + phone) : "";
+            const av = roleAvatarTint(emp.roleRaw || emp.role || "");
+            return (
+              <div key={emp.id || i} style={{
+                background:"var(--bg-page)", border:`1px solid ${_P0_GOLD_RING}`,
+                borderRadius:"var(--r-lg)", padding:"14px 16px",
+              }}>
+                <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:12 }}>
+                  <div style={{
+                    width:38, height:38, borderRadius:"50%", flexShrink:0,
+                    background:av.bg, border:`1px solid ${av.border}`, color:av.fg,
+                    display:"flex", alignItems:"center", justifyContent:"center",
+                    fontFamily:"var(--font-name)", fontWeight:700, fontSize:13,
+                  }}>{emp.initials || "?"}</div>
+                  <div>
+                    <div style={{ fontFamily:"var(--font-name)", fontSize:15, fontWeight:500, color:"var(--fg-1)", lineHeight:1.2 }}>
+                      {emp.fullName || emp.name}
+                    </div>
+                    <div style={{ fontSize:11, color:"var(--fg-2)", marginTop:2 }}>{emp.roleRaw || emp.role}</div>
+                  </div>
+                </div>
+                <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
+                  {phone && (
+                    <P0ContactRow label="Phone">
+                      <a href={telHref} style={{ color:_P0_CHIP.fg, textDecoration:"none", fontWeight:500 }}>{displayPhone}</a>
+                    </P0ContactRow>
+                  )}
+                  {messengers.length > 0 && (
+                    <P0ContactRow label="Messenger">
+                      <div style={{ display:"flex", flexWrap:"wrap", gap:5 }}>
+                        {messengers.map(m => (
+                          <span key={m} style={{
+                            display:"inline-flex", alignItems:"center",
+                            height:22, padding:"0 8px",
+                            background:_P0_CHIP.bg, border:`1px solid ${_P0_CHIP.border}`,
+                            color:_P0_CHIP.fg, borderRadius:"var(--r-pill)",
+                            fontSize:11, fontWeight:500,
+                          }}>{m}</span>
+                        ))}
+                      </div>
+                    </P0ContactRow>
+                  )}
+                  {emp.slackUrl && (
+                    <P0ContactRow label="Slack">
+                      <a href={emp.slackUrl} target="_blank" rel="noreferrer" style={{ color:_P0_CHIP.fg, textDecoration:"none", fontWeight:500 }}>Open in Slack ↗</a>
+                    </P0ContactRow>
+                  )}
+                  {emp.email && (
+                    <P0ContactRow label="Email">
+                      <a href={`mailto:${emp.email}`} style={{ color:_P0_CHIP.fg, textDecoration:"none", fontWeight:500 }}>{emp.email}</a>
+                    </P0ContactRow>
+                  )}
+                  {!phone && !messengers.length && !emp.slackUrl && !emp.email && (
+                    <div style={{ fontSize:12, color:"var(--fg-3)", fontStyle:"italic" }}>No contact info on file.</div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <div style={{
+          padding:"12px 20px", borderTop:`1px solid ${_P0_GOLD_RING}`,
+          textAlign:"center", fontSize:13, fontWeight:500, color:"var(--role-teamlead-fg)", opacity:.9,
+        }}>
+          🔒 Phone number can be used <strong style={{ fontWeight:700 }}>ONLY</strong> by Support members
+        </div>
+      </div>
+    </div>
+  ), document.body);
+}
+
+function P0ContactRow({ label, children }) {
+  return (
+    <div>
+      <div style={{ fontSize:10, fontWeight:600, textTransform:"uppercase", letterSpacing:".08em", color:"var(--role-teamlead-fg)", opacity:.6, marginBottom:2 }}>{label}</div>
+      <div style={{ fontSize:12 }}>{children}</div>
     </div>
   );
 }
