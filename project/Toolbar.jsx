@@ -164,7 +164,7 @@ function Toolbar({
               display:"inline-flex", alignItems:"center", gap:5, letterSpacing:".03em",
               boxShadow:"0 0 8px rgba(240,208,128,0.35), 0 0 0 1px rgba(240,208,128,0.15)",
             }}>
-              <img src="assets/call.png" alt="" style={{ width:14, height:14, objectFit:"contain", filter:"var(--p0-icon-filter)" }}/>
+              <img src="assets/call.png" alt="" style={{ width:18, height:18, objectFit:"contain", filter:"var(--p0-icon-filter)" }}/>
               P0
             </button>
             <ThemeToggle/>
