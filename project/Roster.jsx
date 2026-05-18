@@ -107,7 +107,8 @@ function Roster({ open, employees, onClose }) {
   const headerStyle = {
     padding: "10px 12px",
     fontFamily: "var(--font-ui)", fontSize: 12, fontWeight: 700,
-    color: "var(--tw-gold-fg-deep)", background: "var(--tw-gold-bg-soft)",
+    color: "var(--tw-gold-fg-deep)",
+    background: "linear-gradient(var(--tw-gold-bg-soft), var(--tw-gold-bg-soft)), var(--bg-surface)",
     textAlign: "left", letterSpacing: ".03em",
     borderRight: "1px solid var(--tw-gold-border)",
     borderBottom: "1px solid var(--tw-gold-border)",

@@ -12,11 +12,11 @@ const sizes = {
   lg: { height: 48, padding: "0 24px", fontSize: 18 },
 };
 const variants = {
-  primary:     { background: "var(--action-primary)",       color: "var(--fg-on-primary)" },
+  primary:     { background: "var(--action-primary)",       color: "var(--fg-on-primary)", borderColor: "var(--action-primary-border)" },
   secondary:   { background: "var(--action-secondary-bg)",  color: "var(--action-secondary-fg)" },
   outline:     { background: "transparent", borderColor: "var(--border-strong)", color: "var(--action-primary)" },
   link:        { background: "transparent", color: "var(--action-primary)", padding: 0, border: 0 },
-  round:       { background: "var(--action-primary)", color: "var(--fg-on-primary)", borderRadius: "var(--r-pill)" },
+  round:       { background: "var(--action-primary)", color: "var(--fg-on-primary)", borderRadius: "var(--r-pill)", borderColor: "var(--action-primary-border)" },
   destructive: { background: "var(--action-destructive)",   color: "var(--fg-invert)" },
 };
 function Button({ variant = "primary", size = "md", children, loading, disabled, onClick, icon, style }) {

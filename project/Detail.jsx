@@ -318,7 +318,7 @@ function TextArea({ value, onChange }) {
 }
 
 const primaryBtn = {
-  height:36, padding:"0 16px", border:"1px solid transparent",
+  height:36, padding:"0 16px", border:"1px solid var(--action-primary-border)",
   background:"var(--action-primary)", color:"var(--fg-on-primary)",
   borderRadius:"var(--r-lg)", fontFamily:"var(--font-button)", fontWeight:500, fontSize:14, cursor:"pointer"
 };

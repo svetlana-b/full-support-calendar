@@ -26,7 +26,9 @@ const wrInput = {
 };
 const wrBtn = (variant = "default", disabled = false) => ({
   height: 32, padding: "0 14px",
-  border: "1px solid var(--border-strong)",
+  border: variant === "primary"
+    ? "1px solid var(--action-primary-border)"
+    : "1px solid var(--border-strong)",
   background: variant === "primary"
     ? (disabled ? "var(--border-strong)" : "var(--action-primary)")
     : "var(--bg-surface)",

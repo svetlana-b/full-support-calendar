@@ -78,12 +78,12 @@ function MonthC({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                       const c = COUNTRIES[t];
                       return (
                         <span key={t} style={{
-                          display:"inline-flex", alignItems:"center", gap:3,
+                          display:"inline-flex", alignItems:"center",
                           padding:"2px 6px", borderRadius:4,
                           background: tint.bg, border:`1px solid ${tint.border}`, color: tint.fg,
                           fontFamily:"var(--font-ui)", fontSize:10, fontWeight:600, letterSpacing:".02em"
                         }}>
-                          <CountryFlag code={t}/>{c?.name || t}
+                          {c?.name || t}
                         </span>
                       );
                     })}

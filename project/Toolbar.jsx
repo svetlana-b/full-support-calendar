@@ -137,7 +137,7 @@ function Toolbar({
             )}
 
             <button onClick={onAdd} style={{
-              height:32, padding:"0 14px", border:"1px solid transparent",
+              height:32, padding:"0 14px", border:"1px solid var(--action-primary-border)",
               background:"var(--action-primary)", color:"var(--fg-on-primary)",
               borderRadius:"var(--r-lg)", fontFamily:"var(--font-button)",
               fontWeight:500, fontSize:13, cursor:"pointer",

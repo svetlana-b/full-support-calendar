@@ -62,7 +62,7 @@ const rowCard = {
 };
 const inlineBtn = (variant="default") => ({
   height:30, padding:"0 10px",
-  border:"1px solid var(--border-strong)",
+  border: variant==="primary" ? "1px solid var(--action-primary-border)" : "1px solid var(--border-strong)",
   background: variant==="primary" ? "var(--action-primary)" : "var(--bg-surface)",
   color: variant==="primary" ? "var(--fg-on-primary)" : (variant==="danger" ? "var(--action-destructive)" : "var(--fg-active)"),
   borderRadius:"var(--r-md)", fontFamily:"var(--font-button)", fontWeight:500, fontSize:12, cursor:"pointer",
