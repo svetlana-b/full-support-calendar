@@ -90,7 +90,7 @@ function ContactDetails({ employee, contact, onClose }) {
           )}
 
           {messengers.length > 0 && (
-            <ContactSection label="Preferred messenger">
+            <ContactSection label="Preferred Messenger">
               <div style={{ display:"flex", flexWrap:"wrap", gap:6 }}>
                 {messengers.map(m => (
                   <span key={m} style={{

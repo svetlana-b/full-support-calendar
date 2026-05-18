@@ -141,7 +141,7 @@ function MonthA({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                     background: "var(--tw-gray-6)",
                     display: "flex", flexDirection: "column", justifyContent: "center", lineHeight: 1.25,
                 }}>
-                    <span>Tier 2 on-call</span>
+                    <span>Tier 2 On-Call</span>
                     <span style={{ fontSize: 9, fontWeight: 500, color: "var(--fg-3)", letterSpacing: ".04em", textTransform: "none" }}>Mon – Sun</span>
                 </div>
             </div>

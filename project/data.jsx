@@ -16,7 +16,7 @@ window.TIER2_ONCALL = window.TIER2_ONCALL || {};
 const LEAVE_TYPES = {
   Vacation: { id:"Vacation", label:"Vacation",  icon:"assets/vacation.png",   bar:"#a78bfa", barHover:"#c4b5fd", bg:"var(--ev-vacation-bg)", fg:"var(--ev-vacation-fg)", dot:"#a78bfa" },
   PTO:      { id:"PTO",      label:"PTO",       icon:"assets/pto.png",        bar:"#0061FF", barHover:"#3B82F6", bg:"var(--ev-pto-bg)",      fg:"var(--ev-pto-fg)",      dot:"#0061FF" },
-  Sick:     { id:"Sick",     label:"Sick leave",icon:"assets/sick-leave.png", bar:"#fb923c", barHover:"#fdba74", bg:"var(--ev-sick-bg)",     fg:"var(--ev-sick-fg)",     dot:"#fb923c" },
+  Sick:     { id:"Sick",     label:"Sick Leave",icon:"assets/sick-leave.png", bar:"#fb923c", barHover:"#fdba74", bg:"var(--ev-sick-bg)",     fg:"var(--ev-sick-fg)",     dot:"#fb923c" },
 };
 
 // Today anchor used for "today" highlighting across all calendar variants.

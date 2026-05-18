@@ -20,11 +20,11 @@ function ManagePanel({ open, onClose, employees, coverage, holidays, tier2, ops,
       }}>
         <div style={{ padding:"18px 22px 0", borderBottom:"1px solid var(--border-weak)" }}>
           <div style={{ display:"flex", alignItems:"center" }}>
-            <h3 style={{ margin:0, fontFamily:"var(--font-display)", fontWeight:700, fontSize:20, color:"var(--fg-1)", flex:1 }}>Manage schedule</h3>
+            <h3 style={{ margin:0, fontFamily:"var(--font-display)", fontWeight:700, fontSize:20, color:"var(--fg-1)", flex:1 }}>Manage Schedule</h3>
             <button onClick={onClose} style={mpCloseBtn} aria-label="Close">×</button>
           </div>
           <div style={{ display:"flex", gap:4, marginTop:14, flexWrap:"wrap" }}>
-            {[["oncall","Tier 2 on-call"],["weekends","Weekend coverage"],["holidays","Holidays"],["employees","Employees"],["reports","Reports"]].map(([id,l]) => (
+            {[["oncall","Tier 2 On-Call"],["weekends","Weekend Coverage"],["holidays","Holidays"],["employees","Employees"],["reports","Reports"]].map(([id,l]) => (
               <button key={id} onClick={() => setTab(id)} style={{
                 padding:"8px 14px", border:0, background:"transparent",
                 fontFamily:"var(--font-button)", fontWeight:500, fontSize:13,
@@ -97,9 +97,9 @@ function OncallEditor({ employees, tier2, ops }) {
   return (
     <div>
       <div style={{ display:"flex", alignItems:"center", marginBottom:10 }}>
-        <div style={sectionLabel}>Tier 2 on-call · {weeks.length} weeks</div>
+        <div style={sectionLabel}>Tier 2 On-Call · {weeks.length} weeks</div>
         <div style={{ flex:1 }}/>
-        <button onClick={startNew} style={inlineBtn("primary")}>+ Add week</button>
+        <button onClick={startNew} style={inlineBtn("primary")}>+ Add Week</button>
       </div>
 
       {editing === "__new__" && (
@@ -212,9 +212,9 @@ function WeekendEditor({ employees, coverage, ops }) {
   return (
     <div>
       <div style={{ display:"flex", alignItems:"center", marginBottom:10 }}>
-        <div style={sectionLabel}>Weekend coverage · {rows.length} shifts</div>
+        <div style={sectionLabel}>Weekend Coverage · {rows.length} shifts</div>
         <div style={{ flex:1 }}/>
-        <button onClick={startNew} style={inlineBtn("primary")}>+ Add shift</button>
+        <button onClick={startNew} style={inlineBtn("primary")}>+ Add Shift</button>
       </div>
 
       {editing === "__new__" && <div style={rowCard}>{editor(false)}</div>}
@@ -363,7 +363,7 @@ function HolidaysEditor({ employees, holidays, ops }) {
         ))}
         <button onClick={() => {
           setDraft(d => ({ ...d, workingRows: [...d.workingRows, { employeeId:"", start:"09:00", end:"17:00" }] }));
-        }} style={{ ...inlineBtn(), alignSelf:"flex-start" }}>+ Add person</button>
+        }} style={{ ...inlineBtn(), alignSelf:"flex-start" }}>+ Add Person</button>
       </div>
       <div style={{ display:"flex", gap:6, justifyContent:"flex-end" }}>
         <button onClick={() => setEditing(null)} style={inlineBtn()}>Cancel</button>
@@ -377,7 +377,7 @@ function HolidaysEditor({ employees, holidays, ops }) {
       <div style={{ display:"flex", alignItems:"center", marginBottom:10 }}>
         <div style={sectionLabel}>Holidays · {rows.length}</div>
         <div style={{ flex:1 }}/>
-        <button onClick={startNew} style={inlineBtn("primary")}>+ Add holiday</button>
+        <button onClick={startNew} style={inlineBtn("primary")}>+ Add Holiday</button>
       </div>
 
       {editing === "__new__" && <div style={rowCard}>{editor(false)}</div>}

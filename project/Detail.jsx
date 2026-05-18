@@ -104,7 +104,7 @@ function WeekendCoveragePopup({ date, coverage, employees, onClose }) {
             display:"inline-flex", alignItems:"center", gap:6,
           }}>
             <span style={{ width:6, height:6, borderRadius:"50%", background:"var(--tw-gold-accent)" }}/>
-            Weekend coverage
+            Weekend Coverage
           </div>
           <div style={{ fontFamily:"var(--font-ui)", fontSize:18, fontWeight:600, color:"var(--fg-1)", marginTop:2 }}>{fmtDate}</div>
         </div>
@@ -224,7 +224,7 @@ function AddRequest({ open, seedDate, editEvent, employees, currentUserEmail, is
   return ReactDOM.createPortal((
     <div onClick={!submitting ? onClose : undefined} style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.20)", display:"flex", alignItems:"center", justifyContent:"center", zIndex:50 }}>
       <div onClick={e=>e.stopPropagation()} style={{ width:440, background:"var(--bg-surface)", borderRadius:"var(--r-xl)", boxShadow:"var(--shadow-modal)", padding:"22px 24px 20px" }}>
-        <h3 style={{ margin:"0 0 4px", fontFamily:"var(--font-display)", fontWeight:700, fontSize:20, color:"var(--fg-1)" }}>{editEvent ? "Edit time off" : "Add time off"}</h3>
+        <h3 style={{ margin:"0 0 4px", fontFamily:"var(--font-display)", fontWeight:700, fontSize:20, color:"var(--fg-1)" }}>{editEvent ? "Edit Time Off" : "Add Time Off"}</h3>
         <div style={{ fontFamily:"var(--font-ui)", fontSize:13, color:"var(--fg-2)", marginBottom:18 }}>
           {editEvent ? "Changes sync to Firestore in real time." : "This will be saved to Firestore and visible to everyone."}
         </div>
@@ -281,7 +281,7 @@ function AddRequest({ open, seedDate, editEvent, employees, currentUserEmail, is
         <div style={{ display:"flex", gap:8, justifyContent:"flex-end", marginTop:20 }}>
           <button disabled={submitting} onClick={onClose} style={outlineBtn()}>Cancel</button>
           <button disabled={submitting} onClick={handleSave} style={primaryBtn}>
-            {submitting ? "Saving…" : (editEvent ? "Save changes" : "Save request")}
+            {submitting ? "Saving…" : (editEvent ? "Save Changes" : "Save Request")}
           </button>
         </div>
       </div>

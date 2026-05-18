@@ -42,22 +42,22 @@ function MonthC({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
     <div style={{ display:"grid", gridTemplateColumns:"320px 1fr", gap:16 }}>
       {/* LEFT: ops panels */}
       <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
-        <OpsPanel title="Out today" count={outToday.length} accent="#FF8D28">
+        <OpsPanel title="Out Today" count={outToday.length} accent="#FF8D28">
           {outToday.length === 0 && <EmptyRow>Everyone is in today.</EmptyRow>}
           {outToday.map(ev => <PersonRow key={ev.id} ev={ev} onOpen={()=>onOpenEvent(ev)} showDates={false}/>)}
         </OpsPanel>
 
-        <OpsPanel title="This week" count={outThisWeek.length}>
+        <OpsPanel title="This Week" count={outThisWeek.length}>
           {outThisWeek.length === 0 && <EmptyRow>No one is scheduled off.</EmptyRow>}
           {outThisWeek.map(ev => <PersonRow key={ev.id} ev={ev} onOpen={()=>onOpenEvent(ev)}/>)}
         </OpsPanel>
 
-        <OpsPanel title="Coming up (14 days)" count={upcoming.length}>
+        <OpsPanel title="Coming Up (14 Days)" count={upcoming.length}>
           {upcoming.length === 0 && <EmptyRow>Nothing pending.</EmptyRow>}
           {upcoming.slice(0, 6).map(ev => <PersonRow key={ev.id} ev={ev} onOpen={()=>onOpenEvent(ev)}/>)}
         </OpsPanel>
 
-        <OpsPanel title="Holidays this month" count={holidayEntries.length}>
+        <OpsPanel title="Holidays This Month" count={holidayEntries.length}>
           {holidayEntries.length === 0 && <EmptyRow>No holidays.</EmptyRow>}
           {holidayEntries.map(([k, h], i) => {
             const d = new Date(k + "T00:00:00");
@@ -100,7 +100,7 @@ function MonthC({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
           })}
         </OpsPanel>
 
-        <OpsPanel title="Weekend coverage">
+        <OpsPanel title="Weekend Coverage">
           {coverageEntries.length === 0 && <EmptyRow>No coverage set.</EmptyRow>}
           {coverageEntries.map(([k, cov]) => {
             const d = new Date(k);

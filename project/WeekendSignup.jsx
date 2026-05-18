@@ -271,7 +271,7 @@ function WeekendSignup({ open, onClose, currentUser }) {
             borderRadius:"var(--r-lg)", width:"min(420px, 100%)", padding:24,
           }}>
             <div style={{ fontSize:16, fontWeight:600, marginBottom:8 }}>
-              {selected.action === "release" ? "Release shift?" : "Confirm your shift"}
+              {selected.action === "release" ? "Release Shift?" : "Confirm Your Shift"}
             </div>
             <div style={{ fontSize:13, color:"var(--fg-2)", marginBottom:14, lineHeight:1.5 }}>
               {selected.action === "release"
@@ -290,7 +290,7 @@ function WeekendSignup({ open, onClose, currentUser }) {
             <div style={{ display:"flex", gap:8 }}>
               <button onClick={() => setConfirming(false)} disabled={busy} style={wsCancelBtn}>Cancel</button>
               <button onClick={submit} disabled={busy} style={wsConfirmBtn}>
-                {busy ? "Saving…" : (selected.action === "release" ? "Release shift" : "Confirm sign-up")}
+                {busy ? "Saving…" : (selected.action === "release" ? "Release Shift" : "Confirm Sign-Up")}
               </button>
             </div>
           </div>
@@ -394,7 +394,7 @@ function WSSlot({ entry, day, shiftType, myName, selected, onSlotClick, onConfir
           background:"var(--action-primary)", color:"var(--fg-on-primary)",
           border:"1px solid var(--action-primary-border)", borderRadius:"var(--r-md)", cursor:"pointer",
           fontFamily:"var(--font-button)", fontWeight:600, fontSize:12,
-        }}>Claim selected shift</button>
+        }}>Claim Selected Shift</button>
       </>)}
       {heldByOther && (<>
         <div style={{ fontSize:13, fontWeight:500, color:"#92400E" }}>

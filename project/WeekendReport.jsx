@@ -197,7 +197,7 @@ function WeekendReportTab({ coverage, holidays, employees }) {
   return (
     <div>
       <div style={{ display: "flex", alignItems: "center", marginBottom: 10 }}>
-        <div style={wrSectionLabel}>Weekend coverage report</div>
+        <div style={wrSectionLabel}>Weekend Coverage Report</div>
       </div>
 
       <div style={wrCard}>

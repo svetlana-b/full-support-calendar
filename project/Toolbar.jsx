@@ -118,12 +118,12 @@ function Toolbar({
             <FilterPill label="Team" value={employeeFilter} onChange={setEmployeeFilter}
               options={[["all","Everyone"], ...(employees || []).map(e => [e.id, e.name])]}/>
             <FilterPill label="Type" value={typeFilter} onChange={setTypeFilter}
-              options={[["all","All leave types"], ...Object.values(LEAVE_TYPES).map(t => [t.id, t.label])]}/>
+              options={[["all","All Leave Types"], ...Object.values(LEAVE_TYPES).map(t => [t.id, t.label])]}/>
 
             {onWeekendSignup && (
               <button onClick={onWeekendSignup} style={secondaryBtn} title="Sign up for weekend coverage shifts">
                 <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-                Weekend shifts
+                Weekend Shifts
               </button>
             )}
 
@@ -146,7 +146,7 @@ function Toolbar({
               display:"inline-flex", alignItems:"center", gap:6
             }}>
               <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
-              Take day off
+              Take Day Off
             </button>
 
           </div>
@@ -155,7 +155,7 @@ function Toolbar({
         {/* Sign-out column — outside the wrapping flow, always stays at top-right */}
         {user && (
           <div style={{ flexShrink:0, alignSelf:"flex-start", padding:"10px 20px 10px 8px", display:"flex", alignItems:"center", gap:8 }}>
-            <button onClick={() => setP0Open(true)} title="P0 Escalation — Team Lead contacts" style={{
+            <button onClick={() => setP0Open(true)} title="P0 Escalation — Team Lead Contacts" style={{
               height:32, padding:"0 10px",
               border:"1px solid var(--tw-gold-border)",
               background:"var(--role-teamlead-bg)", color:"var(--role-teamlead-fg)",
@@ -165,7 +165,7 @@ function Toolbar({
               boxShadow:"0 0 8px rgba(240,208,128,0.35), 0 0 0 1px rgba(240,208,128,0.15)",
             }}>
               <img src="assets/call.png" alt="" style={{ width:18, height:18, objectFit:"contain", filter:"var(--p0-icon-filter)" }}/>
-              P0
+              PO Contacts
             </button>
             <ThemeToggle/>
             <div title={user.email || user.displayName || ""} style={{
@@ -336,7 +336,7 @@ function P0ContactsModal({ open, onClose, employees }) {
             }}>⚡</span>
             <div>
               <div style={{ fontFamily:"var(--font-name)", fontSize:18, fontWeight:300, color:"var(--fg-1)" }}>P0 Escalation</div>
-              <div style={{ fontSize:11, color:"var(--role-teamlead-fg)", marginTop:1, opacity:.8 }}>Team Lead contacts</div>
+              <div style={{ fontSize:11, color:"var(--role-teamlead-fg)", marginTop:1, opacity:.8 }}>Team Lead Contacts</div>
             </div>
           </div>
           <button onClick={onClose} style={{
@@ -388,7 +388,7 @@ function P0ContactsModal({ open, onClose, employees }) {
                     </P0ContactRow>
                   )}
                   {messenger && (
-                    <P0ContactRow label="Preferred messenger">
+                    <P0ContactRow label="Preferred Messenger">
                       <span style={{
                         display:"inline-flex", alignItems:"center",
                         height:22, padding:"0 8px",

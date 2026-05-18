@@ -359,7 +359,7 @@ code, kbd, .tw-mono {
   --tw-gold-border:   rgba(240, 208, 128, 0.40);
 
   --action-primary:        rgba(200, 245, 100, 0.15);
-  --p0-icon-filter: invert(1) sepia(1) saturate(3) hue-rotate(5deg) brightness(1.1);
+  --p0-icon-filter: invert(75%) sepia(1) brightness(84%);
   --action-primary-hover:  rgba(200, 245, 100, 0.25);
   --action-primary-border: rgba(200, 245, 100, 0.35);
   --fg-on-primary:         #C8F564;
