@@ -127,6 +127,7 @@
   --action-primary:        var(--tw-lime-accent);        /* C8F564 — hero lime */
   --action-primary-hover:  var(--tw-lime-accent-hover);  /* B6E443 */
   --action-primary-border: transparent;
+  --p0-icon-filter: brightness(0) saturate(100%) invert(42%) sepia(43%) saturate(600%) hue-rotate(10deg) brightness(90%);
   --action-secondary-bg:   var(--tw-lime-bg-soft);       /* F1F8DA */
   --action-secondary-fg:   var(--tw-lime-fg-deep);       /* 5C8C1F */
   --action-destructive:    var(--tw-red-dest);           /* FF383C */
@@ -358,6 +359,7 @@ code, kbd, .tw-mono {
   --tw-gold-border:   rgba(240, 208, 128, 0.40);
 
   --action-primary:        rgba(200, 245, 100, 0.15);
+  --p0-icon-filter: brightness(0) saturate(100%) invert(85%) sepia(30%) saturate(500%) hue-rotate(5deg) brightness(105%);
   --action-primary-hover:  rgba(200, 245, 100, 0.25);
   --action-primary-border: rgba(200, 245, 100, 0.35);
   --fg-on-primary:         #C8F564;
