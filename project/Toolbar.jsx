@@ -359,8 +359,8 @@ function P0ContactsModal({ open, onClose, employees }) {
             <div style={{ fontSize:13, color:"var(--fg-3)", fontStyle:"italic", padding:"8px 0" }}>No team leads found.</div>
           ) : leads.map((emp, i) => {
             const contact = contacts[emp.fullName] || {};
-            const phone = contact.phone || "";
-            const messengers = Array.isArray(contact.messengers) ? contact.messengers : [];
+            const phone = contact.contact || "";
+            const messenger = contact.preferred_messenger || "";
             const telHref = phone ? `tel:${phone.replace(/\s+/g, "")}` : null;
             const displayPhone = phone ? (/^\+/.test(phone) ? phone : "+" + phone) : "";
             const av = roleAvatarTint(emp.roleRaw || emp.role || "");
@@ -389,22 +389,18 @@ function P0ContactsModal({ open, onClose, employees }) {
                       <a href={telHref} style={{ color:_P0_CHIP.fg, textDecoration:"none", fontWeight:500 }}>{displayPhone}</a>
                     </P0ContactRow>
                   )}
-                  {messengers.length > 0 && (
-                    <P0ContactRow label="Messenger">
-                      <div style={{ display:"flex", flexWrap:"wrap", gap:5 }}>
-                        {messengers.map(m => (
-                          <span key={m} style={{
-                            display:"inline-flex", alignItems:"center",
-                            height:22, padding:"0 8px",
-                            background:_P0_CHIP.bg, border:`1px solid ${_P0_CHIP.border}`,
-                            color:_P0_CHIP.fg, borderRadius:"var(--r-pill)",
-                            fontSize:11, fontWeight:500,
-                          }}>{m}</span>
-                        ))}
-                      </div>
+                  {messenger && (
+                    <P0ContactRow label="Preferred messenger">
+                      <span style={{
+                        display:"inline-flex", alignItems:"center",
+                        height:22, padding:"0 8px",
+                        background:_P0_CHIP.bg, border:`1px solid ${_P0_CHIP.border}`,
+                        color:_P0_CHIP.fg, borderRadius:"var(--r-pill)",
+                        fontSize:11, fontWeight:500,
+                      }}>{messenger}</span>
                     </P0ContactRow>
                   )}
-                  {!phone && !messengers.length && (
+                  {!phone && !messenger && (
                     <div style={{ fontSize:12, color:"var(--fg-3)", fontStyle:"italic" }}>No contact info on file.</div>
                   )}
                 </div>
