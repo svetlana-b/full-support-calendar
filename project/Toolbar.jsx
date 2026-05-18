@@ -314,9 +314,9 @@ function CelebrationPill({ item, onOpen }) {
     if (parts.length < 2) return parts[0] || "";
     return `${parts[0]} ${parts[parts.length - 1][0]}.`;
   };
-  const bg = isBday ? "#FCE7F3" : "#DCFCE7";
-  const fg = isBday ? "#9D174D" : "#166534";
-  const border = isBday ? "#F9A8D4" : "#86EFAC";
+  const bg     = isBday ? "var(--celebration-birthday-bg)"     : "var(--celebration-anniversary-bg)";
+  const fg     = isBday ? "var(--celebration-birthday-fg)"     : "var(--celebration-anniversary-fg)";
+  const border = isBday ? "var(--celebration-birthday-border)" : "var(--celebration-anniversary-border)";
   const tip = isBday
     ? `${item.emp.fullName} · Birthday`
     : `${item.emp.fullName} · ${item.years}-year anniversary`;

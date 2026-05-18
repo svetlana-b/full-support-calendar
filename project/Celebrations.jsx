@@ -71,8 +71,8 @@ function CelebrationChips({ items, size = "md" }) {
 function CelebrationChip({ item, size = "md" }) {
   const sm = size === "sm";
   const isBday = item.kind === "birthday";
-  const bg = isBday ? "#FCE7F3" : "#DCFCE7"; // soft pink / soft green
-  const fg = isBday ? "#9D174D" : "#166534";
+  const bg = isBday ? "var(--celebration-birthday-bg)"    : "var(--celebration-anniversary-bg)";
+  const fg = isBday ? "var(--celebration-birthday-fg)"    : "var(--celebration-anniversary-fg)";
   const title = isBday
     ? `${item.emp.fullName} · Birthday`
     : `${item.emp.fullName} · ${item.years}-year anniversary`;

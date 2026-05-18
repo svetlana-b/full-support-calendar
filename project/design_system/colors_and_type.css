@@ -213,6 +213,10 @@
   --holiday-ua-bg: #F0F6FF;  --holiday-ua-border: #BFD7FF;  --holiday-ua-fg: #1E40AF;
   --holiday-mx-bg: #F1FAF1;  --holiday-mx-border: #B7E4C0;  --holiday-mx-fg: #166534;
   --holiday-cn-bg: #FDF0F0;  --holiday-cn-border: #F5C4C4;  --holiday-cn-fg: #9F1239;
+
+  /* Celebration badge colors — light mode (solid soft fills + dark fg) */
+  --celebration-birthday-bg:     #FCE7F3;  --celebration-birthday-border:     #F9A8D4;  --celebration-birthday-fg:     #9D174D;
+  --celebration-anniversary-bg:  #DCFCE7;  --celebration-anniversary-border:  #86EFAC;  --celebration-anniversary-fg:  #166534;
 }
 
 /* ============================================================
@@ -388,6 +392,10 @@ code, kbd, .tw-mono {
   --holiday-ua-bg: rgba(56,189,248,0.12);   --holiday-ua-border: rgba(56,189,248,0.30);   --holiday-ua-fg: #38bdf8;
   --holiday-mx-bg: rgba(74,222,128,0.12);   --holiday-mx-border: rgba(74,222,128,0.30);   --holiday-mx-fg: #4ade80;
   --holiday-cn-bg: rgba(248,113,113,0.12);  --holiday-cn-border: rgba(248,113,113,0.30);  --holiday-cn-fg: #f87171;
+
+  /* Celebration badge colors — dark mode (rgba fills + bright fg) */
+  --celebration-birthday-bg:     rgba(249,168,212,0.12);  --celebration-birthday-border:     rgba(249,168,212,0.30);  --celebration-birthday-fg:     #f9a8d4;
+  --celebration-anniversary-bg:  rgba(134,239,172,0.12);  --celebration-anniversary-border:  rgba(134,239,172,0.30);  --celebration-anniversary-fg:  #86efac;
 }
 
 /* Smooth the swap so the whole UI doesn't strobe when toggled. */
