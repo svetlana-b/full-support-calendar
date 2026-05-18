@@ -358,7 +358,10 @@ function P0ContactsModal({ open, onClose, employees }) {
           ) : leads.map((emp, i) => {
             const contact = contacts[emp.fullName] || {};
             const phone = contact.contact || "";
-            const messenger = contact.preferred_messenger || "";
+            const messengerRaw = contact.preferred_messenger;
+            const messengers = Array.isArray(messengerRaw)
+              ? messengerRaw.filter(Boolean)
+              : messengerRaw ? [messengerRaw] : [];
             const telHref = phone ? `tel:${phone.replace(/\s+/g, "")}` : null;
             const displayPhone = phone ? (/^\+/.test(phone) ? phone : "+" + phone) : "";
             const av = roleAvatarTint(emp.roleRaw || emp.role || "");
@@ -387,18 +390,22 @@ function P0ContactsModal({ open, onClose, employees }) {
                       <a href={telHref} style={{ color:_P0_CHIP.fg, textDecoration:"none", fontWeight:500 }}>{displayPhone}</a>
                     </P0ContactRow>
                   )}
-                  {messenger && (
+                  {messengers.length > 0 && (
                     <P0ContactRow label="Preferred Messenger">
-                      <span style={{
-                        display:"inline-flex", alignItems:"center",
-                        height:22, padding:"0 8px",
-                        background:_P0_CHIP.bg, border:`1px solid ${_P0_CHIP.border}`,
-                        color:_P0_CHIP.fg, borderRadius:"var(--r-pill)",
-                        fontSize:11, fontWeight:500,
-                      }}>{messenger}</span>
+                      <div style={{ display:"flex", flexWrap:"wrap", gap:4 }}>
+                        {messengers.map((m, mi) => (
+                          <span key={mi} style={{
+                            display:"inline-flex", alignItems:"center",
+                            height:22, padding:"0 8px",
+                            background:_P0_CHIP.bg, border:`1px solid ${_P0_CHIP.border}`,
+                            color:_P0_CHIP.fg, borderRadius:"var(--r-pill)",
+                            fontSize:11, fontWeight:500,
+                          }}>{m}</span>
+                        ))}
+                      </div>
                     </P0ContactRow>
                   )}
-                  {!phone && !messenger && (
+                  {!phone && !messengers.length && (
                     <div style={{ fontSize:12, color:"var(--fg-3)", fontStyle:"italic" }}>No contact info on file.</div>
                   )}
                 </div>
