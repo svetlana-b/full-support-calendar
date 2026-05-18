@@ -187,13 +187,10 @@ function Roster({ open, employees, onClose }) {
                 </tr>
               )}
               {rows.map(({ emp, b, start, tenure, bdayThisMonth, annivThisMonth, bdayToday, annivToday }, i) => {
-                // Any event this month (incl. today) uses the lime action
-                // color matching the "Take day off" button, with dark text.
-                // Today-only rows get bold weight so the day still pops.
-                const HL_NOW  = "var(--action-primary)";
-                const HL_FG   = "var(--fg-on-primary)";
-                const bdayCellBg  = bdayThisMonth  ? HL_NOW : undefined;
-                const annivCellBg = annivThisMonth ? HL_NOW : undefined;
+                const bdayCellBg  = bdayThisMonth  ? "var(--celebration-birthday-bg)"    : undefined;
+                const bdayCellFg  = bdayThisMonth  ? "var(--celebration-birthday-fg)"    : undefined;
+                const annivCellBg = annivThisMonth ? "var(--celebration-anniversary-bg)" : undefined;
+                const annivCellFg = annivThisMonth ? "var(--celebration-anniversary-fg)" : undefined;
                 const baseBg = i % 2 ? "var(--bg-page)" : "var(--bg-surface)";
                 return (
                 <tr key={emp.id} style={{ background: baseBg }}>
@@ -214,15 +211,15 @@ function Roster({ open, employees, onClose }) {
                     </div>
                   </td>
                   <td style={{ ...cellStyle,
-                    color: bdayThisMonth ? HL_FG : (b ? "var(--fg-1)" : "var(--fg-3)"),
+                    color: bdayCellFg || (b ? "var(--fg-1)" : "var(--fg-3)"),
                     fontWeight: bdayToday ? 700 : (bdayThisMonth ? 600 : (cellStyle.fontWeight || 400)),
                     background: bdayCellBg }}>{_fmtBirthday(b)}</td>
                   <td style={{ ...cellStyle,
-                    color: annivThisMonth ? HL_FG : (start ? "var(--fg-1)" : "var(--fg-3)"),
+                    color: annivCellFg || (start ? "var(--fg-1)" : "var(--fg-3)"),
                     fontWeight: annivToday ? 700 : (annivThisMonth ? 600 : (cellStyle.fontWeight || 400)),
                     background: annivCellBg }}>{_fmtDate(start)}</td>
                   <td style={{ ...cellStyle,
-                    color: annivThisMonth ? HL_FG : (tenure ? "var(--fg-1)" : "var(--fg-3)"),
+                    color: annivCellFg || (tenure ? "var(--fg-1)" : "var(--fg-3)"),
                     fontWeight: annivToday ? 700 : (annivThisMonth ? 600 : (cellStyle.fontWeight || 400)),
                     background: annivCellBg }}>{_fmtYMD(tenure)}</td>
                   <td style={{ ...cellStyle, borderRight:"none", textAlign:"center" }}
