@@ -237,7 +237,7 @@ function WeekendSignup({ open, onClose, currentUser }) {
           }} aria-label="Close">×</button>
         </div>
 
-        <div style={{ padding:"10px 22px", background:"#FEF2F2", borderBottom:"1px solid #FECACA", color:"#991B1B", fontSize:12, fontWeight:600 }}>
+        <div style={{ padding:"10px 22px", background:"var(--shift-warning-bg)", borderBottom:"1px solid var(--shift-warning-border)", color:"var(--shift-warning-fg)", fontSize:12, fontWeight:600 }}>
           ⚠ Shift pick-up starts on the 23rd at 4 PM EST. Do NOT pick up shifts earlier — they will be removed.
         </div>
 
@@ -369,7 +369,9 @@ function WSSlot({ entry, day, shiftType, myName, selected, onSlotClick, onConfir
       <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:4, fontSize:11 }}>
         <span style={{
           fontSize:9, fontWeight:700, letterSpacing:".06em", padding:"2px 6px", borderRadius:3,
-          background: isNight ? "#DBEAFE" : "#DCFCE7", color: isNight ? "#1E3A8A" : "#14532D",
+          background: isNight ? "var(--shift-night-bg)" : "var(--shift-day-bg)",
+          color:      isNight ? "var(--shift-night-fg)" : "var(--shift-day-fg)",
+          border: `1px solid ${isNight ? "var(--shift-night-border)" : "var(--shift-day-border)"}`,
           textTransform:"uppercase",
         }}>{isNight ? "Night" : "Day"}</span>
         <span style={{ fontFamily:"var(--font-mono, monospace)", color:"var(--fg-2)" }}>{time}</span>

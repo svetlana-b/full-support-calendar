@@ -217,6 +217,11 @@
   /* Celebration badge colors — light mode (solid soft fills + dark fg) */
   --celebration-birthday-bg:     #DCFCE7;  --celebration-birthday-border:     #86EFAC;  --celebration-birthday-fg:     #166534;
   --celebration-anniversary-bg:  #FEF3C7;  --celebration-anniversary-border:  #FCD34D;  --celebration-anniversary-fg:  #92400E;
+
+  /* Shift type badge colors — light mode */
+  --shift-day-bg:   #FFEDD5;  --shift-day-border:   #FDBA74;  --shift-day-fg:   #9A3412;
+  --shift-night-bg: #EEF2FF;  --shift-night-border: #C7D2FE;  --shift-night-fg: #3730A3;
+  --shift-warning-bg: #FEF2F2;  --shift-warning-border: #FECACA;  --shift-warning-fg: #991B1B;
 }
 
 /* ============================================================
@@ -396,6 +401,11 @@ code, kbd, .tw-mono {
   /* Celebration badge colors — dark mode (rgba fills + bright fg) */
   --celebration-birthday-bg:     rgba(134,239,172,0.12);  --celebration-birthday-border:     rgba(134,239,172,0.30);  --celebration-birthday-fg:     #86efac;
   --celebration-anniversary-bg:  rgba(252,211,77,0.12);   --celebration-anniversary-border:  rgba(252,211,77,0.30);   --celebration-anniversary-fg:  #fcd34d;
+
+  /* Shift type badge colors — dark mode */
+  --shift-day-bg:   rgba(253,186,116,0.12);  --shift-day-border:   rgba(253,186,116,0.30);  --shift-day-fg:   #fdba74;
+  --shift-night-bg: rgba(165,180,252,0.12);  --shift-night-border: rgba(165,180,252,0.30);  --shift-night-fg: #a5b4fc;
+  --shift-warning-bg: rgba(252,165,165,0.12);  --shift-warning-border: rgba(252,165,165,0.30);  --shift-warning-fg: #fca5a5;
 }
 
 /* Smooth the swap so the whole UI doesn't strobe when toggled. */
