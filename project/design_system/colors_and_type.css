@@ -415,3 +415,8 @@ code, kbd, .tw-mono {
 
 /* Smooth the swap so the whole UI doesn't strobe when toggled. */
 html, body { transition: background-color 180ms ease; }
+
+/* ─── Button interactivity ─────────────────────────────────────────── */
+button { transition: filter 120ms ease; }
+button:not(:disabled):hover  { filter: brightness(1.10); }
+button:not(:disabled):active { filter: brightness(0.92); transition-duration: 60ms; }
