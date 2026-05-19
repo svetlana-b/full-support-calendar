@@ -90,6 +90,15 @@ function WeekendSignup({ open, onClose, currentUser }) {
     return () => { try { unsub(); } catch {} };
   }, [open]);
 
+  // When Firestore updates, drop local selection if the held slot was claimed.
+  React.useEffect(() => {
+    if (!selected || selected.action !== "claim") return;
+    const entry = allShifts.find(e => e.weekLabel === selected.weekLabel);
+    if (!entry) return;
+    const slot = entry.shifts[selected.day][selected.shiftType];
+    if (slot.person) setSelected(null);
+  }, [allShifts, selected]);
+
   const months = React.useMemo(() => {
     const groups = {}; const order = [];
     allShifts.forEach(e => {
