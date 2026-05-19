@@ -7,6 +7,9 @@ function EventDetail({ event, employees, currentUid, currentUserEmail, isAdmin, 
   const isAssignedEmployee = !!emp.email && !!currentUserEmail
     && emp.email.toLowerCase() === currentUserEmail.toLowerCase();
   const canEdit = !!isAdmin || isAssignedEmployee;
+  const today = window.TODAY || new Date();
+  const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  const isPast = event.end < todayMidnight;
   const days = Math.round((event.end - event.start)/86400000) + 1;
   const fmt = (d) => `${["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][d.getDay()]}, ${MONTH_NAMES[d.getMonth()].slice(0,3)} ${d.getDate()}`;
   return ReactDOM.createPortal((
@@ -46,10 +49,15 @@ function EventDetail({ event, employees, currentUid, currentUserEmail, isAdmin, 
               {`Only ${emp.name} or an admin can edit this entry.`}
             </div>
           )}
+          {canEdit && isPast && (
+            <div style={{ marginTop:14, padding:"8px 12px", background:"var(--bg-page)", border:"1px solid var(--border-weak)", borderRadius:"var(--r-md)", fontFamily:"var(--font-ui)", fontSize:12, color:"var(--fg-2)" }}>
+              Past entries cannot be edited or deleted.
+            </div>
+          )}
           <div style={{ display:"flex", gap:8, justifyContent:"flex-end", marginTop:18 }}>
-            {canEdit && <button onClick={onDelete} style={outlineBtn(true)}>Delete</button>}
+            {canEdit && !isPast && <button onClick={onDelete} style={outlineBtn(true)}>Delete</button>}
             <button onClick={onClose} style={outlineBtn()}>Close</button>
-            {canEdit && <button onClick={() => onEdit && onEdit(event)} style={primaryBtn}>Edit</button>}
+            {canEdit && !isPast && <button onClick={() => onEdit && onEdit(event)} style={primaryBtn}>Edit</button>}
           </div>
         </div>
       </div>
