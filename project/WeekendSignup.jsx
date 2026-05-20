@@ -8,7 +8,7 @@
 const WS_MONTH_NAMES = ["January","February","March","April","May","June",
                         "July","August","September","October","November","December"];
 const WS_WEEKS_AHEAD = 48;
-const WS_HOLD_TTL_MS = 5 * 60 * 1000;
+const WS_HOLD_TTL_MS = 30 * 60 * 1000;
 
 function _wsParseYMD(ymd) {
   const [y, m, d] = ymd.split("-").map(Number);
@@ -91,6 +91,32 @@ function WeekendSignup({ open, onClose, currentUser, weekendsRaw }) {
     const slot = entry.shifts[selected.day][selected.shiftType];
     if (slot.person) setSelected(null);
   }, [allShifts, selected]);
+
+  // On modal open, purge expired holds from Firestore.
+  // The TTL is otherwise only enforced in the UI — without this the hold
+  // entries accumulate in the database forever.
+  React.useEffect(() => {
+    if (!open) return;
+    const { fbDb, fb } = window;
+    const now = Date.now();
+    for (const { id, data: d } of (weekendsRaw || [])) {
+      if (!d.holds || d.name) continue; // skip claimed shifts
+      const expired = Object.entries(d.holds).filter(([, ts]) => {
+        const ms = ts && ts.toMillis ? ts.toMillis() : ts;
+        return !ms || (now - ms) >= WS_HOLD_TTL_MS;
+      });
+      if (expired.length === 0) continue;
+      const ref = fb.doc(fbDb, "weekends", id);
+      if (expired.length === Object.keys(d.holds).length) {
+        // All holds expired and shift is unclaimed — remove the whole doc
+        fb.deleteDoc(ref).catch(() => {});
+      } else {
+        const updates = {};
+        for (const [name] of expired) updates[`holds.${name}`] = fb.deleteField();
+        fb.updateDoc(ref, updates).catch(() => {});
+      }
+    }
+  }, [open]); // intentionally only re-runs when the modal opens
 
   const months = React.useMemo(() => {
     const groups = {}; const order = [];
