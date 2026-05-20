@@ -12,7 +12,7 @@ import {
 import {
   getFirestore, collection, doc, getDoc, getDocs, onSnapshot,
   setDoc, addDoc, updateDoc, deleteDoc, serverTimestamp,
-  runTransaction, deleteField
+  runTransaction, deleteField, query, where
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -51,7 +51,7 @@ window.fb = {
   // firestore
   collection, doc, getDoc, getDocs, onSnapshot,
   setDoc, addDoc, updateDoc, deleteDoc, serverTimestamp,
-  runTransaction, deleteField,
+  runTransaction, deleteField, query, where,
 };
 
 // Signal readiness so non-module scripts can wait.

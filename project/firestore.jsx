@@ -362,14 +362,15 @@ async function _deleteEmployee(docId) {
 // ---------- React hook ----------
 
 function useFirestoreData(user) {
-  const [employees,  setEmployees]  = React.useState([]);
-  const [coverage,   setCoverage]   = React.useState({});
-  const [events,     setEvents]     = React.useState([]);
-  const [holidays,   setHolidays]   = React.useState({});
-  const [tier2,      setTier2]      = React.useState({});
-  const [contacts,   setContacts]   = React.useState({});
-  const [status,     setStatus]     = React.useState("loading");
-  const [error,      setError]      = React.useState(null);
+  const [employees,   setEmployees]   = React.useState([]);
+  const [coverage,    setCoverage]    = React.useState({});
+  const [weekendsRaw, setWeekendsRaw] = React.useState([]);
+  const [events,      setEvents]      = React.useState([]);
+  const [holidays,    setHolidays]    = React.useState({});
+  const [tier2,       setTier2]       = React.useState({});
+  const [contacts,    setContacts]    = React.useState({});
+  const [status,      setStatus]      = React.useState("loading");
+  const [error,       setError]       = React.useState(null);
 
   // raw caches needed across snapshot boundaries
   const employeesRef = React.useRef([]);
@@ -418,8 +419,10 @@ function useFirestoreData(user) {
       tick();
     }, fail("employees")));
 
-    // vacations
-    unsubs.push(fb.onSnapshot(fb.collection(fbDb, "vacations"), (snap) => {
+    // vacations — only load from start of last year to keep read count low
+    const vacCutoff = `${new Date().getFullYear() - 1}-01-01`;
+    const vacQuery = fb.query(fb.collection(fbDb, "vacations"), fb.where("date_end", ">=", vacCutoff));
+    unsubs.push(fb.onSnapshot(vacQuery, (snap) => {
       const raw = [];
       snap.forEach(d => raw.push({ id: d.id, data: d.data() }));
       vacRawRef.current = raw;
@@ -434,21 +437,22 @@ function useFirestoreData(user) {
       tick();
     }, fail("vacations")));
 
-    // weekends
+    // weekends — raw docs shared with WeekendSignup to avoid a second listener
     unsubs.push(fb.onSnapshot(fb.collection(fbDb, "weekends"), (snap) => {
       const raw = [];
       snap.forEach(d => raw.push({ id: d.id, data: d.data() }));
       setCoverage(_buildCoverageMap(raw));
+      setWeekendsRaw(raw);
       tick();
     }, fail("weekends")));
 
-    // holidays
-    unsubs.push(fb.onSnapshot(fb.collection(fbDb, "holidays"), (snap) => {
+    // holidays — one-time fetch; changes rarely, real-time not needed
+    fb.getDocs(fb.collection(fbDb, "holidays")).then((snap) => {
       const raw = [];
       snap.forEach(d => raw.push({ id: d.id, data: d.data() }));
       setHolidays(_buildHolidaysMap(raw));
       tick();
-    }, fail("holidays")));
+    }).catch(fail("holidays"));
 
     // oncall (Tier 2)
     unsubs.push(fb.onSnapshot(fb.collection(fbDb, "oncall"), (snap) => {
@@ -458,8 +462,8 @@ function useFirestoreData(user) {
       tick();
     }, fail("oncall")));
 
-    // contacts (phone + preferred messengers, keyed by full name)
-    unsubs.push(fb.onSnapshot(fb.collection(fbDb, "contacts"), (snap) => {
+    // contacts — one-time fetch; changes rarely, real-time not needed
+    fb.getDocs(fb.collection(fbDb, "contacts")).then((snap) => {
       const map = {};
       snap.forEach(d => {
         const data = d.data() || {};
@@ -476,7 +480,7 @@ function useFirestoreData(user) {
       });
       setContacts(map);
       tick();
-    }, fail("contacts")));
+    }).catch(fail("contacts"));
 
     return () => { unsubs.forEach(u => { try { u(); } catch {} }); };
   }, [user]);
@@ -510,7 +514,7 @@ function useFirestoreData(user) {
   const deleteEmployee      = React.useCallback((id) => _deleteEmployee(id).catch(e => ({ ok:false, error:String(e) })), []);
 
   return {
-    employees, coverage, events, holidays, tier2, contacts, status, error,
+    employees, coverage, weekendsRaw, events, holidays, tier2, contacts, status, error,
     submitTimeOff, deleteTimeOff,
     setWeekendCoverage, deleteWeekendCoverage,
     setHoliday, deleteHoliday,

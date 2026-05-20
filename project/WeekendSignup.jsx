@@ -61,34 +61,27 @@ function _wsBuildEntries(byDate) {
   return entries;
 }
 
-function WeekendSignup({ open, onClose, currentUser }) {
+function WeekendSignup({ open, onClose, currentUser, weekendsRaw }) {
   const myName = (currentUser && (currentUser.displayName || (currentUser.email||"").split("@")[0])) || "";
-  const [allShifts, setAllShifts] = React.useState([]);
   const [monthIdx, setMonthIdx] = React.useState(0);
   const [selected, setSelected] = React.useState(null); // {weekLabel, day, shiftType, action}
   const [confirming, setConfirming] = React.useState(false);
   const [busy, setBusy] = React.useState(false);
   const [toast, setToast] = React.useState(null);
 
-  React.useEffect(() => {
-    if (!open || !window.__firebaseReady) return;
-    const { fbDb, fb } = window;
-    const unsub = fb.onSnapshot(fb.collection(fbDb, "weekends"), (snap) => {
-      const byDate = {};
-      snap.forEach(doc => {
-        const d = doc.data();
-        if (!d.date || !d.day_type) return;
-        const shiftType = d.start === "23:00" ? "night" : "day";
-        if (!byDate[d.date]) byDate[d.date] = {};
-        if (!byDate[d.date][d.day_type]) byDate[d.date][d.day_type] = {};
-        byDate[d.date][d.day_type][shiftType] = {
-          person: d.name || "", docId: doc.id, holds: d.holds || {},
-        };
-      });
-      setAllShifts(_wsBuildEntries(byDate));
-    });
-    return () => { try { unsub(); } catch {} };
-  }, [open]);
+  const allShifts = React.useMemo(() => {
+    const byDate = {};
+    for (const { id, data: d } of (weekendsRaw || [])) {
+      if (!d.date || !d.day_type) continue;
+      const shiftType = d.start === "23:00" ? "night" : "day";
+      if (!byDate[d.date]) byDate[d.date] = {};
+      if (!byDate[d.date][d.day_type]) byDate[d.date][d.day_type] = {};
+      byDate[d.date][d.day_type][shiftType] = {
+        person: d.name || "", docId: id, holds: d.holds || {},
+      };
+    }
+    return _wsBuildEntries(byDate);
+  }, [weekendsRaw]);
 
   // When Firestore updates, drop local selection if the held slot was claimed.
   React.useEffect(() => {

@@ -115,7 +115,7 @@ function SignInScreen({ onSignIn, error, buttonLabel = "Sign in with Google", su
 // ---------- Calendar prototype ----------
 function CalendarPrototype({ variant, onVariantChange, fsData, user, onSignOut }) {
   const {
-    employees, events: allEvents, coverage, holidays, tier2, contacts, status, error,
+    employees, events: allEvents, coverage, weekendsRaw, holidays, tier2, contacts, status, error,
     submitTimeOff, deleteTimeOff,
     setWeekendCoverage, deleteWeekendCoverage,
     setHoliday, deleteHoliday,
@@ -301,6 +301,7 @@ function CalendarPrototype({ variant, onVariantChange, fsData, user, onSignOut }
         open={weekendSignupOpen}
         onClose={() => setWeekendSignupOpen(false)}
         currentUser={user}
+        weekendsRaw={weekendsRaw}
       />
 
       <Roster
