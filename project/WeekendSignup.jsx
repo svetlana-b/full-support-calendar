@@ -370,6 +370,11 @@ function WSSlot({ entry, day, shiftType, myName, selected, onSlotClick, onConfir
   const isTaken = slot.person && !isMine;
   const isEmpty = !slot.person;
 
+  const today = window.TODAY || new Date();
+  const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  const shiftDate = new Date((day === "sat" ? entry.satDate : entry.sunDate) + "T00:00:00");
+  const isPast = shiftDate < todayMidnight;
+
   const now = Date.now();
   const activeHolders = Object.entries(slot.holds || {})
     .filter(([, ts]) => { const ms = ts && ts.toMillis ? ts.toMillis() : ts; return ms && (now - ms < WS_HOLD_TTL_MS); })
@@ -382,17 +387,17 @@ function WSSlot({ entry, day, shiftType, myName, selected, onSlotClick, onConfir
     selected.weekLabel === entry.weekLabel && selected.day === day && selected.shiftType === shiftType;
 
   let bg = "var(--bg-surface)", border = "var(--border-weak)", cursor = "pointer";
-  if (isTaken) { bg = "var(--bg-page)"; cursor = "default"; }
+  if (isTaken || (isMine && isPast)) { bg = "var(--bg-page)"; cursor = "default"; }
   else if (isMine || isSelected || heldByMe) { bg = "var(--tw-blue-50, #EFF6FF)"; border = "var(--tw-blue-700, #1D4ED8)"; }
   else if (heldByOther) { bg = "#FFFBEB"; border = "#F59E0B"; cursor = "default"; }
 
-  const clickable = isEmpty || isMine;
+  const clickable = isEmpty || (isMine && !isPast);
 
   return (
     <div onClick={clickable ? () => onSlotClick(entry, day, shiftType) : undefined} style={{
       padding:"9px 11px", marginBottom:6, borderRadius:"var(--r-md)",
       border:`1px solid ${border}`, background: bg, cursor,
-      opacity: isTaken ? 0.75 : 1,
+      opacity: (isTaken || (isMine && isPast)) ? 0.75 : 1,
     }}>
       <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:4, fontSize:11 }}>
         <span style={{
@@ -406,7 +411,10 @@ function WSSlot({ entry, day, shiftType, myName, selected, onSlotClick, onConfir
       </div>
       {isMine && (<>
         <div style={{ fontFamily:"var(--font-name)", fontSize:13, fontWeight:500 }}>{slot.person}</div>
-        <div style={{ fontSize:10, fontWeight:600, color:"var(--tw-blue-700, #1D4ED8)" }}>▸ YOUR SHIFT · tap to release</div>
+        {isPast
+          ? <div style={{ fontSize:10, fontWeight:600, color:"var(--fg-3)" }}>PAST SHIFT · cannot release</div>
+          : <div style={{ fontSize:10, fontWeight:600, color:"var(--tw-blue-700, #1D4ED8)" }}>▸ YOUR SHIFT · tap to release</div>
+        }
       </>)}
       {isTaken && <div style={{ fontFamily:"var(--font-name)", fontSize:13, fontWeight:500 }}>{slot.person}</div>}
       {(isSelected || heldByMe) && (<>
