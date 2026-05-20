@@ -399,15 +399,22 @@ function useFirestoreData(user) {
       setStatus("error");
     };
 
-    // employees
-    unsubs.push(fb.onSnapshot(fb.collection(fbDb, "employees"), (snap) => {
+    // Cache-first loader: serves IndexedDB on cache hit (0 reads), falls back
+    // to network only on first ever load or after cache is cleared.
+    const loadOnce = (collectionName, onData) =>
+      fb.getDocsFromCache(fb.collection(fbDb, collectionName))
+        .catch(() => fb.getDocs(fb.collection(fbDb, collectionName)))
+        .then(onData)
+        .catch(fail(collectionName));
+
+    // employees — roster changes rarely; cache-first, no real-time listener needed
+    loadOnce("employees", (snap) => {
       const list = [];
       snap.forEach(d => list.push(_transformEmployee(d.id, d.data())));
-      // Sort employees alphabetically by name for stable UIs.
       list.sort((a, b) => a.fullName.localeCompare(b.fullName));
       employeesRef.current = list;
       setEmployees(list);
-      // re-derive vacations from cached raw rows (their employeeId depends on roster)
+      // re-derive vacations now that the roster is known
       const byName = new Map();
       for (const e of list) byName.set(e.fullName.toLowerCase(), e.id);
       const evs = [];
@@ -417,7 +424,7 @@ function useFirestoreData(user) {
       }
       setEvents(evs);
       tick();
-    }, fail("employees")));
+    });
 
     // vacations — only load from start of last year to keep read count low
     const vacCutoff = `${new Date().getFullYear() - 1}-01-01`;
@@ -446,24 +453,24 @@ function useFirestoreData(user) {
       tick();
     }, fail("weekends")));
 
-    // holidays — one-time fetch; changes rarely, real-time not needed
-    fb.getDocs(fb.collection(fbDb, "holidays")).then((snap) => {
+    // holidays — changes rarely, real-time not needed
+    loadOnce("holidays", (snap) => {
       const raw = [];
       snap.forEach(d => raw.push({ id: d.id, data: d.data() }));
       setHolidays(_buildHolidaysMap(raw));
       tick();
-    }).catch(fail("holidays"));
+    });
 
-    // oncall (Tier 2)
-    unsubs.push(fb.onSnapshot(fb.collection(fbDb, "oncall"), (snap) => {
+    // oncall (Tier 2) — cache-first, no real-time listener needed
+    loadOnce("oncall", (snap) => {
       const raw = [];
       snap.forEach(d => raw.push({ id: d.id, data: d.data() }));
       setTier2(_buildTier2Map(raw));
       tick();
-    }, fail("oncall")));
+    });
 
-    // contacts — one-time fetch; changes rarely, real-time not needed
-    fb.getDocs(fb.collection(fbDb, "contacts")).then((snap) => {
+    // contacts — changes rarely, real-time not needed
+    loadOnce("contacts", (snap) => {
       const map = {};
       snap.forEach(d => {
         const data = d.data() || {};
@@ -480,7 +487,7 @@ function useFirestoreData(user) {
       });
       setContacts(map);
       tick();
-    }).catch(fail("contacts"));
+    });
 
     return () => { unsubs.forEach(u => { try { u(); } catch {} }); };
   }, [user]);

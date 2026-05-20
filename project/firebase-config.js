@@ -10,7 +10,8 @@ import {
   getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 import {
-  getFirestore, collection, doc, getDoc, getDocs, onSnapshot,
+  initializeFirestore, persistentLocalCache, persistentMultipleTabManager,
+  collection, doc, getDoc, getDocs, getDocsFromCache, onSnapshot,
   setDoc, addDoc, updateDoc, deleteDoc, serverTimestamp,
   runTransaction, deleteField, query, where
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
@@ -36,7 +37,13 @@ window.ADMIN_EMAILS = [
 
 const app  = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db   = getFirestore(app);
+// persistentLocalCache stores all Firestore data in IndexedDB.
+// onSnapshot fires instantly from cache (0 reads charged), then syncs
+// only changed documents from the network. persistentMultipleTabManager
+// coordinates which tab owns the network connection when several are open.
+const db = initializeFirestore(app, {
+  localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
+});
 const googleProvider = new GoogleAuthProvider();
 
 // Expose the SDK pieces the Babel-transpiled scripts need.
@@ -49,7 +56,7 @@ window.fb = {
   signOut:          () => signOut(auth),
   onAuthStateChanged: (cb) => onAuthStateChanged(auth, cb),
   // firestore
-  collection, doc, getDoc, getDocs, onSnapshot,
+  collection, doc, getDoc, getDocs, getDocsFromCache, onSnapshot,
   setDoc, addDoc, updateDoc, deleteDoc, serverTimestamp,
   runTransaction, deleteField, query, where,
 };
