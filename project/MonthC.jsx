@@ -2,7 +2,7 @@
 // Left column = "Out today" + "This week" summary panels.
 // Right = compact calendar where each day shows chips (initials + type color).
 
-function MonthC({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_COVERAGE, holidays = HOLIDAYS, employeeFilter, typeFilter, onOpenEvent, onAddAt }) {
+function MonthC({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_COVERAGE, holidays = HOLIDAYS, employeeFilter, typeFilter, onOpenEvent, onAddAt, onWeekendCoverageAt }) {
   const weeks = buildMonthGrid(monthDate, 0);
   const visibleEvents = events.filter(e =>
     (employeeFilter === "all" || e.employeeId === employeeFilter) &&
@@ -155,7 +155,11 @@ function MonthC({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
               const cov = isWeekend && inMonth ? coverage[iso(day)] : null;
               const dayEvents = isWeekend ? [] : visibleEvents.filter(ev => dateInRange(day, ev.start, ev.end));
               return (
-                <div key={di} onClick={() => onAddAt(day)} style={{
+                <div key={di} onClick={() => {
+                  if (!inMonth) return;
+                  if (isWeekend && onWeekendCoverageAt) onWeekendCoverageAt(day);
+                  else onAddAt(day);
+                }} style={{
                   borderRight: di<6 ? "1px solid var(--border-weak)" : "none",
                   padding:"6px 6px 8px",
                   background: isToday ? "rgba(0,97,255,0.05)" : isWeekend && inMonth ? "var(--tw-gray-6)" : "var(--bg-surface)",
