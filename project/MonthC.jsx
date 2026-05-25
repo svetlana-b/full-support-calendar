@@ -152,14 +152,16 @@ function MonthC({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
               const inMonth = day.getMonth() === monthDate.getMonth();
               const isToday = sameDay(day, TODAY);
               const isWeekend = di === 0 || di === 6;
-              const dayEvents = visibleEvents.filter(ev => dateInRange(day, ev.start, ev.end));
+              const cov = isWeekend && inMonth ? coverage[iso(day)] : null;
+              const dayEvents = isWeekend ? [] : visibleEvents.filter(ev => dateInRange(day, ev.start, ev.end));
               return (
                 <div key={di} onClick={() => onAddAt(day)} style={{
                   borderRight: di<6 ? "1px solid var(--border-weak)" : "none",
                   padding:"6px 6px 8px",
                   background: isToday ? "rgba(0,97,255,0.05)" : isWeekend && inMonth ? "var(--tw-gray-6)" : "var(--bg-surface)",
                   opacity: inMonth ? 1 : 0.5,
-                  cursor:"pointer", minHeight:100
+                  cursor:"pointer", minHeight:100,
+                  display:"flex", flexDirection:"column"
                 }}>
                   <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:4 }}>
                     <span style={{
@@ -202,6 +204,40 @@ function MonthC({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                       </div>
                     )}
                   </div>
+                  {isWeekend && inMonth && (
+                    <div style={{
+                      marginTop:"auto", paddingTop:6,
+                      display:"flex", flexDirection:"column",
+                      borderTop:"1px solid var(--tw-gold-border)"
+                    }}>
+                      {SHIFTS.map((sh, si) => {
+                        const slot = cov && cov[sh.id];
+                        const name = slot ? slot.name : null;
+                        return (
+                          <div key={sh.id} style={{
+                            padding:"5px 0 4px",
+                            borderTop: si > 0 ? "1px dashed var(--tw-gold-border)" : "none",
+                            display:"flex", flexDirection:"column", gap:1, lineHeight:1.2
+                          }}>
+                            <div style={{
+                              fontSize:10, fontWeight:700, color:"var(--tw-gold-fg-deep)",
+                              letterSpacing:".05em", textTransform:"uppercase",
+                              fontVariantNumeric:"tabular-nums"
+                            }}>{sh.label}</div>
+                            <div style={{
+                              fontFamily:"var(--font-name)", fontSize:12,
+                              color: name ? "var(--fg-1)" : "var(--fg-3)",
+                              fontWeight:500,
+                              whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis"
+                            }}
+                              title={slot ? `${name} · ${slot.start}–${slot.end}${slot.timezone ? " " + slot.timezone : ""}` : "Unassigned"}>
+                              {name || "—"}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
               );
             })}
