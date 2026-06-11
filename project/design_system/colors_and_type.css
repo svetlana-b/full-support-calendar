@@ -127,7 +127,7 @@
   --action-primary:        var(--tw-lime-accent);        /* C8F564 — hero lime */
   --action-primary-hover:  var(--tw-lime-accent-hover);  /* B6E443 */
   --action-primary-border: transparent;
-  --p0-icon-filter: invert(29%) sepia(85%) saturate(700%) hue-rotate(15deg) brightness(75%);
+  --p0-icon-filter: invert(75%) sepia(1) brightness(84%) /*invert(29%) sepia(85%) saturate(700%) hue-rotate(15deg) brightness(75%);
   --action-secondary-bg:   var(--tw-lime-bg-soft);       /* F1F8DA */
   --action-secondary-fg:   var(--tw-lime-fg-deep);       /* 5C8C1F */
   --action-destructive:    var(--tw-red-dest);           /* FF383C */
@@ -197,12 +197,18 @@
   --dur-slow: 260ms;
 
   /* Leave-type chip colors — light mode uses solid soft fills + dark fg */
-  --ev-vacation-bg: #EDE9FE;
-  --ev-vacation-fg: #5B21B6;
-  --ev-sick-bg:     #FFEDD5;
-  --ev-sick-fg:     #9A3412;
-  --ev-pto-bg:      #DBEAFE;
-  --ev-pto-fg:      #1E3A8A;
+  --ev-vacation-bg:  #EDE9FE;
+  --ev-vacation-fg:  #5B21B6;
+  --ev-sick-bg:      #FFEDD5;
+  --ev-sick-fg:      #9A3412;
+  --ev-pto-bg:       #DBEAFE;
+  --ev-pto-fg:       #1E3A8A;
+  --ev-study-bg:     #DCFCE7;
+  --ev-study-fg:     #14532D;
+  --ev-wedding-bg:   #FCE7F3;
+  --ev-wedding-fg:   #831843;
+  --ev-maternity-bg: #CCFBF1;
+  --ev-maternity-fg: #134E4A;
 
   /* Role badge colors — light mode */
   --role-tier1-bg:    #DCFCE7;  --role-tier1-border:    #BBF7D0;  --role-tier1-fg:    #14532D;
@@ -343,7 +349,7 @@ code, kbd, .tw-mono {
   --fg-active:       #E8E8EC;
   --fg-invert:       #FFFFFF;
   /* lime button still wants dark text */
-  --fg-on-primary:   #18181C;
+  --fg-on-primary:   #C8F564;
 
   /* Accent families — text/border versions stay light, fills go translucent */
   --tw-lime-bg-soft:  rgba(200, 245, 100, 0.12);
@@ -386,12 +392,18 @@ code, kbd, .tw-mono {
   --shadow-modal: 0px 24px 48px rgba(0,0,0,0.65);
 
   /* Leave-type chip colors — dark mode uses rgba fills + bright fg */
-  --ev-vacation-bg: rgba(167,139,250,0.12);
-  --ev-vacation-fg: #a78bfa;
-  --ev-sick-bg:     rgba(251,146,60,0.12);
-  --ev-sick-fg:     #fb923c;
-  --ev-pto-bg:      rgba(0,97,255,0.12);
-  --ev-pto-fg:      #0061FF;
+  --ev-vacation-bg:  rgba(167,139,250,0.12);
+  --ev-vacation-fg:  #a78bfa;
+  --ev-sick-bg:      rgba(251,146,60,0.12);
+  --ev-sick-fg:      #fb923c;
+  --ev-pto-bg:       rgba(0,97,255,0.12);
+  --ev-pto-fg:       #0061FF;
+  --ev-study-bg:     rgba(34,197,94,0.12);
+  --ev-study-fg:     #22c55e;
+  --ev-wedding-bg:   rgba(244,114,182,0.12);
+  --ev-wedding-fg:   #f472b6;
+  --ev-maternity-bg: rgba(20,184,166,0.12);
+  --ev-maternity-fg: #2dd4bf;
 
   /* Role badge colors — dark mode */
   --role-tier1-bg:    rgba(110,231,160,0.15);  --role-tier1-border:    rgba(110,231,160,0.35);  --role-tier1-fg:    #6ee7a0;
@@ -424,6 +436,21 @@ button:not(:disabled):hover {
   filter: brightness(1.10);
   box-shadow: inset 0 0 0 9999px rgba(255,255,255,0.07), 0 0 10px rgba(200,200,200,0.12);
 }
+button:not(:disabled):active {
+  filter: brightness(0.93);
+  box-shadow: inset 0 0 0 9999px rgba(0,0,0,0.08);
+  transition-duration: 60ms;
+}
+
+/* ─── Button interactivity ────────────────────────────────── */
+button { transition: all 150ms ease; }
+
+button:not(:disabled):hover {
+  filter: brightness(1.10);
+  box-shadow: inset 0 0 0 9999px rgba(255,255,255,0.07),
+              0 0 10px rgba(200,200,200,0.12);
+}
+
 button:not(:disabled):active {
   filter: brightness(0.93);
   box-shadow: inset 0 0 0 9999px rgba(0,0,0,0.08);

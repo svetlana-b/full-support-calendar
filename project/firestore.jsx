@@ -70,12 +70,21 @@ function _hmToMinutes(hm) {
 }
 function _resolveType(raw) {
   const t = (raw || "").trim().toLowerCase();
-  if (/sick/.test(t)) return "Sick";
-  if (/pto|personal/.test(t)) return "PTO";
+  if (/sick/.test(t))              return "Sick";
+  if (/pto|personal/.test(t))      return "PTO";
+  if (/study/.test(t))             return "Study";
+  if (/wedding/.test(t))           return "Wedding";
+  if (/matern|patern/.test(t))     return "Maternity";
   return "Vacation";
 }
 function _typeToWriteName(type) {
-  return type === "Sick" ? "Sick Leave" : type;
+  const names = {
+    Sick:      "Sick Leave",
+    Study:     "Study Leave",
+    Wedding:   "Wedding Leave",
+    Maternity: "Maternity/Paternity Leave",
+  };
+  return names[type] ?? type;
 }
 // Vacation doc id: lowercase-name__YYYY-MM-DD (deterministic per person+start)
 function _vacationDocId(fullName, dateStart) {
