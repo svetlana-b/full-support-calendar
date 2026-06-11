@@ -3,7 +3,7 @@
 // Schema observed in the live database:
 //
 //   employees/{Full Name}     { name, role, team, timezone? (start/end clock), slack_url, start, end }
-//   vacations/{auto or det.}  { name, date_start: "YYYY-MM-DD", date_end: "YYYY-MM-DD", type: "Vacation"|"PTO"|"Sick Leave" }
+//   vacations/{auto or det.}  { name, date_start: "YYYY-MM-DD", date_end: "YYYY-MM-DD", type: "Vacation"|"Personal Day"|"Sick Day" }
 //   weekends/{YYYY-MM-DD slot} { date, day_type, name, start: "HH:MM", end: "HH:MM" }
 //   holidays/{Holiday Name CC} { date, name, teams_off: "UA"|"MX"|"CN", working: ["Name|HH:MM/HH:MM", ...] }
 //   oncall/{YYYY-MM-DD}        { name, week_start: "YYYY-MM-DD" }
@@ -79,7 +79,8 @@ function _resolveType(raw) {
 }
 function _typeToWriteName(type) {
   const names = {
-    Sick:      "Sick Leave",
+    Sick:      "Sick Day",
+    PTO:       "Personal Day",
     Study:     "Study Leave",
     Wedding:   "Wedding Leave",
     Maternity: "Maternity/Paternity Leave",
