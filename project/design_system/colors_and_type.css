@@ -203,7 +203,7 @@
   --ev-sick-fg:      #9A3412;
   --ev-pto-bg:       #DBEAFE;
   --ev-pto-fg:       #1E3A8A;
-  --ev-study-bg:     #FEF9C3;
+  --ev-study-bg:     #FEFCE8;
   --ev-study-fg:     #713F12;
   --ev-wedding-bg:   #FCE7F3;
   --ev-wedding-fg:   #831843;
@@ -398,7 +398,7 @@ code, kbd, .tw-mono {
   --ev-sick-fg:      #fb923c;
   --ev-pto-bg:       rgba(0,97,255,0.12);
   --ev-pto-fg:       #0061FF;
-  --ev-study-bg:     rgba(234,179,8,0.12);
+  --ev-study-bg:     rgba(234,179,8,0.08);
   --ev-study-fg:     #eab308;
   --ev-wedding-bg:   rgba(244,114,182,0.12);
   --ev-wedding-fg:   #f472b6;
