@@ -17,7 +17,7 @@ const LEAVE_TYPES = {
   Vacation:   { id:"Vacation",   label:"Vacation",            icon:"assets/vacation.png",       bar:"#a78bfa", barHover:"#c4b5fd", bg:"var(--ev-vacation-bg)",   fg:"var(--ev-vacation-fg)",   dot:"#a78bfa" },
   PTO:        { id:"PTO",        label:"Personal Day",        icon:"assets/pto.png",            bar:"#0061FF", barHover:"#3B82F6", bg:"var(--ev-pto-bg)",        fg:"var(--ev-pto-fg)",        dot:"#0061FF" },
   Sick:       { id:"Sick",       label:"Sick Day",            icon:"assets/sick-leave.png",     bar:"#fb923c", barHover:"#fdba74", bg:"var(--ev-sick-bg)",       fg:"var(--ev-sick-fg)",       dot:"#fb923c" },
-  Study:      { id:"Study",      label:"Study Leave",         icon:"assets/study_leave.png",    bar:"#22c55e", barHover:"#4ade80", bg:"var(--ev-study-bg)",      fg:"var(--ev-study-fg)",      dot:"#22c55e" },
+  Study:      { id:"Study",      label:"Study Leave",         icon:"assets/study_leave.png",    bar:"#eab308", barHover:"#facc15", bg:"var(--ev-study-bg)",      fg:"var(--ev-study-fg)",      dot:"#eab308" },
   Wedding:    { id:"Wedding",    label:"Wedding Leave",       icon:"assets/wedding_leave.png",  bar:"#f472b6", barHover:"#f9a8d4", bg:"var(--ev-wedding-bg)",    fg:"var(--ev-wedding-fg)",    dot:"#f472b6" },
   Maternity:  { id:"Maternity",  label:"Maternity/Paternity Leave", icon:"assets/maternity_leave.png",bar:"#14b8a6", barHover:"#2dd4bf", bg:"var(--ev-maternity-bg)",  fg:"var(--ev-maternity-fg)",  dot:"#14b8a6" },
 };
