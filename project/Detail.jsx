@@ -188,6 +188,7 @@ function AddRequest({ open, seedDate, editEvent, employees, currentUserEmail, is
   const [employeeId, setEmp] = React.useState(firstId);
   const [pickOther, setPickOther] = React.useState(false);
   const [type, setType] = React.useState("Vacation");
+  const [oneDay, setOneDay] = React.useState(false);
   const [start, setStart] = React.useState("");
   const [end, setEnd] = React.useState("");
   const [note, setNote] = React.useState("");
@@ -206,7 +207,7 @@ function AddRequest({ open, seedDate, editEvent, employees, currentUserEmail, is
       setNote(editEvent.note || "");
     } else {
       const s = seedDate ? iso(seedDate) : iso(new Date());
-      setStart(s); setEnd(s); setNote(""); setType("Vacation");
+      setStart(s); setEnd(s); setNote(""); setType("Vacation"); setOneDay(false);
       // Default to self for everyone; admins can opt in to picking another.
       setEmp(firstId);
       setPickOther(false);
@@ -273,10 +274,26 @@ function AddRequest({ open, seedDate, editEvent, employees, currentUserEmail, is
           <Field label="Type">
             <SelectInput value={type} onChange={setType} options={Object.values(LEAVE_TYPES).map(t=>[t.id, t.label])}/>
           </Field>
-          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
-            <Field label="Start date"><DateInput value={start} onChange={setStart}/></Field>
-            <Field label="End date"><DateInput value={end} onChange={setEnd}/></Field>
+          <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+            <input
+              type="checkbox"
+              id="one-day-check"
+              checked={oneDay}
+              onChange={e => { setOneDay(e.target.checked); if (e.target.checked) setEnd(start); }}
+              style={{ width:16, height:16, cursor:"pointer", accentColor:"var(--tw-lime-fg-deep)", flexShrink:0 }}
+            />
+            <label htmlFor="one-day-check" style={{ fontFamily:"var(--font-ui)", fontSize:14, color:"var(--fg-1)", cursor:"pointer", userSelect:"none" }}>
+              One day
+            </label>
           </div>
+          {oneDay ? (
+            <Field label="Date"><DateInput value={start} onChange={v => { setStart(v); setEnd(v); }}/></Field>
+          ) : (
+            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
+              <Field label="Start date"><DateInput value={start} onChange={setStart}/></Field>
+              <Field label="End date"><DateInput value={end} onChange={setEnd}/></Field>
+            </div>
+          )}
           <Field label="Note" caption="Optional">
             <TextArea value={note} onChange={setNote}/>
           </Field>

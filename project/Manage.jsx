@@ -245,6 +245,7 @@ function WeekendEditor({ employees, coverage, ops }) {
 function HolidaysEditor({ employees, holidays, ops }) {
   const [editing, setEditing] = React.useState(null); // docId | "__new__"
   const [draft, setDraft] = React.useState({ docId:"", name:"", date_start:"", date_end:"", teams_off:"UA", workingRows:[] });
+  const [oneDay, setOneDay] = React.useState(false);
   // De-duplicate by docId — multi-day holidays appear under multiple dates in the map.
   const seen = new Set();
   const rows = [];
@@ -277,10 +278,12 @@ function HolidaysEditor({ employees, holidays, ops }) {
     });
     setEditing(row.docId);
     setDraft({ docId: row.docId, name: row.name, date_start: row.date_start, date_end: row.date_end, teams_off: teams, workingRows });
+    setOneDay(false);
   };
   const startNew = () => {
     setEditing("__new__");
     setDraft({ docId:"", name:"", date_start:"", date_end:"", teams_off:"UA", workingRows:[] });
+    setOneDay(false);
   };
   const save = async () => {
     if (!draft.name || !draft.date_start || !draft.teams_off) return;
@@ -306,10 +309,28 @@ function HolidaysEditor({ employees, holidays, ops }) {
   const editor = (lockId) => (
     <>
       <input style={inputStyle} placeholder="Holiday name" value={draft.name} onChange={e => setDraft(d => ({...d, name: e.target.value}))}/>
-      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8 }}>
-        <input type="date" style={inputStyle} value={draft.date_start} onChange={e => setDraft(d => ({...d, date_start: e.target.value}))} title="From"/>
-        <input type="date" style={inputStyle} value={draft.date_end} onChange={e => setDraft(d => ({...d, date_end: e.target.value}))} title="To (leave same for single day)"/>
+      <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+        <input
+          type="checkbox"
+          id="holiday-one-day-check"
+          checked={oneDay}
+          onChange={e => { setOneDay(e.target.checked); if (e.target.checked) setDraft(d => ({...d, date_end: d.date_start})); }}
+          style={{ width:16, height:16, cursor:"pointer", accentColor:"var(--tw-lime-fg-deep)", flexShrink:0 }}
+        />
+        <label htmlFor="holiday-one-day-check" style={{ fontFamily:"var(--font-ui)", fontSize:14, color:"var(--fg-1)", cursor:"pointer", userSelect:"none" }}>
+          One day
+        </label>
       </div>
+      {oneDay ? (
+        <input type="date" style={inputStyle} value={draft.date_start}
+          onChange={e => setDraft(d => ({...d, date_start: e.target.value, date_end: e.target.value}))}
+          title="Date"/>
+      ) : (
+        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8 }}>
+          <input type="date" style={inputStyle} value={draft.date_start} onChange={e => setDraft(d => ({...d, date_start: e.target.value}))} title="From"/>
+          <input type="date" style={inputStyle} value={draft.date_end} onChange={e => setDraft(d => ({...d, date_end: e.target.value}))} title="To (leave same for single day)"/>
+        </div>
+      )}
       <select style={inputStyle} value={draft.teams_off} onChange={e => setDraft(d => ({...d, teams_off: e.target.value}))}>
         <option value="UA">Ukraine (UA)</option>
         <option value="MX">Mexico (MX)</option>
