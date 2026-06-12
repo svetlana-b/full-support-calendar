@@ -56,6 +56,27 @@ function Toolbar({
 
   const [p0Open, setP0Open] = React.useState(false);
 
+  // Derive available type filter options from the selected employee's team.
+  const selectedEmpForType = employeeFilter !== "all"
+    ? (employees || []).find(e => e.id === employeeFilter)
+    : null;
+  const typeFilterTeam = (selectedEmpForType?.team || "").toUpperCase();
+  const typeFilterIsMXCN = typeFilterTeam === "MX" || typeFilterTeam === "CN";
+  const typeFilterOptions = [
+    ["all", "All Leave Types"],
+    ...Object.values(LEAVE_TYPES)
+      .filter(t => !t.teamsOnly || typeFilterIsMXCN)
+      .map(t => [t.id, t.label]),
+  ];
+
+  // Reset typeFilter to "all" when the employee filter switches away from MX/CN.
+  React.useEffect(() => {
+    if (!typeFilterIsMXCN && typeFilter !== "all") {
+      const currentTypeObj = LEAVE_TYPES[typeFilter];
+      if (currentTypeObj && currentTypeObj.teamsOnly) setTypeFilter("all");
+    }
+  }, [employeeFilter]);
+
   // Detect whether the buttons group has wrapped to a second row.
   const [twoRows, setTwoRows] = React.useState(false);
   const leftRef = React.useRef(null);
@@ -118,7 +139,7 @@ function Toolbar({
             <FilterPill label="Team" value={employeeFilter} onChange={setEmployeeFilter}
               options={[["all","Everyone"], ...(employees || []).map(e => [e.id, e.name])]}/>
             <FilterPill label="Type" value={typeFilter} onChange={setTypeFilter}
-              options={[["all","All Leave Types"], ...Object.values(LEAVE_TYPES).map(t => [t.id, t.label])]}/>
+              options={typeFilterOptions}/>
 
             {onWeekendSignup && (
               <button onClick={onWeekendSignup} style={secondaryBtn} title="Sign up for weekend coverage shifts">

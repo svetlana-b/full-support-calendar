@@ -207,8 +207,19 @@
   --ev-study-fg:     #713F12;
   --ev-wedding-bg:   #FCE7F3;
   --ev-wedding-fg:   #831843;
-  --ev-maternity-bg: #CCFBF1;
-  --ev-maternity-fg: #134E4A;
+  --ev-maternity-bg:     #CCFBF1;
+  --ev-maternity-fg:     #134E4A;
+  /* MX / CN only leave types — light mode */
+  --ev-appointments-bg:  #EEF2FF;
+  --ev-appointments-fg:  #3730A3;
+  --ev-military-bg:      #ECFCCB;
+  --ev-military-fg:      #365314;
+  --ev-bereavement-bg:   #F1F5F9;
+  --ev-bereavement-fg:   #334155;
+  --ev-withoutpay-bg:    #FEE2E2;
+  --ev-withoutpay-fg:    #991B1B;
+  --ev-other-bg:         #FEF3C7;
+  --ev-other-fg:         #92400E;
 
   /* Role badge colors — light mode */
   --role-tier1-bg:    #DCFCE7;  --role-tier1-border:    #BBF7D0;  --role-tier1-fg:    #14532D;
@@ -402,8 +413,19 @@ code, kbd, .tw-mono {
   --ev-study-fg:     #fde047;
   --ev-wedding-bg:   rgba(244,114,182,0.12);
   --ev-wedding-fg:   #f472b6;
-  --ev-maternity-bg: rgba(20,184,166,0.12);
-  --ev-maternity-fg: #2dd4bf;
+  --ev-maternity-bg:     rgba(20,184,166,0.12);
+  --ev-maternity-fg:     #2dd4bf;
+  /* MX / CN only leave types — dark mode */
+  --ev-appointments-bg:  rgba(99,102,241,0.12);
+  --ev-appointments-fg:  #818cf8;
+  --ev-military-bg:      rgba(101,163,13,0.12);
+  --ev-military-fg:      #a3e635;
+  --ev-bereavement-bg:   rgba(100,116,139,0.12);
+  --ev-bereavement-fg:   #94a3b8;
+  --ev-withoutpay-bg:    rgba(220,38,38,0.12);
+  --ev-withoutpay-fg:    #f87171;
+  --ev-other-bg:         rgba(217,119,6,0.12);
+  --ev-other-fg:         #fbbf24;
 
   /* Role badge colors — dark mode */
   --role-tier1-bg:    rgba(110,231,160,0.15);  --role-tier1-border:    rgba(110,231,160,0.35);  --role-tier1-fg:    #6ee7a0;

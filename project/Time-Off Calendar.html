@@ -33,6 +33,8 @@
 
 <!-- SheetJS (community build) — powers the .xlsx export in the Manage > Reports tab -->
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<!-- jsPDF — powers the Download PTO PDF button for MX / CN employees -->
+<script src="https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 </head>
 <body>
 <div id="root"></div>
@@ -42,6 +44,7 @@
 <script type="text/babel" src="design_system/Fields.jsx"></script>
 <script type="text/babel" src="data.jsx"></script>
 <script type="text/babel" src="firestore.jsx"></script>
+<script type="text/babel" src="PtoDocument.jsx"></script>
 <script type="text/babel" src="Celebrations.jsx"></script>
 <script type="text/babel" src="Toolbar.jsx"></script>
 <script type="text/babel" src="Detail.jsx"></script>

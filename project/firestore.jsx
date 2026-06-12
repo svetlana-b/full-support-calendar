@@ -70,20 +70,30 @@ function _hmToMinutes(hm) {
 }
 function _resolveType(raw) {
   const t = (raw || "").trim().toLowerCase();
-  if (/sick/.test(t))              return "Sick";
-  if (/pto|personal/.test(t))      return "PTO";
-  if (/study/.test(t))             return "Study";
-  if (/wedding/.test(t))           return "Wedding";
-  if (/matern|patern/.test(t))     return "Maternity";
+  if (/sick/.test(t))                    return "Sick";
+  if (/pto|personal/.test(t))            return "PTO";
+  if (/study/.test(t))                   return "Study";
+  if (/wedding/.test(t))                 return "Wedding";
+  if (/matern|patern/.test(t))           return "Maternity";
+  if (/appoint/.test(t))                 return "Appointments";
+  if (/militar/.test(t))                 return "Military";
+  if (/bereave/.test(t))                 return "Bereavement";
+  if (/without\s*pay|no\s*pay/.test(t))  return "WithoutPay";
+  if (/\bother\b/.test(t))               return "Other";
   return "Vacation";
 }
 function _typeToWriteName(type) {
   const names = {
-    Sick:      "Sick Day",
-    PTO:       "Personal Day",
-    Study:     "Study Leave",
-    Wedding:   "Wedding Leave",
-    Maternity: "Maternity/Paternity Leave",
+    Sick:         "Sick Day",
+    PTO:          "Personal Day",
+    Study:        "Study Leave",
+    Wedding:      "Wedding Leave",
+    Maternity:    "Maternity/Paternity Leave",
+    Appointments: "Appointments",
+    Military:     "Military",
+    Bereavement:  "Bereavement",
+    WithoutPay:   "Time Off Without Pay",
+    Other:        "Other",
   };
   return names[type] ?? type;
 }

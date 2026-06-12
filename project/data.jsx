@@ -14,12 +14,18 @@ window.TIER2_ONCALL = window.TIER2_ONCALL || {};
 // Each type also carries an icon image (in /assets) so event bars read as
 // themed pills (matches the companion Pro-Support Schedule app).
 const LEAVE_TYPES = {
-  Vacation:   { id:"Vacation",   label:"Vacation",            icon:"assets/vacation.png",       bar:"#a78bfa", barHover:"#c4b5fd", bg:"var(--ev-vacation-bg)",   fg:"var(--ev-vacation-fg)",   dot:"#a78bfa" },
-  PTO:        { id:"PTO",        label:"Personal Day",        icon:"assets/pto.png",            bar:"#0061FF", barHover:"#3B82F6", bg:"var(--ev-pto-bg)",        fg:"var(--ev-pto-fg)",        dot:"#0061FF" },
-  Sick:       { id:"Sick",       label:"Sick Day",            icon:"assets/sick-leave.png",     bar:"#fb923c", barHover:"#fdba74", bg:"var(--ev-sick-bg)",       fg:"var(--ev-sick-fg)",       dot:"#fb923c" },
-  Study:      { id:"Study",      label:"Study Leave",         icon:"assets/study_leave.png",    bar:"#fde047", barHover:"#fef08a", bg:"var(--ev-study-bg)",      fg:"var(--ev-study-fg)",      dot:"#fde047" },
-  Wedding:    { id:"Wedding",    label:"Wedding Leave",       icon:"assets/wedding_leave.png",  bar:"#f472b6", barHover:"#f9a8d4", bg:"var(--ev-wedding-bg)",    fg:"var(--ev-wedding-fg)",    dot:"#f472b6" },
-  Maternity:  { id:"Maternity",  label:"Maternity/Paternity Leave", icon:"assets/maternity_leave.png",bar:"#14b8a6", barHover:"#2dd4bf", bg:"var(--ev-maternity-bg)",  fg:"var(--ev-maternity-fg)",  dot:"#14b8a6" },
+  Vacation:     { id:"Vacation",     label:"Vacation",               icon:"assets/vacation.png",       bar:"#a78bfa", barHover:"#c4b5fd", bg:"var(--ev-vacation-bg)",     fg:"var(--ev-vacation-fg)",     dot:"#a78bfa" },
+  PTO:          { id:"PTO",          label:"Personal Day",           icon:"assets/pto.png",            bar:"#0061FF", barHover:"#3B82F6", bg:"var(--ev-pto-bg)",          fg:"var(--ev-pto-fg)",          dot:"#0061FF" },
+  Sick:         { id:"Sick",         label:"Sick Day",               icon:"assets/sick-leave.png",     bar:"#fb923c", barHover:"#fdba74", bg:"var(--ev-sick-bg)",         fg:"var(--ev-sick-fg)",         dot:"#fb923c" },
+  Study:        { id:"Study",        label:"Study Leave",            icon:"assets/study_leave.png",    bar:"#fde047", barHover:"#fef08a", bg:"var(--ev-study-bg)",        fg:"var(--ev-study-fg)",        dot:"#fde047" },
+  Wedding:      { id:"Wedding",      label:"Wedding Leave",          icon:"assets/wedding_leave.png",  bar:"#f472b6", barHover:"#f9a8d4", bg:"var(--ev-wedding-bg)",      fg:"var(--ev-wedding-fg)",      dot:"#f472b6" },
+  Maternity:    { id:"Maternity",    label:"Maternity/Paternity Leave", icon:"assets/maternity_leave.png", bar:"#14b8a6", barHover:"#2dd4bf", bg:"var(--ev-maternity-bg)", fg:"var(--ev-maternity-fg)",    dot:"#14b8a6" },
+  // MX / CN only
+  Appointments: { id:"Appointments", label:"Appointments",           icon:"assets/appointments.png",   bar:"#6366f1", barHover:"#818cf8", bg:"var(--ev-appointments-bg)", fg:"var(--ev-appointments-fg)", dot:"#6366f1", teamsOnly:["MX","CN"] },
+  Military:     { id:"Military",     label:"Military",               icon:"assets/military.png",       bar:"#65a30d", barHover:"#84cc16", bg:"var(--ev-military-bg)",     fg:"var(--ev-military-fg)",     dot:"#65a30d", teamsOnly:["MX","CN"] },
+  Bereavement:  { id:"Bereavement",  label:"Bereavement",            icon:"assets/bereavement.png",    bar:"#64748b", barHover:"#94a3b8", bg:"var(--ev-bereavement-bg)",  fg:"var(--ev-bereavement-fg)",  dot:"#64748b", teamsOnly:["MX","CN"] },
+  WithoutPay:   { id:"WithoutPay",   label:"Time Off Without Pay",   icon:"assets/without_pay.png",    bar:"#dc2626", barHover:"#ef4444", bg:"var(--ev-withoutpay-bg)",   fg:"var(--ev-withoutpay-fg)",   dot:"#dc2626", teamsOnly:["MX","CN"] },
+  Other:        { id:"Other",        label:"Other",                  icon:"assets/other_time_off.png", bar:"#d97706", barHover:"#f59e0b", bg:"var(--ev-other-bg)",        fg:"var(--ev-other-fg)",        dot:"#d97706", teamsOnly:["MX","CN"] },
 };
 
 // Today anchor used for "today" highlighting across all calendar variants.

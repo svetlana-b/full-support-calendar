@@ -3,6 +3,8 @@
 function EventDetail({ event, employees, currentUid, currentUserEmail, isAdmin, onClose, onDelete, onEdit }) {
   if (!event) return null;
   const emp = employees.find(e => e.id === event.employeeId) || { initials:"?", name:event.fullName||"Unknown", role:"" };
+  const empTeam = (emp.team || "").toUpperCase();
+  const empIsMXCN = empTeam === "MX" || empTeam === "CN";
   const type = LEAVE_TYPES[event.type] || LEAVE_TYPES.Vacation;
   const isAssignedEmployee = !!emp.email && !!currentUserEmail
     && emp.email.toLowerCase() === currentUserEmail.toLowerCase();
@@ -54,10 +56,22 @@ function EventDetail({ event, employees, currentUid, currentUserEmail, isAdmin, 
               Past entries cannot be edited or deleted.
             </div>
           )}
-          <div style={{ display:"flex", gap:8, justifyContent:"flex-end", marginTop:18 }}>
-            {canEdit && !isPast && <button onClick={onDelete} style={outlineBtn(true)}>Delete</button>}
-            <button onClick={onClose} style={outlineBtn()}>Close</button>
-            {canEdit && !isPast && <button onClick={() => onEdit && onEdit(event)} style={primaryBtn}>Edit</button>}
+          <div style={{ display:"flex", gap:8, justifyContent:"space-between", alignItems:"center", marginTop:18 }}>
+            <div>
+              {empIsMXCN && (
+                <button
+                  onClick={() => generatePtoPdf({ event, employee: emp, employees })}
+                  style={outlineBtn()}
+                >
+                  Download PTO
+                </button>
+              )}
+            </div>
+            <div style={{ display:"flex", gap:8 }}>
+              {canEdit && !isPast && <button onClick={onDelete} style={outlineBtn(true)}>Delete</button>}
+              <button onClick={onClose} style={outlineBtn()}>Close</button>
+              {canEdit && !isPast && <button onClick={() => onEdit && onEdit(event)} style={primaryBtn}>Edit</button>}
+            </div>
           </div>
         </div>
       </div>
@@ -188,6 +202,11 @@ function AddRequest({ open, seedDate, editEvent, employees, currentUserEmail, is
   const [employeeId, setEmp] = React.useState(firstId);
   const [pickOther, setPickOther] = React.useState(false);
   const [type, setType] = React.useState("Vacation");
+
+  const selectedEmpObj = employees.find(e => e.id === employeeId);
+  const empTeam = (selectedEmpObj?.team || "").toUpperCase();
+  const empIsMXCN = empTeam === "MX" || empTeam === "CN";
+  const availableLeaveTypes = Object.values(LEAVE_TYPES).filter(t => !t.teamsOnly || empIsMXCN);
   const [oneDay, setOneDay] = React.useState(false);
   const [start, setStart] = React.useState("");
   const [end, setEnd] = React.useState("");
@@ -213,6 +232,15 @@ function AddRequest({ open, seedDate, editEvent, employees, currentUserEmail, is
       setPickOther(false);
     }
   }, [open, seedDate, editEvent, firstId]);
+
+  // Reset to Vacation when the selected employee changes to a non-MX/CN team
+  // and the current type is MX/CN-only.
+  React.useEffect(() => {
+    const currentTypeObj = LEAVE_TYPES[type];
+    if (currentTypeObj && currentTypeObj.teamsOnly && !empIsMXCN) {
+      setType("Vacation");
+    }
+  }, [employeeId]);
 
   if (!open) return null;
 
@@ -272,7 +300,7 @@ function AddRequest({ open, seedDate, editEvent, employees, currentUserEmail, is
             )}
           </Field>
           <Field label="Type">
-            <SelectInput value={type} onChange={setType} options={Object.values(LEAVE_TYPES).map(t=>[t.id, t.label])}/>
+            <SelectInput value={type} onChange={setType} options={availableLeaveTypes.map(t=>[t.id, t.label])}/>
           </Field>
           <div style={{ display:"flex", alignItems:"center", gap:8 }}>
             <input
