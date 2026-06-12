@@ -33,6 +33,7 @@ window.ADMIN_EMAILS = [
   "sbazhynova@teamworkcommerce.com",
   "slitvinov@teamworkcommerce.com",
   "dlytovchenko@teamworkcommerce.com",
+  "aolvera@teamworkcommerce.com",
 ];
 
 const app  = initializeApp(firebaseConfig);
