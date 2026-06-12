@@ -432,6 +432,7 @@ const EMPLOYEE_ROLES = [
   "Pro-Support Tier2",
   "Pro-Support Tech Lead",
   "Pro-Support Team Lead",
+  "Pro-Support MX Team Lead",
 ];
 const EMPLOYEE_TEAMS = ["UA", "MX", "CN"];
 
