@@ -43,7 +43,7 @@ const auth = getAuth(app);
 // coordinates which tab owns the network connection when several are open.
 const db = initializeFirestore(app, {
   localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
-});
+}, "full-support-calendar");
 const googleProvider = new GoogleAuthProvider();
 
 // Expose the SDK pieces the Babel-transpiled scripts need.
