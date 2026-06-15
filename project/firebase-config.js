@@ -17,13 +17,12 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDsHDAdwVGLebw9ez6FxmcVPa_OAI1nZsI",
-  authDomain: "pro-support-calendar.firebaseapp.com",
-  projectId: "pro-support-calendar",
-  storageBucket: "pro-support-calendar.firebasestorage.app",
-  messagingSenderId: "316405288320",
-  appId: "1:316405288320:web:f653c7f00ac77f4f03c565",
-  measurementId: "G-QHX9FXF02Z",
+  apiKey: "AIzaSyCc-0glDLBE1A10-f9PBb_Uuj6AxbOjebk",
+  authDomain: "twc-support-calendar.firebaseapp.com",
+  projectId: "twc-support-calendar",
+  storageBucket: "twc-support-calendar.firebasestorage.app",
+  messagingSenderId: "912112974010",
+  appId: "1:912112974010:web:d6c25d6c3632a59dd26a83"
 };
 
 // Admin allowlist — only these users see the Manage panel and can write to
