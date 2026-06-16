@@ -83,6 +83,15 @@ function WeekendSignup({ open, onClose, currentUser, weekendsRaw }) {
     return _wsBuildEntries(byDate);
   }, [weekendsRaw]);
 
+  // Reset to current month whenever the modal opens.
+  React.useEffect(() => {
+    if (!open || months.order.length === 0) return;
+    const now = new Date();
+    const label = `${WS_MONTH_NAMES[now.getMonth()]} ${now.getFullYear()}`;
+    const idx = months.order.indexOf(label);
+    setMonthIdx(idx >= 0 ? idx : 0);
+  }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // When Firestore updates, drop local selection if the held slot was claimed.
   React.useEffect(() => {
     if (!selected || selected.action !== "claim") return;
