@@ -501,31 +501,31 @@ function EmployeesModal({ open, onClose, employees }) {
     return "👤";
   };
 
-  const roleRank = (role) => {
+  const ROLE_BUCKETS = [
+    { key: "tier1",     label: "Tier 1",     test: r => r.includes("tier1") || r.includes("tier 1") },
+    { key: "tier2",     label: "Tier 2",     test: r => r.includes("tier2") || r.includes("tier 2") },
+    { key: "techlead",  label: "Tech Lead",  test: r => r.includes("tech lead") || r.includes("teach lead") },
+    { key: "teamlead",  label: "Team Lead",  test: r => r.includes("team lead") },
+  ];
+  const roleBucket = (role) => {
     const r = (role || "").toLowerCase();
-    if (r.includes("tier1") || r.includes("tier 1")) return 0; // includes trainee
-    if (r.includes("tier2") || r.includes("tier 2")) return 1;
-    if (r.includes("tech lead") || r.includes("teach lead")) return 2;
-    if (r.includes("team lead")) return 3;
-    return 4;
+    return ROLE_BUCKETS.find(b => b.test(r)) || { key: "other", label: "Other" };
   };
 
   const sorted = (employees || []).slice().sort((a, b) => {
-    const teamOrder = ["UA", "MX", "CN"];
-    const ta = teamOrder.indexOf(a.team) === -1 ? 99 : teamOrder.indexOf(a.team);
-    const tb = teamOrder.indexOf(b.team) === -1 ? 99 : teamOrder.indexOf(b.team);
-    if (ta !== tb) return ta - tb;
-    const ra = roleRank(a.roleRaw || a.role);
-    const rb = roleRank(b.roleRaw || b.role);
-    if (ra !== rb) return ra - rb;
+    const orderA = ROLE_BUCKETS.findIndex(bkt => bkt.test((a.roleRaw || a.role || "").toLowerCase()));
+    const orderB = ROLE_BUCKETS.findIndex(bkt => bkt.test((b.roleRaw || b.role || "").toLowerCase()));
+    const oa = orderA === -1 ? 99 : orderA;
+    const ob = orderB === -1 ? 99 : orderB;
+    if (oa !== ob) return oa - ob;
     return (a.fullName || "").localeCompare(b.fullName || "");
   });
 
   const groups = [];
   sorted.forEach(emp => {
-    const teamKey = emp.team || "";
+    const bucket = roleBucket(emp.roleRaw || emp.role);
     const last = groups[groups.length - 1];
-    if (!last || last.team !== teamKey) groups.push({ team: teamKey, emps: [emp] });
+    if (!last || last.key !== bucket.key) groups.push({ key: bucket.key, label: bucket.label, emps: [emp] });
     else last.emps.push(emp);
   });
 
@@ -572,14 +572,12 @@ function EmployeesModal({ open, onClose, employees }) {
 
         {/* Body */}
         <div style={{ overflowY:"auto", padding:"12px 20px 20px" }}>
-          {groups.map(({ team, emps }) => (
-            <div key={team || "__no_team__"} style={{ marginBottom:16 }}>
-              {team && (
-                <div style={{
-                  fontSize:10, fontWeight:700, letterSpacing:".1em", textTransform:"uppercase",
-                  color:"var(--fg-3)", padding:"4px 0 8px",
-                }}>{TEAM_LABEL[team] || team}</div>
-              )}
+          {groups.map(({ key, label, emps }) => (
+            <div key={key} style={{ marginBottom:16 }}>
+              <div style={{
+                fontSize:10, fontWeight:700, letterSpacing:".1em", textTransform:"uppercase",
+                color:"var(--fg-3)", padding:"4px 0 8px",
+              }}>{label}</div>
               <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
                 {emps.map((emp, i) => {
                   const av = roleAvatarTint(emp.roleRaw || emp.role || "");
