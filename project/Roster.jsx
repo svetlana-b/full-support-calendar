@@ -153,6 +153,13 @@ function Roster({ open, employees, onClose }) {
           display:"flex", alignItems:"center", gap:12, padding:"16px 20px",
           borderBottom:"1px solid var(--border-weak)",
         }}>
+          <span style={{
+            width:30, height:30, borderRadius:"var(--r-md)", flexShrink:0,
+            background:"var(--role-tier1-bg)", border:"1px solid var(--role-tier1-border)",
+            display:"inline-flex", alignItems:"center", justifyContent:"center",
+          }}>
+            <img src="assets/event.png" alt="" style={{ width:24, height:24, objectFit:"contain", filter:"var(--p0-icon-filter)" }}/>
+          </span>
           <div style={{ flex:1 }}>
             <div style={{ fontFamily:"var(--font-display)", fontSize:18, fontWeight:700, color:"var(--fg-1)" }}>
               Birthdays & Anniversary
