@@ -48,7 +48,16 @@ function ContactDetails({ employee, contact, onClose }) {
           display:"flex", alignItems:"center", justifyContent:"space-between",
           padding:"16px 20px", borderBottom:"1px solid var(--border-weak)",
         }}>
-          <div style={{ fontFamily:"var(--font-name)", fontSize:20, fontWeight:300, color:"var(--fg-1)" }}>Contact details</div>
+          <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+            <span style={{
+              width:30, height:30, borderRadius:"var(--r-md)", flexShrink:0,
+              background:"var(--role-tier2-bg)", border:"1px solid var(--role-tier2-border)",
+              display:"inline-flex", alignItems:"center", justifyContent:"center",
+            }}>
+              <img src="assets/contact.png" alt="" style={{ width:24, height:24, objectFit:"contain" }}/>
+            </span>
+            <div style={{ fontFamily:"var(--font-name)", fontSize:20, fontWeight:300, color:"var(--fg-1)" }}>Contact details</div>
+          </div>
           <button onClick={onClose} style={{
             display:"inline-flex", alignItems:"center", gap:4,
             height:28, padding:"0 10px",
