@@ -61,7 +61,7 @@ function _wsBuildEntries(byDate) {
   return entries;
 }
 
-function WeekendSignup({ open, onClose, currentUser, weekendsRaw }) {
+function WeekendSignup({ open, onClose, currentUser, weekendsRaw, readOnly }) {
   const myName = (currentUser && (currentUser.displayName || (currentUser.email||"").split("@")[0])) || "";
   const [monthIdx, setMonthIdx] = React.useState(0);
   const [selected, setSelected] = React.useState(null); // {weekLabel, day, shiftType, action}
@@ -293,7 +293,7 @@ function WeekendSignup({ open, onClose, currentUser, weekendsRaw }) {
             <div style={{ textAlign:"center", color:"var(--fg-3)", fontSize:13, padding:24 }}>No weekend shifts found.</div>
           ) : weekends.map(entry => (
             <WSWeekend key={entry.weekLabel} entry={entry} myName={myName} selected={selected}
-              onSlotClick={onSlotClick} onConfirm={() => setConfirming(true)}/>
+              onSlotClick={onSlotClick} onConfirm={() => setConfirming(true)} readOnly={readOnly}/>
           ))}
         </div>
       </div>
@@ -345,7 +345,7 @@ function WeekendSignup({ open, onClose, currentUser, weekendsRaw }) {
   ), document.body);
 }
 
-function WSWeekend({ entry, myName, selected, onSlotClick, onConfirm }) {
+function WSWeekend({ entry, myName, selected, onSlotClick, onConfirm, readOnly }) {
   return (
     <div style={{ border:"1px solid var(--border-weak)", borderRadius:"var(--r-lg)", overflow:"hidden", flexShrink:0 }}>
       <div style={{
@@ -358,20 +358,20 @@ function WSWeekend({ entry, myName, selected, onSlotClick, onConfirm }) {
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr" }}>
         <div style={{ padding:"12px 14px", borderRight:"1px solid var(--border-weak)" }}>
           <div style={{ fontSize:10, fontWeight:700, letterSpacing:".1em", color:"#7C3AED", marginBottom:8 }}>● SATURDAY</div>
-          <WSSlot entry={entry} day="sat" shiftType="night" myName={myName} selected={selected} onSlotClick={onSlotClick} onConfirm={onConfirm}/>
-          <WSSlot entry={entry} day="sat" shiftType="day"   myName={myName} selected={selected} onSlotClick={onSlotClick} onConfirm={onConfirm}/>
+          <WSSlot entry={entry} day="sat" shiftType="night" myName={myName} selected={selected} onSlotClick={onSlotClick} onConfirm={onConfirm} readOnly={readOnly}/>
+          <WSSlot entry={entry} day="sat" shiftType="day"   myName={myName} selected={selected} onSlotClick={onSlotClick} onConfirm={onConfirm} readOnly={readOnly}/>
         </div>
         <div style={{ padding:"12px 14px" }}>
           <div style={{ fontSize:10, fontWeight:700, letterSpacing:".1em", color:"#C2410C", marginBottom:8 }}>● SUNDAY</div>
-          <WSSlot entry={entry} day="sun" shiftType="night" myName={myName} selected={selected} onSlotClick={onSlotClick} onConfirm={onConfirm}/>
-          <WSSlot entry={entry} day="sun" shiftType="day"   myName={myName} selected={selected} onSlotClick={onSlotClick} onConfirm={onConfirm}/>
+          <WSSlot entry={entry} day="sun" shiftType="night" myName={myName} selected={selected} onSlotClick={onSlotClick} onConfirm={onConfirm} readOnly={readOnly}/>
+          <WSSlot entry={entry} day="sun" shiftType="day"   myName={myName} selected={selected} onSlotClick={onSlotClick} onConfirm={onConfirm} readOnly={readOnly}/>
         </div>
       </div>
     </div>
   );
 }
 
-function WSSlot({ entry, day, shiftType, myName, selected, onSlotClick, onConfirm }) {
+function WSSlot({ entry, day, shiftType, myName, selected, onSlotClick, onConfirm, readOnly }) {
   const slot = entry.shifts[day][shiftType];
   const isNight = shiftType === "night";
   const time = isNight ? "11PM – 11AM" : "11AM – 11PM";
@@ -400,7 +400,7 @@ function WSSlot({ entry, day, shiftType, myName, selected, onSlotClick, onConfir
   else if (isMine || isSelected || heldByMe) { bg = "var(--tw-blue-50, #EFF6FF)"; border = "var(--tw-blue-700, #1D4ED8)"; }
   else if (heldByOther) { bg = "#FFFBEB"; border = "#F59E0B"; cursor = "default"; }
 
-  const clickable = isEmpty || (isMine && !isPast);
+  const clickable = !readOnly && (isEmpty || (isMine && !isPast));
 
   return (
     <div onClick={clickable ? () => onSlotClick(entry, day, shiftType) : undefined} style={{
@@ -422,7 +422,9 @@ function WSSlot({ entry, day, shiftType, myName, selected, onSlotClick, onConfir
         <div style={{ fontFamily:"var(--font-name)", fontSize:13, fontWeight:500 }}>{slot.person}</div>
         {isPast
           ? <div style={{ fontSize:10, fontWeight:600, color:"var(--fg-3)" }}>PAST SHIFT · cannot release</div>
-          : <div style={{ fontSize:10, fontWeight:600, color:"var(--tw-blue-700, #1D4ED8)" }}>▸ YOUR SHIFT · tap to release</div>
+          : readOnly
+            ? <div style={{ fontSize:10, fontWeight:600, color:"var(--tw-blue-700, #1D4ED8)" }}>▸ YOUR SHIFT</div>
+            : <div style={{ fontSize:10, fontWeight:600, color:"var(--tw-blue-700, #1D4ED8)" }}>▸ YOUR SHIFT · tap to release</div>
         }
       </>)}
       {isTaken && <div style={{ fontFamily:"var(--font-name)", fontSize:13, fontWeight:500 }}>{slot.person}</div>}
@@ -448,7 +450,9 @@ function WSSlot({ entry, day, shiftType, myName, selected, onSlotClick, onConfir
         <div style={{ fontSize:10, fontWeight:700, color:"#92400E" }}>⏳ ON HOLD</div>
       </>)}
       {isEmpty && !heldByOther && !isSelected && !heldByMe && (
-        <div style={{ fontSize:12, color:"var(--fg-3)", fontStyle:"italic" }}>Available — tap to claim</div>
+        <div style={{ fontSize:12, color:"var(--fg-3)", fontStyle:"italic" }}>
+          {readOnly ? "Available" : "Available — tap to claim"}
+        </div>
       )}
     </div>
   );

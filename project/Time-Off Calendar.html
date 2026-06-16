@@ -314,6 +314,7 @@ function CalendarPrototype({ variant, onVariantChange, fsData, user, onSignOut }
         onClose={() => setWeekendSignupOpen(false)}
         currentUser={user}
         weekendsRaw={weekendsRaw}
+        readOnly={!canAdd}
       />
 
       <Roster
