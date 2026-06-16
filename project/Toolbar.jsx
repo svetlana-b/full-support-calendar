@@ -501,11 +501,23 @@ function EmployeesModal({ open, onClose, employees }) {
     return "👤";
   };
 
+  const roleRank = (role) => {
+    const r = (role || "").toLowerCase();
+    if (r.includes("tier1") || r.includes("tier 1")) return 0; // includes trainee
+    if (r.includes("tier2") || r.includes("tier 2")) return 1;
+    if (r.includes("tech lead") || r.includes("teach lead")) return 2;
+    if (r.includes("team lead")) return 3;
+    return 4;
+  };
+
   const sorted = (employees || []).slice().sort((a, b) => {
     const teamOrder = ["UA", "MX", "CN"];
     const ta = teamOrder.indexOf(a.team) === -1 ? 99 : teamOrder.indexOf(a.team);
     const tb = teamOrder.indexOf(b.team) === -1 ? 99 : teamOrder.indexOf(b.team);
     if (ta !== tb) return ta - tb;
+    const ra = roleRank(a.roleRaw || a.role);
+    const rb = roleRank(b.roleRaw || b.role);
+    if (ra !== rb) return ra - rb;
     return (a.fullName || "").localeCompare(b.fullName || "");
   });
 
