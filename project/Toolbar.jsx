@@ -489,6 +489,36 @@ function _tzShortLabel(iana) {
   } catch { return ""; }
 }
 
+// Convert "HH:MM" local time in fromTz to EDT (America/New_York, UTC−4 summer).
+// Uses today's date as reference so DST offsets are current.
+function _convertToEDT(hhmm, fromTz) {
+  if (!hhmm || !fromTz) return null;
+  try {
+    const [hStr, mStr] = hhmm.split(":");
+    const h = parseInt(hStr, 10);
+    const m = parseInt(mStr || "0", 10);
+    if (isNaN(h) || isNaN(m)) return null;
+
+    // Pick today at noon UTC as reference to capture today's DST offset for fromTz
+    const now = new Date();
+    const refUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 12, 0, 0));
+    const parts = new Intl.DateTimeFormat("en-US", {
+      timeZone: fromTz, hour: "numeric", minute: "numeric", hour12: false,
+    }).formatToParts(refUTC);
+    let tzH = parseInt(parts.find(p => p.type === "hour")?.value || "0", 10);
+    const tzM = parseInt(parts.find(p => p.type === "minute")?.value || "0", 10);
+    if (tzH === 24) tzH = 0;
+    // offset of fromTz vs UTC in minutes (e.g. Kyiv EEST = +180, MX CDT = -300)
+    const fromOffsetMins = (tzH * 60 + tzM) - (12 * 60);
+
+    // local → UTC → EDT (UTC−4)
+    const edtMins = ((((h * 60 + m) - fromOffsetMins - 240) % 1440) + 1440) % 1440;
+    const eh = Math.floor(edtMins / 60);
+    const em = edtMins % 60;
+    return _fmtTime(`${String(eh).padStart(2, "0")}:${String(em).padStart(2, "0")}`);
+  } catch { return null; }
+}
+
 function EmployeesModal({ open, onClose, employees }) {
   if (!open) return null;
 
@@ -582,9 +612,14 @@ function EmployeesModal({ open, onClose, employees }) {
                 {emps.map((emp, i) => {
                   const av = roleAvatarTint(emp.roleRaw || emp.role || "");
                   const hasSched = emp.start || emp.end;
-                  const schedLabel = hasSched
-                    ? [_fmtTime(emp.start), _fmtTime(emp.end)].filter(Boolean).join(" – ") + " EST"
-                    : null;
+                  const schedLabel = hasSched ? (() => {
+                    if (emp.timezone) {
+                      const s = _convertToEDT(emp.start, emp.timezone);
+                      const e = _convertToEDT(emp.end, emp.timezone);
+                      return [s, e].filter(Boolean).join(" – ") + " EDT";
+                    }
+                    return [_fmtTime(emp.start), _fmtTime(emp.end)].filter(Boolean).join(" – ") + " EST";
+                  })() : null;
                   return (
                     <div key={emp.id || i} style={{
                       display:"flex", alignItems:"center", gap:12,
