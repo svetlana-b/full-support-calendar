@@ -579,9 +579,8 @@ function EmployeesModal({ open, onClose, employees }) {
           <div style={{ display:"flex", alignItems:"center", gap:10 }}>
             <span style={{
               width:30, height:30, borderRadius:"var(--r-md)", flexShrink:0,
-              background:"var(--role-tier1-bg)", color:"var(--role-tier1-fg)",
-              border:"1px solid var(--role-tier1-border)",
-              display:"inline-flex", alignItems:"center", justifyContent:"center", fontSize:15,
+              background:"var(--role-teamlead-bg)", border:"1px solid var(--role-teamlead-border)",
+              display:"inline-flex", alignItems:"center", justifyContent:"center",
             }}><img src="assets/id-card.png" alt="" style={{ width:24, height:24, objectFit:"contain", filter:"var(--p0-icon-filter)" }}/></span>
             <div>
               <div style={{ fontFamily:"var(--font-name)", fontSize:18, fontWeight:300, color:"var(--fg-1)" }}>Support Employees</div>

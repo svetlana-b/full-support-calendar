@@ -266,7 +266,7 @@ function WeekendSignup({ open, onClose, currentUser, weekendsRaw, readOnly }) {
         <div style={{ padding:"18px 22px", borderBottom:"1px solid var(--border-weak)", display:"flex", alignItems:"center", gap:12 }}>
           <span style={{
             width:30, height:30, borderRadius:"var(--r-md)", flexShrink:0,
-            background:"var(--role-tier1-bg)", border:"1px solid var(--role-tier1-border)",
+            background:"#EDE9FE", border:"1px solid #7C3AED",
             display:"inline-flex", alignItems:"center", justifyContent:"center",
           }}>
             <img src="assets/weekend.png" alt="" style={{ width:24, height:24, objectFit:"contain", filter:"var(--p0-icon-filter)" }}/>
