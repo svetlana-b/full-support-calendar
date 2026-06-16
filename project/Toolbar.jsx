@@ -49,7 +49,7 @@ function Toolbar({
   employees,
   employeeFilter, setEmployeeFilter,
   typeFilter, setTypeFilter,
-  onAdd, onManage, onWeekendSignup, onRoster, user, onSignOut,
+  onAdd, onManage, onEmployees, onWeekendSignup, onRoster, user, onSignOut,
   currentVariant, onVariantChange,
 }) {
   const monthLabel = `${MONTH_NAMES[monthDate.getMonth()]} ${monthDate.getFullYear()}`;
@@ -140,6 +140,13 @@ function Toolbar({
               options={[["all","Everyone"], ...(employees || []).map(e => [e.id, e.name])]}/>
             <FilterPill label="Type" value={typeFilter} onChange={setTypeFilter}
               options={typeFilterOptions}/>
+
+            {onEmployees && (
+              <button onClick={onEmployees} style={secondaryBtn} title="View support employees">
+                <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0-3-3.85"/></svg>
+                Employees
+              </button>
+            )}
 
             {onWeekendSignup && (
               <button onClick={onWeekendSignup} style={secondaryBtn} title="Sign up for weekend coverage shifts">
@@ -457,7 +464,177 @@ function P0ContactRow({ label, children }) {
   );
 }
 
-Object.assign(window, { Toolbar, Legend, ViewSwitcher, ThemeToggle, useTheme });
+// ---------- Employees Modal ----------
+
+const TEAM_LABEL = { UA: "Ukraine 🇺🇦", MX: "Mexico 🇲🇽", CN: "China 🇨🇳" };
+
+function _fmtTime(hhmm) {
+  if (!hhmm) return "";
+  const [hStr, mStr] = hhmm.split(":");
+  const h = parseInt(hStr, 10);
+  const m = parseInt(mStr || "0", 10);
+  if (isNaN(h)) return hhmm;
+  const ampm = h < 12 ? "AM" : "PM";
+  const h12  = h === 0 ? 12 : h > 12 ? h - 12 : h;
+  return `${h12}:${String(m).padStart(2, "0")} ${ampm}`;
+}
+
+function _tzShortLabel(iana) {
+  if (!iana) return "";
+  try {
+    const ref = new Date("2026-06-15T12:00:00Z");
+    const parts = new Intl.DateTimeFormat("en-US", { timeZone: iana, timeZoneName: "short", hour: "numeric" }).formatToParts(ref);
+    const tzn = parts.find(p => p.type === "timeZoneName");
+    return tzn ? tzn.value : "";
+  } catch { return ""; }
+}
+
+function EmployeesModal({ open, onClose, employees }) {
+  if (!open) return null;
+
+  const ROLE_ICON = (role) => {
+    const r = (role || "").toLowerCase();
+    if (r.includes("team lead")) return "⭐";
+    if (r.includes("tech lead") || r.includes("teach lead")) return "🔧";
+    if (r.includes("tier2") || r.includes("tier 2")) return "🔵";
+    if (r.includes("tier1") || r.includes("tier 1")) return "🟢";
+    return "👤";
+  };
+
+  const sorted = (employees || []).slice().sort((a, b) => {
+    const teamOrder = ["UA", "MX", "CN"];
+    const ta = teamOrder.indexOf(a.team) === -1 ? 99 : teamOrder.indexOf(a.team);
+    const tb = teamOrder.indexOf(b.team) === -1 ? 99 : teamOrder.indexOf(b.team);
+    if (ta !== tb) return ta - tb;
+    return (a.fullName || "").localeCompare(b.fullName || "");
+  });
+
+  const groups = [];
+  sorted.forEach(emp => {
+    const teamKey = emp.team || "";
+    const last = groups[groups.length - 1];
+    if (!last || last.team !== teamKey) groups.push({ team: teamKey, emps: [emp] });
+    else last.emps.push(emp);
+  });
+
+  return ReactDOM.createPortal((
+    <div onClick={onClose} role="dialog" aria-modal="true" style={{
+      position:"fixed", inset:0, background:"rgba(15,23,42,0.45)",
+      display:"flex", alignItems:"center", justifyContent:"center",
+      zIndex:1000, padding:24,
+    }}>
+      <div onClick={e => e.stopPropagation()} style={{
+        background:"var(--bg-surface)", border:"1px solid var(--border-weak)",
+        borderRadius:"var(--r-xl)", width:"min(540px,100%)",
+        maxHeight:"calc(100vh - 48px)", display:"flex", flexDirection:"column",
+        boxShadow:"0 20px 60px rgba(15,23,42,0.25)", fontFamily:"var(--font-ui)",
+      }}>
+        {/* Header */}
+        <div style={{
+          display:"flex", alignItems:"center", justifyContent:"space-between",
+          padding:"16px 20px", borderBottom:"1px solid var(--border-weak)", flexShrink:0,
+        }}>
+          <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+            <span style={{
+              width:30, height:30, borderRadius:"var(--r-md)", flexShrink:0,
+              background:"var(--role-tier1-bg)", color:"var(--role-tier1-fg)",
+              border:"1px solid var(--role-tier1-border)",
+              display:"inline-flex", alignItems:"center", justifyContent:"center", fontSize:15,
+            }}>👥</span>
+            <div>
+              <div style={{ fontFamily:"var(--font-name)", fontSize:18, fontWeight:300, color:"var(--fg-1)" }}>Support Employees</div>
+              <div style={{ fontSize:11, color:"var(--fg-2)", marginTop:1 }}>{sorted.length} team member{sorted.length !== 1 ? "s" : ""}</div>
+            </div>
+          </div>
+          <button onClick={onClose} style={{
+            display:"inline-flex", alignItems:"center", gap:4,
+            height:28, padding:"0 10px",
+            border:"1px solid var(--border-weak)", borderRadius:"var(--r-pill)",
+            background:"var(--bg-surface)", color:"var(--fg-2)",
+            fontFamily:"var(--font-button)", fontSize:12, cursor:"pointer",
+          }}>
+            <svg width={10} height={10} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+            Close
+          </button>
+        </div>
+
+        {/* Body */}
+        <div style={{ overflowY:"auto", padding:"12px 20px 20px" }}>
+          {groups.map(({ team, emps }) => (
+            <div key={team || "__no_team__"} style={{ marginBottom:16 }}>
+              {team && (
+                <div style={{
+                  fontSize:10, fontWeight:700, letterSpacing:".1em", textTransform:"uppercase",
+                  color:"var(--fg-3)", padding:"4px 0 8px",
+                }}>{TEAM_LABEL[team] || team}</div>
+              )}
+              <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
+                {emps.map((emp, i) => {
+                  const av = roleAvatarTint(emp.roleRaw || emp.role || "");
+                  const tz   = _tzShortLabel(emp.timezone);
+                  const hasSched = emp.start || emp.end;
+                  const schedLabel = hasSched
+                    ? [_fmtTime(emp.start), _fmtTime(emp.end)].filter(Boolean).join(" – ") + (tz ? ` ${tz}` : "")
+                    : null;
+                  return (
+                    <div key={emp.id || i} style={{
+                      display:"flex", alignItems:"center", gap:12,
+                      padding:"10px 12px",
+                      background:"var(--bg-page)", border:"1px solid var(--border-weak)",
+                      borderRadius:"var(--r-lg)",
+                    }}>
+                      {/* Role icon (initials badge) */}
+                      <div style={{
+                        width:36, height:36, borderRadius:"50%", flexShrink:0,
+                        background:av.bg, border:`1px solid ${av.border}`, color:av.fg,
+                        display:"flex", alignItems:"center", justifyContent:"center",
+                        fontFamily:"var(--font-name)", fontWeight:700, fontSize:12,
+                        position:"relative",
+                      }}>
+                        {emp.initials || "?"}
+                        <span style={{
+                          position:"absolute", bottom:-4, right:-4,
+                          fontSize:12, lineHeight:1,
+                          filter:"drop-shadow(0 0 2px var(--bg-page))",
+                        }}>{ROLE_ICON(emp.roleRaw || emp.role)}</span>
+                      </div>
+
+                      {/* Info */}
+                      <div style={{ flex:1, minWidth:0 }}>
+                        <div style={{ fontFamily:"var(--font-name)", fontSize:14, fontWeight:500, color:"var(--fg-1)", lineHeight:1.2 }}>
+                          {emp.fullName || emp.name}
+                        </div>
+                        <div style={{ fontSize:11, color:"var(--fg-2)", marginTop:2 }}>
+                          {emp.roleRaw || emp.role || "—"}
+                        </div>
+                      </div>
+
+                      {/* Schedule */}
+                      {schedLabel && (
+                        <div style={{
+                          flexShrink:0, fontSize:11, color:"var(--fg-3)",
+                          fontFamily:"var(--font-mono, monospace)",
+                          background:"var(--bg-surface)", border:"1px solid var(--border-weak)",
+                          borderRadius:"var(--r-md)", padding:"3px 8px",
+                          whiteSpace:"nowrap",
+                        }}>{schedLabel}</div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+          {sorted.length === 0 && (
+            <div style={{ fontSize:13, color:"var(--fg-3)", fontStyle:"italic", padding:"12px 0" }}>No employees found.</div>
+          )}
+        </div>
+      </div>
+    </div>
+  ), document.body);
+}
+
+Object.assign(window, { Toolbar, Legend, ViewSwitcher, ThemeToggle, useTheme, EmployeesModal });
 
 // Compact pill that appears in the toolbar ONLY when today is someone's
 // birthday or work anniversary. Shows up to 3 individual pills; any

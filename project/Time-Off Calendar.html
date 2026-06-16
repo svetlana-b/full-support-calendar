@@ -179,6 +179,7 @@ function CalendarPrototype({ variant, onVariantChange, fsData, user, onSignOut }
   const [contactPopover, setContactPopover] = useState(null); // employee object | null
   const [manageOpen, setManageOpen] = useState(false);
   const [manageTab, setManageTab] = useState(null);
+  const [employeesOpen, setEmployeesOpen] = useState(false);
   const [weekendSignupOpen, setWeekendSignupOpen] = useState(false);
   const [rosterOpen, setRosterOpen] = useState(false);
   const openManage = (tab = null) => { setManageTab(tab); setManageOpen(true); };
@@ -247,6 +248,7 @@ function CalendarPrototype({ variant, onVariantChange, fsData, user, onSignOut }
         typeFilter={typeFilter} setTypeFilter={setTypeFilter}
         onAdd={canAdd ? () => { setSeedDate(null); setEditEvent(null); setAddOpen(true); } : null}
         onManage={isAdmin ? (() => openManage()) : null}
+        onEmployees={() => setEmployeesOpen(true)}
         onWeekendSignup={() => setWeekendSignupOpen(true)}
         onRoster={() => setRosterOpen(true)}
         currentVariant={variant} onVariantChange={onVariantChange}
@@ -315,6 +317,12 @@ function CalendarPrototype({ variant, onVariantChange, fsData, user, onSignOut }
         currentUser={user}
         weekendsRaw={weekendsRaw}
         readOnly={!canAdd}
+      />
+
+      <EmployeesModal
+        open={employeesOpen}
+        employees={employees}
+        onClose={() => setEmployeesOpen(false)}
       />
 
       <Roster
