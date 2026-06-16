@@ -24,7 +24,7 @@ function ManagePanel({ open, onClose, employees, coverage, holidays, tier2, ops,
             <button onClick={onClose} style={mpCloseBtn} aria-label="Close">×</button>
           </div>
           <div style={{ display:"flex", gap:4, marginTop:14, flexWrap:"wrap" }}>
-            {[["oncall","Tier 2 On-Call"],["weekends","Weekend Coverage"],["holidays","Holidays"],["employees","Employees"],["reports","Reports"]].map(([id,l]) => (
+            {[["employees","Employees"],["oncall","Tier 2 On-Call"],["weekends","Weekend Coverage"],["holidays","Holidays"],["reports","Reports"]].map(([id,l]) => (
               <button key={id} onClick={() => setTab(id)} style={{
                 padding:"8px 14px", border:0, background:"transparent",
                 fontFamily:"var(--font-button)", fontWeight:500, fontSize:13,
