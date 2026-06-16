@@ -581,7 +581,7 @@ function EmployeesModal({ open, onClose, employees }) {
               width:30, height:30, borderRadius:"var(--r-md)", flexShrink:0,
               background:"var(--role-teamlead-bg)", border:"1px solid var(--role-teamlead-border)",
               display:"inline-flex", alignItems:"center", justifyContent:"center",
-            }}><img src="assets/id-card.png" alt="" style={{ width:24, height:24, objectFit:"contain", filter:"var(--p0-icon-filter)" }}/></span>
+            }}><img src="assets/id-card.png" alt="" style={{ width:24, height:24, objectFit:"contain" }}/></span>
             <div>
               <div style={{ fontFamily:"var(--font-name)", fontSize:18, fontWeight:300, color:"var(--fg-1)" }}>Support Employees</div>
               <div style={{ fontSize:11, color:"var(--fg-2)", marginTop:1 }}>{sorted.length} team member{sorted.length !== 1 ? "s" : ""}</div>

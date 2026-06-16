@@ -158,7 +158,7 @@ function Roster({ open, employees, onClose }) {
             background:"var(--role-tier1-bg)", border:"1px solid var(--role-tier1-border)",
             display:"inline-flex", alignItems:"center", justifyContent:"center",
           }}>
-            <img src="assets/event.png" alt="" style={{ width:24, height:24, objectFit:"contain", filter:"var(--p0-icon-filter)" }}/>
+            <img src="assets/event.png" alt="" style={{ width:24, height:24, objectFit:"contain" }}/>
           </span>
           <div style={{ flex:1 }}>
             <div style={{ fontFamily:"var(--font-display)", fontSize:18, fontWeight:700, color:"var(--fg-1)" }}>
