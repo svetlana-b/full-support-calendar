@@ -581,10 +581,9 @@ function EmployeesModal({ open, onClose, employees }) {
               <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
                 {emps.map((emp, i) => {
                   const av = roleAvatarTint(emp.roleRaw || emp.role || "");
-                  const tz   = _tzShortLabel(emp.timezone);
                   const hasSched = emp.start || emp.end;
                   const schedLabel = hasSched
-                    ? [_fmtTime(emp.start), _fmtTime(emp.end)].filter(Boolean).join(" – ") + (tz ? ` ${tz}` : "")
+                    ? [_fmtTime(emp.start), _fmtTime(emp.end)].filter(Boolean).join(" – ") + " EST"
                     : null;
                   return (
                     <div key={emp.id || i} style={{
@@ -599,14 +598,8 @@ function EmployeesModal({ open, onClose, employees }) {
                         background:av.bg, border:`1px solid ${av.border}`, color:av.fg,
                         display:"flex", alignItems:"center", justifyContent:"center",
                         fontFamily:"var(--font-name)", fontWeight:700, fontSize:12,
-                        position:"relative",
                       }}>
                         {emp.initials || "?"}
-                        <span style={{
-                          position:"absolute", bottom:-4, right:-4,
-                          fontSize:12, lineHeight:1,
-                          filter:"drop-shadow(0 0 2px var(--bg-page))",
-                        }}>{ROLE_ICON(emp.roleRaw || emp.role)}</span>
                       </div>
 
                       {/* Info */}
