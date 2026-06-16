@@ -641,7 +641,7 @@ function EmployeesModal({ open, onClose, employees }) {
                             position:"absolute", bottom:-4, right:-4,
                             fontSize:12, lineHeight:1,
                             filter:"drop-shadow(0 0 2px var(--bg-page))",
-                          }}>🌱</span>
+                          }}>💡</span>
                         )}
                       </div>
 
