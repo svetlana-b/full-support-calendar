@@ -5,7 +5,7 @@
 function ManagePanel({ open, onClose, employees, coverage, holidays, tier2, ops, initialTab }) {
   // Tabs: oncall | weekends | holidays | employees | reports
   // "reports" is admin-only export tooling (e.g. weekend-coverage payroll xlsx).
-  const [tab, setTab] = React.useState(initialTab || "oncall");
+  const [tab, setTab] = React.useState(initialTab || "employees");
   // Reset tab to the requested one each time the panel is reopened so a
   // user clicking "Add holiday" lands on the holidays tab regardless of
   // where they were last time.
