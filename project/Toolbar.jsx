@@ -616,7 +616,7 @@ function EmployeesModal({ open, onClose, employees }) {
                     if (emp.timezone) {
                       const s = _convertToEDT(emp.start, emp.timezone);
                       const e = _convertToEDT(emp.end, emp.timezone);
-                      return [s, e].filter(Boolean).join(" – ") + " EDT";
+                      return [s, e].filter(Boolean).join(" – ") + " EST";
                     }
                     return [_fmtTime(emp.start), _fmtTime(emp.end)].filter(Boolean).join(" – ") + " EST";
                   })() : null;
