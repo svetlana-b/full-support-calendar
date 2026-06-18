@@ -168,13 +168,11 @@ function MonthA({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                     glow:   "rgba(14,165,233,0.18)",
                 } : null;
                 const _maxLanes = weekSegments[wi].length > 0 ? Math.max(...weekSegments[wi].map(s => s.lane)) + 1 : 0;
-                const _maxHols = week.some((d, di) => di !== 0 && di !== 6 && (holidays[iso(d)] || []).length > 0) ? 1 : 0;
-                const rowMinHeight = Math.max(140, 28 + _maxHols * 22 + 4 + (_maxLanes > 0 ? 4 + _maxLanes * 24 + 6 : 0));
+                const rowMinHeight = Math.max(140, 28 + 4 + (_maxLanes > 0 ? 4 + _maxLanes * 24 + 6 : 0));
 
                 return (
                     <div key={wi} style={{
                         display: "grid", gridTemplateColumns: GRID_COLS,
-                        borderBottom: wi < weeks.length - 1 ? "1px solid var(--border-weak)" : "none",
                         minHeight: rowMinHeight, position: "relative"
                     }}>
                         {/* day cells */}
@@ -190,41 +188,39 @@ function MonthA({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                                     else onAddAt(day);
                                 }} style={{
                                     borderRight: "1px solid var(--border-weak)",
-                                    background: isWeekend && inMonth ? "var(--tw-gray-6)" : "var(--bg-surface)",
+                                    borderBottom: wi < weeks.length - 1 ? (isWeekend ? "1px solid var(--tw-gold-border)" : "1px solid var(--border-weak)") : "none",
+                                    background: isToday ? "rgba(0,97,255,0.05)" : isWeekend && inMonth ? "var(--tw-gray-6)" : "var(--bg-surface)",
                                     padding: "8px 10px 10px", cursor: inMonth ? "pointer" : "default", position: "relative",
                                     opacity: inMonth ? 1 : 0.45,
                                     display: "flex", flexDirection: "column"
                                 }}>
-                                    <div style={{
-                                        display: "inline-flex", alignItems: "center", justifyContent: "center",
-                                        minWidth: 20, height: 20, padding: "0 5px", borderRadius: "var(--r-pill)",
-                                        fontFamily: "var(--font-ui)", fontSize: 11, fontWeight: isToday ? 700 : 500,
-                                        background: isToday ? "var(--action-primary)" : "transparent",
-                                        color: isToday ? "var(--fg-on-primary)" : "var(--fg-1)",
-                                        alignSelf: "flex-start"
-                                    }}>{day.getDate()}</div>
-
-                                    {/* Holiday chips for this day */}
-                                    {inMonth && <HolidayChips items={holidays[iso(day)]} />}
+                                    {/* Date + holiday chips on the same row */}
+                                    <div style={{ display: "flex", alignItems: "center", gap: 4, flexWrap: "wrap" }}>
+                                        <div style={{
+                                            display: "inline-flex", alignItems: "center", justifyContent: "center",
+                                            minWidth: 20, height: 20, padding: "0 5px", borderRadius: "var(--r-pill)",
+                                            fontFamily: "var(--font-ui)", fontSize: 11, fontWeight: isToday ? 700 : 500,
+                                            background: isToday ? "var(--action-primary)" : "transparent",
+                                            color: isToday ? "var(--fg-on-primary)" : "var(--fg-1)",
+                                            flexShrink: 0
+                                        }}>{day.getDate()}</div>
+                                        {inMonth && <HolidayChips items={holidays[iso(day)]} />}
+                                    </div>
 
                                     {/* Weekend on-call — two shift rows stacked at the bottom */}
                                     {isWeekend && inMonth && (
                                         <div style={{
-                                            marginTop: "auto", paddingTop: 6,
+                                            flex: 1,
                                             display: "flex", flexDirection: "column",
-                                            borderTop: "1px solid var(--tw-gold-border)"
                                         }}>
                                             {SHIFTS.map((sh, si) => {
                                                 const slot = cov && cov[sh.id];
                                                 const name = slot ? slot.name : null;
-                                                // Gold shift-type caption mirrors the "WEEKEND
-                                                // SCHEDULE / SATURDAY MAY 16" amber/gold accent
-                                                // in the companion Pro-Support Schedule app.
                                                 return (
                                                     <div key={sh.id} style={{
-                                                        padding: "5px 0 4px",
+                                                        flex: 1,
                                                         borderTop: si > 0 ? "1px dashed var(--tw-gold-border)" : "none",
-                                                        display: "flex", flexDirection: "column", gap: 1, lineHeight: 1.2
+                                                        display: "flex", flexDirection: "column", justifyContent: "center", gap: 1, lineHeight: 1.2
                                                     }}>
                                                         <div style={{
                                                             fontSize: 10, fontWeight: 700, color: "var(--tw-gold-fg-deep)",
@@ -233,7 +229,7 @@ function MonthA({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                                                         }}>{sh.label}</div>
                                                         <div style={{
                                                             fontFamily: "var(--font-name)",
-                                                            fontSize: 12,
+                                                            fontSize: 13,
                                                             color: name ? "var(--fg-1)" : "var(--fg-3)",
                                                             fontWeight: 500,
                                                             whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"
@@ -251,24 +247,9 @@ function MonthA({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                         })}
 
                         {/* event bars overlay — spans only the 7 day columns, not the
-              Tier 2 column. Width = 100% - TIER2 col so percentages map.
-
-              Layout order per cell column:
-                1. Holiday chips  (rendered inside the day cell, above this overlay)
-                2. Employee leave bars — one per row, no two employees share a lane
-
-              To avoid overlapping holiday chips we calculate the max number of
-              holiday entries across all weekday cells in this week and push the
-              overlay down by that many chip rows (each chip is ~22 px tall). */}
+              Tier 2 column. Width = 100% - TIER2 col so percentages map. */}
                         {(() => {
-                            // Build a per-column holiday count array (indices 0–6).
-                            const CHIP_H = 22;
                             const DATE_ROW_H = 28;
-                            const colHolidayRows = week.map((day, di) => {
-                                if (di === 0 || di === 6) return 0; // weekends have no chips
-                                const h = holidays[iso(day)];
-                                return h ? h.length : 0;
-                            });
 
                             return (
                                 <div style={{ position: "absolute", top: 0, left: 0, right: `${TIER2_COL}px`, pointerEvents: "none" }}>
@@ -277,7 +258,7 @@ function MonthA({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                                         const emp = EMPLOYEES.find(e => e.id === s.ev.employeeId) || { name: s.ev.fullName || "Unknown", initials: "?" };
                                         const leftPct = (s.startIdx / 7) * 100;
                                         const widthPct = ((s.endIdx - s.startIdx + 1) / 7) * 100;
-                                        const segOverlayTop = DATE_ROW_H + s.segHols * CHIP_H + 4;
+                                        const segOverlayTop = DATE_ROW_H + 4;
                                         return (
                                             <div key={s.ev.id + idx} onClick={(e) => { e.stopPropagation(); onOpenEvent(s.ev); }}
                                                 title={`${emp.name} · ${type.label}`}
@@ -316,6 +297,7 @@ function MonthA({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                                 background: tint ? tint.bg : "var(--bg-surface)",
                                 color: tint ? tint.fg : "var(--fg-3)",
                                 borderLeft: tint ? `3px solid ${tint.border}` : "1px solid var(--border-weak)",
+                                borderBottom: wi < weeks.length - 1 ? "1px solid var(--border-weak)" : "none",
                                 display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center",
                                 padding: "10px 12px", textAlign: "center", lineHeight: 1.25,
                                 fontFamily: "var(--font-ui)",

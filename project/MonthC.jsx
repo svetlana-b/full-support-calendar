@@ -146,8 +146,7 @@ function MonthC({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
         </div>
         {weeks.map((week, wi) => (
           <div key={wi} style={{ display:"grid", gridTemplateColumns:"repeat(7, 1fr)",
-            borderBottom: wi < weeks.length-1 ? "1px solid var(--border-weak)" : "none",
-            minHeight: 100 }}>
+            minHeight: 140 }}>
             {week.map((day, di) => {
               const inMonth = day.getMonth() === monthDate.getMonth();
               const isToday = sameDay(day, TODAY);
@@ -161,27 +160,29 @@ function MonthC({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                   else onAddAt(day);
                 }} style={{
                   borderRight: di<6 ? "1px solid var(--border-weak)" : "none",
+                  borderBottom: wi < weeks.length-1 ? (isWeekend ? "1px solid var(--tw-gold-border)" : "1px solid var(--border-weak)") : "none",
                   padding:"6px 6px 8px",
                   background: isToday ? "rgba(0,97,255,0.05)" : isWeekend && inMonth ? "var(--tw-gray-6)" : "var(--bg-surface)",
                   opacity: inMonth ? 1 : 0.5,
-                  cursor:"pointer", minHeight:100,
+                  cursor:"pointer", minHeight:140,
                   display:"flex", flexDirection:"column"
                 }}>
-                  <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:4 }}>
-                    <span style={{
-                      display:"inline-flex", alignItems:"center", justifyContent:"center",
-                      minWidth:20, height:20, padding:"0 5px", borderRadius:"var(--r-pill)",
-                      fontFamily:"var(--font-ui)", fontSize:11, fontWeight: isToday ? 700 : 500,
-                      background: isToday ? "var(--action-primary)" : "transparent",
-                      color: isToday ? "var(--fg-on-primary)" : "var(--fg-1)"
-                    }}>{day.getDate()}</span>
+                  <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:4, gap:4 }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:4, flexWrap:"wrap", flex:1, minWidth:0 }}>
+                      <span style={{
+                        display:"inline-flex", alignItems:"center", justifyContent:"center",
+                        minWidth:20, height:20, padding:"0 5px", borderRadius:"var(--r-pill)",
+                        fontFamily:"var(--font-ui)", fontSize:11, fontWeight: isToday ? 700 : 500,
+                        background: isToday ? "var(--action-primary)" : "transparent",
+                        color: isToday ? "var(--fg-on-primary)" : "var(--fg-1)",
+                        flexShrink:0
+                      }}>{day.getDate()}</span>
+                      {inMonth && <HolidayChips items={holidays[iso(day)]} size="sm"/>}
+                    </div>
                     {dayEvents.length > 2 && inMonth && (
-                      <span style={{ fontFamily:"var(--font-ui)", fontSize:10, color:"var(--fg-2)" }}>{dayEvents.length}</span>
+                      <span style={{ fontFamily:"var(--font-ui)", fontSize:10, color:"var(--fg-2)", flexShrink:0 }}>{dayEvents.length}</span>
                     )}
                   </div>
-                  {inMonth && holidays[iso(day)] && (
-                    <HolidayChips items={holidays[iso(day)]} size="sm"/>
-                  )}
                   <div style={{ display:"flex", flexDirection:"column", gap:3 }}>
                     {dayEvents.slice(0,3).map(ev => {
                       const emp = EMPLOYEES.find(e=>e.id===ev.employeeId) || { name: ev.fullName || "Unknown", initials: "?" };
@@ -210,18 +211,19 @@ function MonthC({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                   </div>
                   {isWeekend && inMonth && (
                     <div style={{
-                      marginTop:"auto", paddingTop:6,
+                      flex:1,
+                      minHeight:0,
+                      overflow:"hidden",
                       display:"flex", flexDirection:"column",
-                      borderTop:"1px solid var(--tw-gold-border)"
                     }}>
                       {SHIFTS.map((sh, si) => {
                         const slot = cov && cov[sh.id];
                         const name = slot ? slot.name : null;
                         return (
                           <div key={sh.id} style={{
-                            padding:"5px 0 4px",
+                            flex:1,
                             borderTop: si > 0 ? "1px dashed var(--tw-gold-border)" : "none",
-                            display:"flex", flexDirection:"column", gap:1, lineHeight:1.2
+                            display:"flex", flexDirection:"column", justifyContent:"center", gap:1, lineHeight:1.2
                           }}>
                             <div style={{
                               fontSize:10, fontWeight:700, color:"var(--tw-gold-fg-deep)",
@@ -229,7 +231,7 @@ function MonthC({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                               fontVariantNumeric:"tabular-nums"
                             }}>{sh.label}</div>
                             <div style={{
-                              fontFamily:"var(--font-name)", fontSize:12,
+                              fontFamily:"var(--font-name)", fontSize:13,
                               color: name ? "var(--fg-1)" : "var(--fg-3)",
                               fontWeight:500,
                               whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis"

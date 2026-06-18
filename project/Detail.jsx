@@ -245,6 +245,14 @@ function AddRequest({ open, seedDate, editEvent, employees, currentUserEmail, is
   if (!open) return null;
 
   const handleSave = async () => {
+    if (!start || !end) {
+      setErrMsg("Please fill in both start and end dates.");
+      return;
+    }
+    if (start > end) {
+      setErrMsg("Start date must be on or before the end date.");
+      return;
+    }
     setSubmitting(true); setErrMsg("");
     const result = await onSubmit({
       employeeId, type,
