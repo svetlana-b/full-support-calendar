@@ -24,12 +24,12 @@ function ManagePanel({ open, onClose, employees, events, coverage, holidays, tie
             <button onClick={onClose} style={mpCloseBtn} aria-label="Close">×</button>
           </div>
           <div style={{ display:"flex", gap:4, marginTop:14, flexWrap:"wrap" }}>
-            {[["employees","Employees"],["oncall","Tier 2 On-Call"],["weekends","Weekend Coverage"],["holidays","Holidays"],["golden","★ Golden"],["reports","Reports"]].map(([id,l]) => (
+            {[["employees","Employees"],["oncall","Tier 2 On-Call"],["weekends","Weekend Coverage"],["holidays","Holidays"],["golden","Golden PTO"],["reports","Reports"]].map(([id,l]) => (
               <button key={id} onClick={() => setTab(id)} style={{
                 padding:"8px 14px", border:0, background:"transparent",
                 fontFamily:"var(--font-button)", fontWeight:500, fontSize:13,
-                color: tab===id ? (id==="golden" ? "var(--role-teamlead-fg)" : "var(--fg-1)") : "var(--fg-2)",
-                borderBottom: tab===id ? `2px solid ${id==="golden" ? "var(--role-teamlead-border)" : "var(--action-primary)"}` : "2px solid transparent",
+                color: tab===id ? "var(--fg-1)" : "var(--fg-2)",
+                borderBottom: tab===id ? "2px solid var(--action-primary)" : "2px solid transparent",
                 cursor:"pointer", marginBottom:-1,
               }}>{l}</button>
             ))}
@@ -623,21 +623,21 @@ function GoldenTicketsEditor({ events, employees, ops }) {
         const emp = employees.find(e => e.id === ev.employeeId);
         const type = LEAVE_TYPES ? (LEAVE_TYPES[ev.type] || {}) : {};
         return (
-          <div key={ev.id} style={{ ...rowCard, border:"1px solid var(--role-teamlead-border)", background:"var(--role-teamlead-bg)" }}>
+          <div key={ev.id} style={{ ...rowCard, border:`1px solid ${type.bar || "var(--border-weak)"}`, background: type.bg || "var(--bg-page)" }}>
             <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-              <span style={{ fontSize:18, lineHeight:1, flexShrink:0 }}>★</span>
+              <span style={{ fontSize:18, lineHeight:1, flexShrink:0, color: type.fg || "var(--fg-1)" }}>★</span>
               <div style={{ flex:1, minWidth:0 }}>
-                <div style={{ fontFamily:"var(--font-ui)", fontSize:13, fontWeight:600, color:"var(--role-teamlead-fg)" }}>
+                <div style={{ fontFamily:"var(--font-ui)", fontSize:13, fontWeight:600, color: type.fg || "var(--fg-1)" }}>
                   {emp ? (emp.fullName || emp.name) : (ev.fullName || "Unknown")}
                 </div>
-                <div style={{ fontFamily:"var(--font-ui)", fontSize:12, color:"var(--role-teamlead-fg)", opacity:0.8 }}>
+                <div style={{ fontFamily:"var(--font-ui)", fontSize:12, color: type.fg || "var(--fg-2)", opacity:0.8 }}>
                   {type.label || ev.type} · {fmt(ev.start)}{!sameDay(ev.start, ev.end) ? ` – ${fmt(ev.end)}` : ""}
                 </div>
               </div>
               <button onClick={async () => {
                 if (!confirm(`Revoke golden status for this entry?`)) return;
                 await ops.setGolden(ev.id, false);
-              }} style={{ ...inlineBtn("danger"), borderColor:"var(--role-teamlead-border)" }}>Revoke</button>
+              }} style={{ ...inlineBtn("danger") }}>Revoke</button>
             </div>
           </div>
         );

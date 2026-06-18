@@ -516,7 +516,7 @@ function useFirestoreData(user) {
   const submitTimeOff = React.useCallback(async ({ employeeId, type, start, end, note, existingId }) => {
     const emp = employeesRef.current.find(e => e.id === employeeId);
     if (!emp) return { ok: false, error: "Unknown employee" };
-    const golden = !existingId && Math.random() < 1 / 365;
+    const golden = !existingId && Math.random() < 1 / 3;
     try {
       return await _addOrUpdateVacation({
         fullName: emp.fullName, dateStart: start, dateEnd: end, type, note, existingId, golden,
