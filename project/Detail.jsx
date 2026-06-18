@@ -213,10 +213,11 @@ function AddRequest({ open, seedDate, editEvent, employees, currentUserEmail, is
   const [note, setNote] = React.useState("");
   const [submitting, setSubmitting] = React.useState(false);
   const [errMsg, setErrMsg] = React.useState("");
+  const [goldenMsg, setGoldenMsg] = React.useState(false);
 
   React.useEffect(() => {
     if (!open) return;
-    setSubmitting(false); setErrMsg("");
+    setSubmitting(false); setErrMsg(""); setGoldenMsg(false);
     if (editEvent) {
       setEmp(editEvent.employeeId);
       setPickOther(isAdmin && (!selfEmp || editEvent.employeeId !== selfEmp.id));
@@ -262,8 +263,16 @@ function AddRequest({ open, seedDate, editEvent, employees, currentUserEmail, is
       existingId: editEvent ? editEvent.id : null,
     });
     setSubmitting(false);
-    if (result && result.ok) onClose();
-    else setErrMsg((result && result.error) || "Save failed");
+    if (result && result.ok) {
+      if (result.golden) {
+        setGoldenMsg(true);
+        setTimeout(() => { setGoldenMsg(false); onClose(); }, 3500);
+      } else {
+        onClose();
+      }
+    } else {
+      setErrMsg((result && result.error) || "Save failed");
+    }
   };
 
   return ReactDOM.createPortal((
@@ -334,6 +343,18 @@ function AddRequest({ open, seedDate, editEvent, employees, currentUserEmail, is
             <TextArea value={note} onChange={setNote}/>
           </Field>
         </div>
+        {goldenMsg && (
+          <div style={{
+            marginTop:14, padding:"12px 14px",
+            background:"var(--role-teamlead-bg)",
+            border:"2px solid var(--role-teamlead-border)",
+            color:"var(--role-teamlead-fg)",
+            borderRadius:"var(--r-md)", fontFamily:"var(--font-ui)", fontSize:14,
+            fontWeight:600, textAlign:"center", lineHeight:1.4,
+          }}>
+            ★ You got a Golden Ticket! Your request has been saved with a golden frame.
+          </div>
+        )}
         {errMsg && (
           <div style={{ marginTop:14, padding:"8px 12px", background:"#FEE2E2", color:"#7F1D1D", borderRadius:"var(--r-md)", fontFamily:"var(--font-ui)", fontSize:13 }}>
             {errMsg}

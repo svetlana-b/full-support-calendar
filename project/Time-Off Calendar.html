@@ -124,6 +124,7 @@ function CalendarPrototype({ variant, onVariantChange, fsData, user, onSignOut }
     setHoliday, deleteHoliday,
     setOncall, deleteOncall,
     setEmployee, deleteEmployee,
+    setGolden,
   } = fsData;
 
   // Admin gate — controls visibility of the Manage button + panel.
@@ -207,7 +208,7 @@ function CalendarPrototype({ variant, onVariantChange, fsData, user, onSignOut }
   const openAddAt = (day) => { if (!canAdd) return; setSeedDate(day); setEditEvent(null); setAddOpen(true); };
   const openEdit = (ev) => { setOpenEvent(null); setEditEvent(ev); setAddOpen(true); };
 
-  const ops = { setWeekendCoverage, deleteWeekendCoverage, setHoliday, deleteHoliday, setOncall, deleteOncall, setEmployee, deleteEmployee };
+  const ops = { setWeekendCoverage, deleteWeekendCoverage, setHoliday, deleteHoliday, setOncall, deleteOncall, setEmployee, deleteEmployee, setGolden };
 
   const body = (() => {
     const props = { monthDate, events, employees, coverage, holidays, tier2, employeeFilter, typeFilter, onOpenEvent: setOpenEvent, onAddAt: openAddAt, onWeekendCoverageAt: openWeekendCoverageAt, onOpenContact: openContact };
@@ -307,7 +308,7 @@ function CalendarPrototype({ variant, onVariantChange, fsData, user, onSignOut }
       <ManagePanel
         open={manageOpen && isAdmin} onClose={() => setManageOpen(false)}
         initialTab={manageTab}
-        employees={employees} coverage={coverage} holidays={holidays} tier2={tier2}
+        employees={employees} events={allEvents} coverage={coverage} holidays={holidays} tier2={tier2}
         ops={ops}
       />
 

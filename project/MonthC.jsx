@@ -187,18 +187,20 @@ function MonthC({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                     {dayEvents.slice(0,3).map(ev => {
                       const emp = EMPLOYEES.find(e=>e.id===ev.employeeId) || { name: ev.fullName || "Unknown", initials: "?" };
                       const t = LEAVE_TYPES[ev.type];
+                      const isGolden = !!ev.golden;
                       return (
                         <div key={ev.id} onClick={(e)=>{ e.stopPropagation(); onOpenEvent(ev); }}
                           title={`${emp.name} · ${t.label}`}
                           style={{
                             display:"flex", alignItems:"center", gap:5,
                             padding:"2px 6px", borderRadius:4,
-                            background: t.bg, color: t.fg,
-                            border: `1px solid ${t.bar}`,
+                            background: isGolden ? "var(--role-teamlead-bg)" : t.bg,
+                            color: isGolden ? "var(--role-teamlead-fg)" : t.fg,
+                            border: isGolden ? "2px solid var(--role-teamlead-border)" : `1px solid ${t.bar}`,
                             fontFamily:"var(--font-ui)", fontSize:10, fontWeight:600,
                             whiteSpace:"nowrap", overflow:"hidden"
                           }}>
-                          {t.icon ? <img src={t.icon} alt="" aria-hidden width={11} height={11} style={{ flexShrink:0, objectFit:"contain", display:"block" }}/> : null}
+                          {isGolden ? <span style={{ flexShrink:0, fontSize:9 }}>★</span> : (t.icon ? <img src={t.icon} alt="" aria-hidden width={11} height={11} style={{ flexShrink:0, objectFit:"contain", display:"block" }}/> : null)}
                           <span style={{ overflow:"hidden", textOverflow:"ellipsis", fontWeight:700 }}>{emp.initials}</span>
                         </div>
                       );

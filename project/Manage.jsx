@@ -2,7 +2,7 @@
 // and holidays directly in Firestore. Surfaced via a "Manage" button in
 // the toolbar; renders as a side sheet.
 
-function ManagePanel({ open, onClose, employees, coverage, holidays, tier2, ops, initialTab }) {
+function ManagePanel({ open, onClose, employees, events, coverage, holidays, tier2, ops, initialTab }) {
   // Tabs: oncall | weekends | holidays | employees | reports
   // "reports" is admin-only export tooling (e.g. weekend-coverage payroll xlsx).
   const [tab, setTab] = React.useState(initialTab || "employees");
@@ -24,12 +24,12 @@ function ManagePanel({ open, onClose, employees, coverage, holidays, tier2, ops,
             <button onClick={onClose} style={mpCloseBtn} aria-label="Close">×</button>
           </div>
           <div style={{ display:"flex", gap:4, marginTop:14, flexWrap:"wrap" }}>
-            {[["employees","Employees"],["oncall","Tier 2 On-Call"],["weekends","Weekend Coverage"],["holidays","Holidays"],["reports","Reports"]].map(([id,l]) => (
+            {[["employees","Employees"],["oncall","Tier 2 On-Call"],["weekends","Weekend Coverage"],["holidays","Holidays"],["golden","★ Golden"],["reports","Reports"]].map(([id,l]) => (
               <button key={id} onClick={() => setTab(id)} style={{
                 padding:"8px 14px", border:0, background:"transparent",
                 fontFamily:"var(--font-button)", fontWeight:500, fontSize:13,
-                color: tab===id ? "var(--fg-1)" : "var(--fg-2)",
-                borderBottom: tab===id ? "2px solid var(--action-primary)" : "2px solid transparent",
+                color: tab===id ? (id==="golden" ? "var(--role-teamlead-fg)" : "var(--fg-1)") : "var(--fg-2)",
+                borderBottom: tab===id ? `2px solid ${id==="golden" ? "var(--role-teamlead-border)" : "var(--action-primary)"}` : "2px solid transparent",
                 cursor:"pointer", marginBottom:-1,
               }}>{l}</button>
             ))}
@@ -40,6 +40,7 @@ function ManagePanel({ open, onClose, employees, coverage, holidays, tier2, ops,
           {tab === "weekends"  && <WeekendEditor   employees={employees} coverage={coverage} ops={ops}/>}
           {tab === "holidays"  && <HolidaysEditor  employees={employees} holidays={holidays} ops={ops}/>}
           {tab === "employees" && <EmployeeEditor  employees={employees} ops={ops}/>}
+          {tab === "golden"    && <GoldenTicketsEditor events={events || []} employees={employees} ops={ops}/>}
           {tab === "reports"   && <WeekendReportTab coverage={coverage} holidays={holidays} employees={employees}/>}
         </div>
       </div>
@@ -594,6 +595,53 @@ function EmployeeEditor({ employees, ops }) {
           )}
         </div>
       ))}
+    </div>
+  );
+}
+
+// ---------- Golden tickets editor ----------
+
+function GoldenTicketsEditor({ events, employees, ops }) {
+  const goldenEvents = events.filter(ev => ev.golden);
+  const fmt = (d) => `${MONTH_NAMES[d.getMonth()].slice(0,3)} ${d.getDate()}, ${d.getFullYear()}`;
+
+  return (
+    <div>
+      <div style={{ marginBottom:12, padding:"10px 14px", background:"var(--role-teamlead-bg)", border:"1px solid var(--role-teamlead-border)", borderRadius:"var(--r-lg)" }}>
+        <div style={{ fontFamily:"var(--font-ui)", fontSize:13, color:"var(--role-teamlead-fg)", fontWeight:600, marginBottom:4 }}>
+          ★ Golden Tickets
+        </div>
+        <div style={{ fontFamily:"var(--font-ui)", fontSize:12, color:"var(--role-teamlead-fg)", opacity:0.8 }}>
+          Each new time-off request has a 1-in-365 chance of becoming a Golden Ticket. Revoke removes the gold status but keeps the entry.
+        </div>
+      </div>
+      <div style={{ ...sectionLabel }}>Golden Tickets · {goldenEvents.length}</div>
+      {goldenEvents.length === 0 && (
+        <div style={{ fontFamily:"var(--font-ui)", fontSize:13, color:"var(--fg-2)", padding:"16px 0" }}>No golden tickets yet.</div>
+      )}
+      {goldenEvents.map(ev => {
+        const emp = employees.find(e => e.id === ev.employeeId);
+        const type = LEAVE_TYPES ? (LEAVE_TYPES[ev.type] || {}) : {};
+        return (
+          <div key={ev.id} style={{ ...rowCard, border:"1px solid var(--role-teamlead-border)", background:"var(--role-teamlead-bg)" }}>
+            <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+              <span style={{ fontSize:18, lineHeight:1, flexShrink:0 }}>★</span>
+              <div style={{ flex:1, minWidth:0 }}>
+                <div style={{ fontFamily:"var(--font-ui)", fontSize:13, fontWeight:600, color:"var(--role-teamlead-fg)" }}>
+                  {emp ? (emp.fullName || emp.name) : (ev.fullName || "Unknown")}
+                </div>
+                <div style={{ fontFamily:"var(--font-ui)", fontSize:12, color:"var(--role-teamlead-fg)", opacity:0.8 }}>
+                  {type.label || ev.type} · {fmt(ev.start)}{!sameDay(ev.start, ev.end) ? ` – ${fmt(ev.end)}` : ""}
+                </div>
+              </div>
+              <button onClick={async () => {
+                if (!confirm(`Revoke golden status for this entry?`)) return;
+                await ops.setGolden(ev.id, false);
+              }} style={{ ...inlineBtn("danger"), borderColor:"var(--role-teamlead-border)" }}>Revoke</button>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }

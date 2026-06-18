@@ -90,6 +90,7 @@ function MonthB({ monthDate, events, employees = EMPLOYEES, coverage, holidays =
                 const type = LEAVE_TYPES[ev.type];
                 const continuesLeft = ev.start < first;
                 const continuesRight = ev.end > last;
+                const isGolden = !!ev.golden;
                 return (
                   <div key={ev.id} onClick={(e)=>{ e.stopPropagation(); onOpenEvent(ev); }}
                     title={`${type.label} · ${ev.note || ""}`}
@@ -98,9 +99,9 @@ function MonthB({ monthDate, events, employees = EMPLOYEES, coverage, holidays =
                       left: `calc(${leftPct}% + 3px)`,
                       width: `calc(${widthPct}% - 6px)`,
                       top:0, bottom:0,
-                      background: type.bg,
-                      color: type.fg,
-                      border: `1px solid ${type.bar}`,
+                      background: isGolden ? "var(--role-teamlead-bg)" : type.bg,
+                      color: isGolden ? "var(--role-teamlead-fg)" : type.fg,
+                      border: isGolden ? "2px solid var(--role-teamlead-border)" : `1px solid ${type.bar}`,
                       borderRadius: 4,
                       padding:"0 10px",
                       display:"flex", alignItems:"center", gap:5,
@@ -108,7 +109,7 @@ function MonthB({ monthDate, events, employees = EMPLOYEES, coverage, holidays =
                       whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis",
                       cursor:"pointer", pointerEvents:"auto",
                     }}>
-                    {type.icon ? <img src={type.icon} alt="" aria-hidden width={14} height={14} style={{ flexShrink:0, objectFit:"contain", display:"block" }}/> : null}
+                    {isGolden ? <span style={{ flexShrink:0 }}>★</span> : (type.icon ? <img src={type.icon} alt="" aria-hidden width={14} height={14} style={{ flexShrink:0, objectFit:"contain", display:"block" }}/> : null)}
                     <span style={{ overflow:"hidden", textOverflow:"ellipsis", fontWeight:700 }}>{type.label}</span>
                   </div>
                 );
