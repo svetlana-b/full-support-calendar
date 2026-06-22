@@ -181,16 +181,18 @@ function MonthA({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                             const isToday = sameDay(day, TODAY);
                             const isWeekend = di === 0 || di === 6;
                             const cov = isWeekend && inMonth ? coverage[iso(day)] : null;
+                            const todayMidnight = new Date(TODAY.getFullYear(), TODAY.getMonth(), TODAY.getDate());
+                            const isPast = day < todayMidnight;
                             return (
                                 <div key={di} onClick={() => {
-                                    if (!inMonth) return;
+                                    if (!inMonth || isPast) return;
                                     if (isWeekend && onWeekendCoverageAt) onWeekendCoverageAt(day);
                                     else onAddAt(day);
                                 }} style={{
                                     borderRight: "1px solid var(--border-weak)",
                                     borderBottom: wi < weeks.length - 1 ? (isWeekend ? "1px solid var(--tw-gold-border)" : "1px solid var(--border-weak)") : "none",
                                     background: isToday ? "rgba(0,97,255,0.05)" : isWeekend && inMonth ? "var(--tw-gray-6)" : "var(--bg-surface)",
-                                    padding: "8px 10px 10px", cursor: inMonth ? "pointer" : "default", position: "relative",
+                                    padding: "8px 10px 10px", cursor: inMonth && !isPast ? "pointer" : "default", position: "relative",
                                     opacity: inMonth ? 1 : 0.45,
                                     display: "flex", flexDirection: "column"
                                 }}>

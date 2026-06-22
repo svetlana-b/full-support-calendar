@@ -153,9 +153,11 @@ function MonthC({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
               const isWeekend = di === 0 || di === 6;
               const cov = isWeekend && inMonth ? coverage[iso(day)] : null;
               const dayEvents = isWeekend ? [] : visibleEvents.filter(ev => dateInRange(day, ev.start, ev.end));
+              const todayMidnight = new Date(TODAY.getFullYear(), TODAY.getMonth(), TODAY.getDate());
+              const isPast = day < todayMidnight;
               return (
                 <div key={di} onClick={() => {
-                  if (!inMonth) return;
+                  if (!inMonth || isPast) return;
                   if (isWeekend && onWeekendCoverageAt) onWeekendCoverageAt(day);
                   else onAddAt(day);
                 }} style={{
@@ -164,7 +166,7 @@ function MonthC({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                   padding:"6px 6px 8px",
                   background: isToday ? "rgba(0,97,255,0.05)" : isWeekend && inMonth ? "var(--tw-gray-6)" : "var(--bg-surface)",
                   opacity: inMonth ? 1 : 0.5,
-                  cursor:"pointer", minHeight:140,
+                  cursor: inMonth && !isPast ? "pointer" : "default", minHeight:140,
                   display:"flex", flexDirection:"column"
                 }}>
                   <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:4, gap:4 }}>

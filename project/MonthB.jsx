@@ -69,11 +69,13 @@ function MonthB({ monthDate, events, employees = EMPLOYEES, coverage, holidays =
             {days.map((d,i) => {
               const weekend = d.getDay() === 0 || d.getDay() === 6;
               const today = sameDay(d, TODAY);
+              const todayMidnight = new Date(TODAY.getFullYear(), TODAY.getMonth(), TODAY.getDate());
+              const isPast = d < todayMidnight;
               return (
-                <div key={i} onClick={() => onAddAt(d, emp.id)} style={{
+                <div key={i} onClick={() => { if (!isPast) onAddAt(d, emp.id); }} style={{
                   borderRight:"1px solid var(--border-weak)",
                   background: today ? "rgba(0,97,255,0.05)" : weekend ? "var(--tw-gray-6)" : "var(--bg-surface)",
-                  cursor:"pointer"
+                  cursor: isPast ? "default" : "pointer"
                 }}/>
               );
             })}

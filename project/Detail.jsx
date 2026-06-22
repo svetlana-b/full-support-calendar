@@ -245,9 +245,15 @@ function AddRequest({ open, seedDate, editEvent, employees, currentUserEmail, is
 
   if (!open) return null;
 
+  const todayIso = iso(window.TODAY || new Date());
+
   const handleSave = async () => {
     if (!start || !end) {
       setErrMsg("Please fill in both start and end dates.");
+      return;
+    }
+    if (!editEvent && start < todayIso) {
+      setErrMsg("Start date cannot be in the past.");
       return;
     }
     if (start > end) {
@@ -332,11 +338,11 @@ function AddRequest({ open, seedDate, editEvent, employees, currentUserEmail, is
             </label>
           </div>
           {oneDay ? (
-            <Field label="Date"><DateInput value={start} onChange={v => { setStart(v); setEnd(v); }}/></Field>
+            <Field label="Date"><DateInput value={start} min={!editEvent ? todayIso : undefined} onChange={v => { setStart(v); setEnd(v); }}/></Field>
           ) : (
             <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
-              <Field label="Start date"><DateInput value={start} onChange={setStart}/></Field>
-              <Field label="End date"><DateInput value={end} onChange={setEnd}/></Field>
+              <Field label="Start date"><DateInput value={start} min={!editEvent ? todayIso : undefined} onChange={setStart}/></Field>
+              <Field label="End date"><DateInput value={end} min={!editEvent ? todayIso : undefined} onChange={setEnd}/></Field>
             </div>
           )}
           <Field label="Note" caption="Optional">
@@ -380,9 +386,9 @@ function SelectInput({ value, onChange, options }) {
     }}>{options.map(([v,l]) => <option key={v} value={v}>{l}</option>)}</select>
   );
 }
-function DateInput({ value, onChange }) {
+function DateInput({ value, onChange, min }) {
   return (
-    <input type="date" value={value} onChange={e=>onChange(e.target.value)} style={{
+    <input type="date" value={value} min={min} onChange={e=>onChange(e.target.value)} style={{
       height:40, padding:"0 12px", border:"1px solid var(--border-strong)",
       borderRadius:"var(--r-lg)", background:"var(--bg-surface)", color:"var(--fg-1)",
       fontFamily:"var(--font-ui)", fontSize:14, outline:"none", width:"100%"
