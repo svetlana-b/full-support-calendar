@@ -143,7 +143,6 @@ function _transformVacation(docId, data, byName) {
     fullName,
     owner_uid:  data.owner_uid || null,
     owner_email:data.owner_email || null,
-    golden:     data.golden === true,
   };
 }
 
@@ -259,7 +258,7 @@ function _buildTier2Map(oncallDocs) {
 
 // ---------- writers ----------
 
-async function _addOrUpdateVacation({ fullName, dateStart, dateEnd, type, note, existingId, golden }) {
+async function _addOrUpdateVacation({ fullName, dateStart, dateEnd, type, note, existingId }) {
   const { fbDb, fb, fbAuth } = window;
   const startIso = typeof dateStart === "string" ? dateStart : _localDateToIso(dateStart);
   const endIso   = typeof dateEnd   === "string" ? dateEnd   : _localDateToIso(dateEnd);
@@ -289,15 +288,8 @@ async function _addOrUpdateVacation({ fullName, dateStart, dateEnd, type, note, 
     owner_email:existingOwnerEmail || (me ? (me.email || null) : null),
   };
   if (note) payload.note = note;
-  if (golden) payload.golden = true;
   await fb.setDoc(fb.doc(fbDb, "vacations", id), payload, { merge: false });
-  return { ok: true, id, golden: !!golden };
-}
-
-async function _setGolden(id, golden) {
-  const { fbDb, fb } = window;
-  await fb.setDoc(fb.doc(fbDb, "vacations", id), { golden: golden === true }, { merge: true });
-  return { ok: true };
+  return { ok: true, id };
 }
 
 async function _deleteVacation(id) {
@@ -516,10 +508,9 @@ function useFirestoreData(user) {
   const submitTimeOff = React.useCallback(async ({ employeeId, type, start, end, note, existingId }) => {
     const emp = employeesRef.current.find(e => e.id === employeeId);
     if (!emp) return { ok: false, error: "Unknown employee" };
-    const golden = !existingId && Math.random() < 1 / 3;
     try {
       return await _addOrUpdateVacation({
-        fullName: emp.fullName, dateStart: start, dateEnd: end, type, note, existingId, golden,
+        fullName: emp.fullName, dateStart: start, dateEnd: end, type, note, existingId,
       });
     } catch (e) {
       console.error("submitTimeOff failed:", e);
@@ -540,7 +531,6 @@ function useFirestoreData(user) {
   const deleteOncall        = React.useCallback((wk) => _deleteOncall(wk).catch(e => ({ ok:false, error:String(e) })), []);
   const setEmployee         = React.useCallback((args) => _setEmployee(args).catch(e => ({ ok:false, error:String(e) })), []);
   const deleteEmployee      = React.useCallback((id) => _deleteEmployee(id).catch(e => ({ ok:false, error:String(e) })), []);
-  const setGolden           = React.useCallback((id, golden) => _setGolden(id, golden).catch(e => ({ ok:false, error:String(e) })), []);
 
   return {
     employees, coverage, weekendsRaw, events, holidays, tier2, contacts, status, error,
@@ -549,7 +539,6 @@ function useFirestoreData(user) {
     setHoliday, deleteHoliday,
     setOncall, deleteOncall,
     setEmployee, deleteEmployee,
-    setGolden,
   };
 }
 

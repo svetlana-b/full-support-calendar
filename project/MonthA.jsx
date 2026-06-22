@@ -262,7 +262,6 @@ function MonthA({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                                         const leftPct = (s.startIdx / 7) * 100;
                                         const widthPct = ((s.endIdx - s.startIdx + 1) / 7) * 100;
                                         const segOverlayTop = DATE_ROW_H + 4;
-                                        const isGolden = !!s.ev.golden;
                                         return (
                                             <div key={s.ev.id + idx} onClick={(e) => { e.stopPropagation(); onOpenEvent(s.ev); }}
                                                 title={`${emp.name} · ${type.label}`}
@@ -272,9 +271,9 @@ function MonthA({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                                                     width: `calc(${widthPct}% - 8px)`,
                                                     top: segOverlayTop + 4 + s.lane * 24,
                                                     height: 20,
-                                                    background: isGolden ? "var(--role-teamlead-bg)" : type.bg,
-                                                    color: isGolden ? "var(--role-teamlead-fg)" : type.fg,
-                                                    border: isGolden ? "2px solid var(--role-teamlead-border)" : `1px solid ${type.bar}`,
+                                                    background: type.bg,
+                                                    color: type.fg,
+                                                    border: `1px solid ${type.bar}`,
                                                     borderRadius: 4,
                                                     padding: "0 8px",
                                                     display: "flex", alignItems: "center", gap: 4,
@@ -282,7 +281,7 @@ function MonthA({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                                                     whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
                                                     cursor: "pointer", pointerEvents: "auto",
                                                 }}>
-                                                {isGolden ? <span style={{ flexShrink: 0 }}>★</span> : (type.icon ? <img src={type.icon} alt="" aria-hidden width={14} height={14} style={{ flexShrink: 0, objectFit: "contain", display: "block" }}/> : null)}
+                                                {type.icon ? <img src={type.icon} alt="" aria-hidden width={14} height={14} style={{ flexShrink: 0, objectFit: "contain", display: "block" }}/> : null}
                                                 <span style={{ overflow: "hidden", textOverflow: "ellipsis", fontWeight: 700 }}>
                                                     {s.continuesLeft ? "…" : ""}{abbrevName(emp.name)} · {type.label}
                                                 </span>
