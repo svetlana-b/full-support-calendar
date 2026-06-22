@@ -41,8 +41,8 @@ function MonthB({ monthDate, events, employees = EMPLOYEES, coverage, holidays =
                 width:22, height:22, borderRadius:"var(--r-pill)",
                 marginTop:2,
                 fontSize:12, fontWeight: today ? 700 : 500,
-                background: today ? "var(--action-primary)" : "transparent",
-                color: today ? "var(--fg-on-primary)" : "var(--fg-1)"
+                background: "transparent",
+                color: "var(--fg-1)"
               }}>{d.getDate()}</div>
               <HolidayMarker items={holidays[iso(d)]}/>
             </div>
@@ -74,7 +74,7 @@ function MonthB({ monthDate, events, employees = EMPLOYEES, coverage, holidays =
               return (
                 <div key={i} onClick={() => { if (!isPast) onAddAt(d, emp.id); }} style={{
                   borderRight:"1px solid var(--border-weak)",
-                  background: today ? "rgba(0,97,255,0.05)" : weekend ? "var(--tw-gray-6)" : "var(--bg-surface)",
+                  background: today ? "var(--today-highlight)" : weekend ? "var(--tw-gray-6)" : "var(--bg-surface)",
                   cursor: isPast ? "default" : "pointer"
                 }}/>
               );

@@ -164,7 +164,7 @@ function MonthC({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                   borderRight: di<6 ? "1px solid var(--border-weak)" : "none",
                   borderBottom: wi < weeks.length-1 ? (isWeekend ? "1px solid var(--tw-gold-border)" : "1px solid var(--border-weak)") : "none",
                   padding:"6px 6px 8px",
-                  background: isToday ? "rgba(0,97,255,0.05)" : isWeekend && inMonth ? "var(--tw-gray-6)" : "var(--bg-surface)",
+                  background: isToday ? "var(--today-highlight)" : isWeekend && inMonth ? "var(--tw-gray-6)" : "var(--bg-surface)",
                   opacity: inMonth ? 1 : 0.5,
                   cursor: inMonth && !isPast ? "pointer" : "default", minHeight:140,
                   display:"flex", flexDirection:"column"
@@ -175,8 +175,8 @@ function MonthC({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                         display:"inline-flex", alignItems:"center", justifyContent:"center",
                         minWidth:20, height:20, padding:"0 5px", borderRadius:"var(--r-pill)",
                         fontFamily:"var(--font-ui)", fontSize:11, fontWeight: isToday ? 700 : 500,
-                        background: isToday ? "var(--action-primary)" : "transparent",
-                        color: isToday ? "var(--fg-on-primary)" : "var(--fg-1)",
+                        background: "transparent",
+                        color: "var(--fg-1)",
                         flexShrink:0
                       }}>{day.getDate()}</span>
                       {inMonth && <HolidayChips items={holidays[iso(day)]} size="sm"/>}
