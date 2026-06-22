@@ -45,9 +45,9 @@ function HolidayChips({ items, size = "sm" }) {
   if (!items || items.length === 0) return null;
   const flat = items.flatMap(h => h.teams.map(t => ({ team: t, name: h.name, working: h.working })));
   const pad = size === "sm" ? "2px 6px" : "3px 8px";
-  const fsz = size === "sm" ? 10 : 11;
+  const fsz = size === "sm" ? 11 : 11;
   return (
-    <div style={{ display:"flex", flexWrap:"wrap", gap:3, marginTop:2 }}>
+    <div style={{ display:"flex", flexWrap:"wrap", gap:3 }}>
       {flat.map((it, i) => {
         const tint = COUNTRY_TINT[it.team] || { bg:"var(--bg-page)", border:"var(--border-weak)", fg:"var(--fg-2)" };
         return (

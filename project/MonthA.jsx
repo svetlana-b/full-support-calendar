@@ -197,7 +197,7 @@ function MonthA({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                                     display: "flex", flexDirection: "column"
                                 }}>
                                     {/* Date + holiday chips on the same row */}
-                                    <div style={{ display: "flex", alignItems: "center", gap: 4, flexWrap: "wrap" }}>
+                                    <div style={{ display: "flex", alignItems: "center", gap: 4, flexWrap: "nowrap" }}>
                                         <div style={{
                                             display: "inline-flex", alignItems: "center", justifyContent: "center",
                                             minWidth: 20, height: 20, padding: "0 5px", borderRadius: "var(--r-pill)",

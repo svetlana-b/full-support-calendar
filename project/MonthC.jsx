@@ -170,7 +170,7 @@ function MonthC({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                   display:"flex", flexDirection:"column"
                 }}>
                   <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:4, gap:4 }}>
-                    <div style={{ display:"flex", alignItems:"center", gap:4, flexWrap:"wrap", flex:1, minWidth:0 }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:4, flexWrap:"nowrap", flex:1, minWidth:0 }}>
                       <span style={{
                         display:"inline-flex", alignItems:"center", justifyContent:"center",
                         minWidth:20, height:20, padding:"0 5px", borderRadius:"var(--r-pill)",
