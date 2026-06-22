@@ -192,6 +192,7 @@ function MonthA({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                                     borderRight: "1px solid var(--border-weak)",
                                     borderBottom: wi < weeks.length - 1 ? (isWeekend ? "1px solid var(--tw-gold-border)" : "1px solid var(--border-weak)") : "none",
                                     background: isToday ? "var(--today-highlight)" : isWeekend && inMonth ? "var(--tw-gray-6)" : "var(--bg-surface)",
+                                    boxShadow: isToday ? "inset 3px 0 0 var(--role-tier1-border)" : "none",
                                     padding: "8px 10px 10px", cursor: inMonth && !isPast ? "pointer" : "default", position: "relative",
                                     opacity: inMonth ? 1 : 0.45,
                                     display: "flex", flexDirection: "column"

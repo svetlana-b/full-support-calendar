@@ -165,6 +165,7 @@ function MonthC({ monthDate, events, employees = EMPLOYEES, coverage = WEEKEND_C
                   borderBottom: wi < weeks.length-1 ? (isWeekend ? "1px solid var(--tw-gold-border)" : "1px solid var(--border-weak)") : "none",
                   padding:"6px 6px 8px",
                   background: isToday ? "var(--today-highlight)" : isWeekend && inMonth ? "var(--tw-gray-6)" : "var(--bg-surface)",
+                  boxShadow: isToday ? "inset 3px 0 0 var(--role-tier1-border)" : "none",
                   opacity: inMonth ? 1 : 0.5,
                   cursor: inMonth && !isPast ? "pointer" : "default", minHeight:140,
                   display:"flex", flexDirection:"column"

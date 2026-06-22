@@ -127,7 +127,7 @@
   --action-primary:        var(--tw-lime-accent);        /* C8F564 — hero lime */
   --action-primary-hover:  var(--tw-lime-accent-hover);  /* B6E443 */
   --action-primary-border: transparent;
-  --today-highlight:       #f5fce6;
+  --today-highlight:       rgba(220, 252, 231, 0.75);
   --p0-icon-filter: invert(75%) sepia(1) brightness(84%) /*invert(29%) sepia(85%) saturate(700%) hue-rotate(15deg) brightness(75%);
   --action-secondary-bg:   var(--tw-lime-bg-soft);       /* F1F8DA */
   --action-secondary-fg:   var(--tw-lime-fg-deep);       /* 5C8C1F */
@@ -380,7 +380,7 @@ code, kbd, .tw-mono {
   --p0-icon-filter: invert(75%) sepia(1) brightness(84%);
   --action-primary-hover:  rgba(200, 245, 100, 0.25);
   --action-primary-border: rgba(200, 245, 100, 0.35);
-  --today-highlight:       rgba(200, 245, 100, 0.15);
+  --today-highlight:       var(--role-tier1-bg);
   --fg-on-primary:         #C8F564;
   --action-secondary-bg: rgba(200, 245, 100, 0.12);
   --action-secondary-fg: #C8F564;

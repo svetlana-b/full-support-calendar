@@ -75,6 +75,7 @@ function MonthB({ monthDate, events, employees = EMPLOYEES, coverage, holidays =
                 <div key={i} onClick={() => { if (!isPast) onAddAt(d, emp.id); }} style={{
                   borderRight:"1px solid var(--border-weak)",
                   background: today ? "var(--today-highlight)" : weekend ? "var(--tw-gray-6)" : "var(--bg-surface)",
+                  boxShadow: today ? "inset 3px 0 0 var(--role-tier1-border)" : "none",
                   cursor: isPast ? "default" : "pointer"
                 }}/>
               );
