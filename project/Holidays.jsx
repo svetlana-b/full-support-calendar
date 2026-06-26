@@ -60,10 +60,23 @@ function HolidayChips({ items, size = "sm" }) {
 
 function HolidayChip({ tint, team, name, working, pad, fsz }) {
   const [hover, setHover] = React.useState(false);
+  const [placement, setPlacement] = React.useState("down");
+  const ref = React.useRef(null);
   const country = COUNTRIES[team];
+
+  function handleMouseEnter() {
+    if (ref.current) {
+      const rect = ref.current.getBoundingClientRect();
+      // 220px is a safe estimate for popover height
+      setPlacement(rect.bottom + 220 > window.innerHeight ? "up" : "down");
+    }
+    setHover(true);
+  }
+
   return (
     <span
-      onMouseEnter={() => setHover(true)}
+      ref={ref}
+      onMouseEnter={handleMouseEnter}
       onMouseLeave={() => setHover(false)}
       onClick={(e) => { e.stopPropagation(); setHover(h => !h); }}
       style={{
@@ -77,16 +90,19 @@ function HolidayChip({ tint, team, name, working, pad, fsz }) {
     >
       <span>{team}</span>
       {hover && (
-        <HolidayPopover name={name} country={country} working={working}/>
+        <HolidayPopover name={name} country={country} working={working} placement={placement}/>
       )}
     </span>
   );
 }
 
-function HolidayPopover({ name, country, working }) {
+function HolidayPopover({ name, country, working, placement = "down" }) {
+  const posStyle = placement === "up"
+    ? { bottom:"calc(100% + 6px)", top:"auto" }
+    : { top:"calc(100% + 6px)", bottom:"auto" };
   return (
     <div style={{
-      position:"absolute", top:"calc(100% + 6px)", left:0, zIndex:20,
+      position:"absolute", ...posStyle, left:0, zIndex:20,
       minWidth: 240, maxWidth: 320,
       background:"var(--bg-surface)", color:"var(--fg-1)",
       border:"1px solid var(--border-strong)",
